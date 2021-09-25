@@ -9,16 +9,45 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ${{ github.repository }}
+
 jobs:
-  build:
+  build-number:
     runs-on: ubuntu-latest
+    outputs:
+      build_number: ${{ steps.buildnumber.outputs.build_number }}
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v3
+        with:
+          token: ${{secrets.github_token}}
+  images:
+    needs: build-number
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{needs.build-number.outputs.build_number}}
     steps:
       - uses: actions/checkout@v2
 
-      - name: List files
-        run: ls $GITHUB_WORKSPACE
+      - name: Log in to the Container registry
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: Run make file
-        run: |
-          echo "run makefile..."
-          make test
+      - name: jsonnet
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{github.actor}}/${{env.IMAGE_PREFIX}}-jsonnet
+        with:
+          context: jsonnet
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:latest
+      # - name: Run make file
+      #   run: |
+      #     echo "run makefile..."
+      #     make test
