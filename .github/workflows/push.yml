@@ -1,0 +1,24 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Push
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: List files
+        run: ls $GITHUB_WORKSPACE
+
+      - name: Run make file
+        run: |
+          echo "run makefile..."
+          make test

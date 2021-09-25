@@ -1,0 +1,2 @@
+test:
+	echo "From makefile"
