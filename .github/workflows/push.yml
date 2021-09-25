@@ -17,10 +17,8 @@ jobs:
   images:
     runs-on: ubuntu-latest
     env:
-      BUILD_NUMBER: ${{github.event.push.push_id}}
+      BUILD_NUMBER: ${{env.GITHUB_RUN_NUMBER}}
     steps:
-      - uses: hmarr/debug-action@v2
-
       - uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
