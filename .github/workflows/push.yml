@@ -17,7 +17,7 @@ jobs:
   images:
     runs-on: ubuntu-latest
     env:
-      BUILD_NUMBER: ${{github.event.push_id}}
+      BUILD_NUMBER: ${{github.event.push.push_id}}
     steps:
       - uses: actions/checkout@v2
 
