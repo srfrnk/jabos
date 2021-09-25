@@ -17,7 +17,7 @@ jobs:
   images:
     runs-on: ubuntu-latest
     env:
-      BUILD_NUMBER: ${{env.GITHUB_RUN_NUMBER}}
+      BUILD_NUMBER: $GITHUB_RUN_NUMBER
     steps:
       - uses: actions/checkout@v2
 
@@ -27,9 +27,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key: ${{runner.os}}-buildx-${{github.sha}}
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{runner.os}}-buildx-
 
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
