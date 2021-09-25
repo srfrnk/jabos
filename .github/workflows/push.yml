@@ -42,7 +42,7 @@ jobs:
       - name: jsonnet
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         env:
-          IMAGE_NAME: ${{github.actor}}/${{env.IMAGE_PREFIX}}-jsonnet
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet
         with:
           context: jsonnet
           push: true
