@@ -14,21 +14,10 @@ env:
   IMAGE_PREFIX: ${{ github.repository }}
 
 jobs:
-  build-number:
-    runs-on: ubuntu-latest
-    outputs:
-      build_number: ${{ steps.buildnumber.outputs.build_number }}
-    steps:
-      - name: Generate build number
-        id: buildnumber
-        uses: einaregilsson/build-number@v3
-        with:
-          token: ${{secrets.github_token}}
   images:
-    needs: build-number
     runs-on: ubuntu-latest
     env:
-      BUILD_NUMBER: ${{needs.build-number.outputs.build_number}}
+      BUILD_NUMBER: ${{github.event.push_id}}
     steps:
       - uses: actions/checkout@v2
 
