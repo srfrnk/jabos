@@ -19,6 +19,8 @@ jobs:
     env:
       BUILD_NUMBER: ${{github.event.push.push_id}}
     steps:
+      - run: echo ${{github.event}}
+
       - uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
