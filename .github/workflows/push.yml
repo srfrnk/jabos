@@ -62,7 +62,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: |-
-          docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src,readonly" ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet:latest > ./jbos-manifests.yaml
+          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet:latest > ./jbos-manifests.yaml
 
       - name: Create Release
         id: create_release
