@@ -12,6 +12,7 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_PREFIX: ${{ github.repository }}
+  VERSION: 0.0.
 
 jobs:
   images:
@@ -45,7 +46,7 @@ jobs:
         with:
           context: jsonnet
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{VERSION}}${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -53,3 +54,33 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+  manifests:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{github.run_number}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: |-
+          docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src,readonly" ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet:latest > ./jbos-manifests.yaml
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        with:
+          tag_name: ${{VERSION}}${{env.BUILD_NUMBER}}
+          release_name: Build ${{VERSION}}${{env.BUILD_NUMBER}}
+          draft: false
+          prerelease: true
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./jbos-manifests.yaml
+          asset_name: jbos-manifests.yaml
+          asset_content_type: text/yaml
