@@ -30,11 +30,14 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 1. `make` installed (Depending on your OS - start [here](https://www.gnu.org/software/make/))
 1. `docker` installed (To install wee [here](https://www.docker.com/get-started))
 1. `minikube` installed (To install minikube see [this](https://minikube.sigs.k8s.io/docs/start/))
+1. `NodeJS` installed (To install NodeJS see [this](https://nodejs.org))
+1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
 
 ### Environment Setup
 
 1. Clone repo: `git clone git@github.com:srfrnk/jabos.git` (or using HTTPS/GitHub CLI - see instructions [here](https://github.com/srfrnk/jabos))
-1. Cd into folder
+1. CD into folder
 1. Start a minikube cluster `minikube start`
-1. Run `make local-setup`
-1. Run `make local-build`
+1. Run `make setup` once
+1. Run `make build` after each code change
+1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601)

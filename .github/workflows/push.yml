@@ -11,7 +11,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository }}
+  IMAGE_PREFIX: ${{ github.repository }}-
   VERSION: 0.0.
 
 jobs:
@@ -42,9 +42,20 @@ jobs:
       - name: jsonnet
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet
         with:
           context: jsonnet
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: operator
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}operator
+        with:
+          context: operator
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -62,7 +73,9 @@ jobs:
       - uses: actions/checkout@v2
 
       - run: |-
-          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}-jsonnet:latest > ./jabos-manifests.yaml
+          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" \
+          ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet:latest -- \
+          --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' --tla-str 'buildNumber=${{env.VERSION}}${{env.BUILD_NUMBER}}' > ./jabos-manifests.yaml
 
       - name: Create Release
         id: create_release

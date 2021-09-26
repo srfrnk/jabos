@@ -10,4 +10,4 @@ RUN mkdir /build && chown 1000 /build
 
 USER 1000
 
-ENTRYPOINT [ "/bin/bash","-c","/build-manifests.sh" ]
+ENTRYPOINT [ "/bin/bash","-c","/build-manifests.sh $@" ]

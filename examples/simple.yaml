@@ -1,0 +1,8 @@
+apiVersion: jabos.io/v1
+kind: GitRepository
+metadata:
+  name: FirstRepo
+  namespace: SimpleExampleBuildEnv
+spec:
+  url: https://github.com/srfrnk/jabos.git
+  runtimeNamespace: SimpleExampleRuntimeEnv
