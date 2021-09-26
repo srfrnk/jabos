@@ -46,7 +46,7 @@ jobs:
         with:
           context: jsonnet
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{VERSION}}${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -70,8 +70,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         with:
-          tag_name: ${{VERSION}}${{env.BUILD_NUMBER}}
-          release_name: Build ${{VERSION}}${{env.BUILD_NUMBER}}
+          tag_name: ${{env.VERSION}}${{env.BUILD_NUMBER}}
+          release_name: Build ${{env.VERSION}}${{env.BUILD_NUMBER}}
           draft: false
           prerelease: true
       - name: Upload Release Asset
