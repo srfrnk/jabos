@@ -1,19 +1,28 @@
-function(imagePrefix, buildNumber) (
+function(imagePrefix, buildNumber, namespace) (
   local kube = import './kube.libsonnet';
-  kube.Deployment('operator', 1, [
-    kube.Container('operator', imagePrefix + 'operator:' + buildNumber) +
+  local globals = import './globals.libsonnet';
+  kube.Deployment(namespace=namespace, name='operator', replicas=1, containers=[
+    kube.Container(name='operator', image=imagePrefix + 'operator:' + buildNumber) +
     {
       env+: [
         {
           name: 'PORT',
-          value: '3000',
+          value: std.toString(globals.operatorPort),
+        },
+        {
+          name: 'IMAGE_PREFIX',
+          value: imagePrefix,
+        },
+        {
+          name: 'BUILD_NUMBER',
+          value: buildNumber,
         },
       ],
       ports+: [
         {
           name: 'web',
           protocol: 'TCP',
-          containerPort: 3000,
+          containerPort: globals.operatorPort,
         },
       ],
       livenessProbe+: {

@@ -1,47 +1,48 @@
 {
-  CRD(kind, singular, plural, group, shortNames):: ({
-                                                      apiVersion: 'apiextensions.k8s.io/v1',
-                                                      kind: 'CustomResourceDefinition',
-                                                      metadata: {
-                                                        name: plural + '.' + group,
-                                                      },
-                                                      spec: {
-                                                        group: group,
-                                                        scope: 'Namespaced',
-                                                        names: {
-                                                          plural: plural,
-                                                          singular: singular,
-                                                          kind: kind,
-                                                          shortNames: shortNames,
-                                                        },
-                                                      },
-                                                    }),
-  Deployment(name, replicas, containers):: ({
-                                              apiVersion: 'apps/v1',
-                                              kind: 'Deployment',
-                                              metadata: {
-                                                name: name,
-                                              },
-                                              spec: {
-                                                replicas: replicas,
-                                                selector: {
-                                                  matchLabels: {
-                                                    app: name,
-                                                  },
-                                                },
-                                                template: {
-                                                  metadata: {
-                                                    labels:
-                                                      {
-                                                        app: name,
-                                                      },
-                                                  },
-                                                  spec: {
-                                                    containers: containers,
-                                                  },
-                                                },
-                                              },
-                                            }),
+  CRD(kind, singular, plural, group, shortNames=[]):: ({
+                                                         apiVersion: 'apiextensions.k8s.io/v1',
+                                                         kind: 'CustomResourceDefinition',
+                                                         metadata: {
+                                                           name: plural + '.' + group,
+                                                         },
+                                                         spec: {
+                                                           group: group,
+                                                           scope: 'Namespaced',
+                                                           names: {
+                                                             plural: plural,
+                                                             singular: singular,
+                                                             kind: kind,
+                                                             shortNames: shortNames,
+                                                           },
+                                                         },
+                                                       }),
+  Deployment(namespace, name, replicas, containers=[]):: ({
+                                                            apiVersion: 'apps/v1',
+                                                            kind: 'Deployment',
+                                                            metadata: {
+                                                              name: name,
+                                                              namespace: namespace,
+                                                            },
+                                                            spec: {
+                                                              replicas: replicas,
+                                                              selector: {
+                                                                matchLabels: {
+                                                                  app: name,
+                                                                },
+                                                              },
+                                                              template: {
+                                                                metadata: {
+                                                                  labels:
+                                                                    {
+                                                                      app: name,
+                                                                    },
+                                                                },
+                                                                spec: {
+                                                                  containers: containers,
+                                                                },
+                                                              },
+                                                            },
+                                                          }),
   Container(name, image):: ({
                               name: name,
                               image: image,
@@ -61,4 +62,17 @@
                               },
                               imagePullPolicy: 'IfNotPresent',
                             }),
+  HeadlessService(namespace, name, selector, ports):: ({
+                                                         apiVersion: 'v1',
+                                                         kind: 'Service',
+                                                         metadata: {
+                                                           name: name,
+                                                           namespace: namespace,
+                                                         },
+                                                         spec: {
+                                                           clusterIP: 'None',
+                                                           selector: selector,
+                                                           ports: ports,
+                                                         },
+                                                       }),
 }

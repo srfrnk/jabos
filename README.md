@@ -40,4 +40,4 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 1. Start a minikube cluster `minikube start`
 1. Run `make setup` once
 1. Run `make build` after each code change
-1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601)
+1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601/app/discover)

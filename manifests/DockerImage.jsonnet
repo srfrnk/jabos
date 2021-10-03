@@ -1,6 +1,6 @@
 function(imagePrefix, buildNumber, namespace) (
   local kube = import './kube.libsonnet';
-  kube.CRD(kind='GitRepository', singular='git-repository', plural='git-repositories', group='jabos.io', shortNames=['repo']) + {
+  kube.CRD(kind='DockerImage', singular='docker-image', plural='docker-images', group='jabos.io', shortNames=['dock']) + {
     spec+: {
       versions: [
         {
@@ -14,13 +14,18 @@ function(imagePrefix, buildNumber, namespace) (
                 spec: {
                   type: 'object',
                   properties: {
-                    url: {
+                    gitRepository: {
                       type: 'string',
                     },
-                    branch: {
+                    contextPath: {
                       type: 'string',
+                      default: '.',
                     },
-                    runtimeNamespace: {
+                    dockerFile: {
+                      type: 'string',
+                      default: 'Dockerfile',
+                    },
+                    imageName: {
                       type: 'string',
                     },
                   },

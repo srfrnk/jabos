@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 ARGS="$@"
 for file in /src/*.jsonnet; do
   jsonnet ${file} ${ARGS}> /build/$(basename $file .jsonnet).json;

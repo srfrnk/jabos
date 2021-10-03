@@ -1,8 +1,29 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-example-build-env
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: simple-example-runtime-env
+---
 apiVersion: jabos.io/v1
 kind: GitRepository
 metadata:
-  name: FirstRepo
-  namespace: SimpleExampleBuildEnv
+  name: first-repo
+  namespace: simple-example-build-env
 spec:
   url: https://github.com/srfrnk/jabos.git
-  runtimeNamespace: SimpleExampleRuntimeEnv
+  runtimeNamespace: simple-example-runtime-env
+  branch: main
+---
+apiVersion: jabos.io/v1
+kind: DockerImage
+metadata:
+  name: first-image
+  namespace: simple-example-build-env
+spec:
+  gitRepository: first-repo
+  contextPath: operator
+  imageName: example-image

@@ -1,11 +1,16 @@
-FROM node:alpine
+FROM node:lts-alpine
+
+RUN apk add curl git
+
+WORKDIR /app
+COPY ./package*.json /app/
+RUN npm install
 
 COPY . /app
-WORKDIR /app
 
-RUN npm install
+RUN mkdir /tempGit && chown 1000 /tempGit
 
 USER 1000
 
-ENTRYPOINT ["npm"]
-CMD ["start"]
+ENTRYPOINT ["npx","nodemon"]
+CMD ["index.ts"]
