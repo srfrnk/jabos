@@ -26,4 +26,4 @@ metadata:
 spec:
   gitRepository: first-repo
   contextPath: operator
-  imageName: example-image
+  imageName: trow.trow:8000/example-image

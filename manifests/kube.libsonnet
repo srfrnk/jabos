@@ -16,33 +16,34 @@
                                                            },
                                                          },
                                                        }),
-  Deployment(namespace, name, replicas, containers=[]):: ({
-                                                            apiVersion: 'apps/v1',
-                                                            kind: 'Deployment',
-                                                            metadata: {
-                                                              name: name,
-                                                              namespace: namespace,
-                                                            },
-                                                            spec: {
-                                                              replicas: replicas,
-                                                              selector: {
-                                                                matchLabels: {
-                                                                  app: name,
-                                                                },
-                                                              },
-                                                              template: {
-                                                                metadata: {
-                                                                  labels:
-                                                                    {
-                                                                      app: name,
-                                                                    },
-                                                                },
-                                                                spec: {
-                                                                  containers: containers,
-                                                                },
-                                                              },
-                                                            },
-                                                          }),
+  Deployment(namespace, name, replicas, containers=[], volumes=[]):: ({
+                                                                        apiVersion: 'apps/v1',
+                                                                        kind: 'Deployment',
+                                                                        metadata: {
+                                                                          name: name,
+                                                                          namespace: namespace,
+                                                                        },
+                                                                        spec: {
+                                                                          replicas: replicas,
+                                                                          selector: {
+                                                                            matchLabels: {
+                                                                              app: name,
+                                                                            },
+                                                                          },
+                                                                          template: {
+                                                                            metadata: {
+                                                                              labels:
+                                                                                {
+                                                                                  app: name,
+                                                                                },
+                                                                            },
+                                                                            spec: {
+                                                                              containers: containers,
+                                                                              volumes: volumes,
+                                                                            },
+                                                                          },
+                                                                        },
+                                                                      }),
   Container(name, image):: ({
                               name: name,
                               image: image,

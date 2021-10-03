@@ -62,6 +62,10 @@ export default {
                       {
                         "name": "git-temp",
                         "mountPath": "/gitTemp",
+                      },
+                      {
+                        "name": "docker",
+                        "mountPath": "/kaniko/.docker",
                       }
                     ]
                   },
@@ -74,7 +78,11 @@ export default {
                     "args": [
                       `--context=dir:///gitTemp/${spec.contextPath}`,
                       `--dockerfile=${spec.dockerFile}`,
-                      `--destination=${spec.imageName}:${latestCommit}`
+                      `--destination=${spec.imageName}:${latestCommit}`,
+                      '--insecure',
+                      '--skip-tls-verify',
+                      '--skip-tls-verify-pull',
+                      '--insecure-pull'
                     ],
                     "imagePullPolicy": "IfNotPresent",
                     "name": "kaniko",
@@ -92,7 +100,11 @@ export default {
                       {
                         "name": "git-temp",
                         "mountPath": "/gitTemp",
-                      }
+                      },
+                      // {
+                      //   "name": "docker",
+                      //   "mountPath": "/kaniko/.docker",
+                      // }
                     ]
                   },
                 ],
@@ -100,7 +112,11 @@ export default {
                   {
                     "name": "git-temp",
                     "emptyDir": {}
-                  }
+                  },
+                  {
+                    "name": "docker",
+                    "emptyDir": {}
+                  },
                 ]
               }
             }

@@ -41,3 +41,8 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 1. Run `make setup` once
 1. Run `make build` after each code change
 1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601/app/discover)
+
+## Credits
+
+- Jabos uses [the kaniko project](https://github.com/GoogleContainerTools/kaniko) to build docker images inside the kubernetes cluster.
+- Jabos uses [trow](https://github.com/ContainerSolutions/trow) to build a docker image registry within the kubernetes cluster.

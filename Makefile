@@ -3,8 +3,11 @@ FORCE:
 setup: FORCE
 	- kubectl create namespace jabos
 	- kubectl create namespace efk
+	- kubectl create namespace trow
+	- helm repo add trow https://trow.io
+	- helm install -n trow --set-string trow.domain=trow.trow trow trow/trow
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
-	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/download/1.0.15/efk-manifests-1.0.15.yaml
+	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/download/1.0.16/efk-manifests-1.0.16.yaml
 	kubectl wait -n efk --for=condition=complete --timeout=300s job/initializer
 	@tput bold
 	@echo
