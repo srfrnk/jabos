@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace) (
+function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   local globals = import './globals.libsonnet';
   kube.HeadlessService(namespace=namespace, name='operator', selector={

@@ -1,15 +1,16 @@
 FORCE:
 
 setup: FORCE
+	minikube addons enable registry
+	minikube addons enable registry-aliases
+	kubectl apply -f manifests/minikube-registry.yaml
 	- kubectl create namespace jabos
 	- kubectl create namespace efk
-	- kubectl create namespace trow
-	- helm repo add trow https://trow.io
-	- helm install -n trow --set-string trow.domain=trow.trow trow trow/trow
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
 	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/download/1.0.16/efk-manifests-1.0.16.yaml
-	kubectl wait -n efk --for=condition=complete --timeout=300s job/initializer
+	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer
 	@tput bold
+	@tput setaf 2
 	@echo
 	@echo "Now you can run: kubectl port-forward -n efk svc/efk-kibana 5601"
 	@echo "Then you can view in browser: open http://localhost:5601/app/discover"
@@ -30,6 +31,7 @@ manifests: FORCE build_number
 		--tla-str 'imagePrefix=' \
 		--tla-str 'buildNumber=${BUILD_NUMBER}' \
 		--tla-str 'namespace=jabos' \
+		--tla-str 'debug=true' \
 		> build/manifests.yaml
 
 build: FORCE images manifests

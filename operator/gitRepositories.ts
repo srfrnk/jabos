@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import exec from './exec';
+import settings from './settings';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    console.log("gitRepositories sync req", JSON.stringify(request.body));
+    if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
 
     var repo = request.body.object.spec;
 
@@ -22,18 +23,18 @@ export default {
       },
     };
 
-    console.log("gitRepositories sync res", JSON.stringify(res));
+    if (settings.debug()) console.log("gitRepositories sync res", JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    console.log("gitRepositories customize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log("gitRepositories customize req", JSON.stringify(request.body));
 
     var res = {
       "relatedResources": []
     };
 
-    console.log("gitRepositories customize res", JSON.stringify(res));
+    if (settings.debug()) console.log("gitRepositories customize res", JSON.stringify(res));
     response.status(200).json(res);
   }
 }

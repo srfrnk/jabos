@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace) (
+function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   kube.CRD(kind='DockerImage', singular='docker-image', plural='docker-images', group='jabos.io', shortNames=['dock']) + {
     spec+: {
@@ -27,6 +27,15 @@ function(imagePrefix, buildNumber, namespace) (
                     },
                     imageName: {
                       type: 'string',
+                    },
+                    insecureRegistry: {
+                      type: 'boolean',
+                      default: true,
+                    },
+                    dockerConfig: {
+                      type: 'object',
+                      additionalProperties: true,
+                      default: {},
                     },
                   },
                 },

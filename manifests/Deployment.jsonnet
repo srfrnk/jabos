@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace) (
+function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   local globals = import './globals.libsonnet';
   kube.Deployment(
@@ -20,6 +20,10 @@ function(imagePrefix, buildNumber, namespace) (
           {
             name: 'BUILD_NUMBER',
             value: buildNumber,
+          },
+          {
+            name: 'DEBUG',
+            value: debug,
           },
         ],
         volumeMounts+: [

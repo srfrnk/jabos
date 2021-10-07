@@ -45,4 +45,3 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 ## Credits
 
 - Jabos uses [the kaniko project](https://github.com/GoogleContainerTools/kaniko) to build docker images inside the kubernetes cluster.
-- Jabos uses [trow](https://github.com/ContainerSolutions/trow) to build a docker image registry within the kubernetes cluster.

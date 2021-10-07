@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace) (
+function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   local metacontroller = import './metacontroller.libsonnet';
   metacontroller.DecoratorController(name='git-repositories-controller',

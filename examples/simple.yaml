@@ -26,4 +26,24 @@ metadata:
 spec:
   gitRepository: first-repo
   contextPath: operator
-  imageName: trow.trow:8000/example-image
+  imageName: registry.kube-system:80/example-image
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  labels:
+    app: test-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment
+  template:
+    metadata:
+      labels:
+        app: test-deployment
+    spec:
+      containers:
+        - name: test-deployment
+          image: registry.kube-system:80/example-image:fee06a712f1ed7b2f36381213b9ba3f30ba80b0c

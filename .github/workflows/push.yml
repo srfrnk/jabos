@@ -90,6 +90,7 @@ jobs:
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
             --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             --tla-str 'namespace=${{env.NAMESPACE}}' \
+            --tla-str 'debug=false' \
             > ./jabos-manifests.yaml
 
       - name: Create Release

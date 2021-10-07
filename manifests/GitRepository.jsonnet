@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace) (
+function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   kube.CRD(kind='GitRepository', singular='git-repository', plural='git-repositories', group='jabos.io', shortNames=['repo']) + {
     spec+: {

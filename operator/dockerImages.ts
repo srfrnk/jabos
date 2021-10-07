@@ -3,7 +3,7 @@ import settings from './settings';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    console.log("dockerImages sync req", JSON.stringify(request.body));
+    if (settings.debug()) console.log("dockerImages sync req", JSON.stringify(request.body));
 
     var name = request.body.object.metadata.name;
     var spec = request.body.object.spec;
@@ -45,7 +45,7 @@ export default {
                   {
                     "env": [],
                     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-                    "args": [repo.spec.url, repo.spec.branch],
+                    "args": [repo.spec.url, repo.spec.branch, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
                     "imagePullPolicy": "IfNotPresent",
                     "name": "docker-image-builder",
                     "resources": {
@@ -78,12 +78,13 @@ export default {
                     "args": [
                       `--context=dir:///gitTemp/${spec.contextPath}`,
                       `--dockerfile=${spec.dockerFile}`,
-                      `--destination=${spec.imageName}:${latestCommit}`,
+                      `--destination=${spec.imageName}:${latestCommit}`
+                    ].concat(spec.insecureRegistry ? [
                       '--insecure',
                       '--skip-tls-verify',
                       '--skip-tls-verify-pull',
                       '--insecure-pull'
-                    ],
+                    ] : []),
                     "imagePullPolicy": "IfNotPresent",
                     "name": "kaniko",
                     "resources": {
@@ -101,10 +102,10 @@ export default {
                         "name": "git-temp",
                         "mountPath": "/gitTemp",
                       },
-                      // {
-                      //   "name": "docker",
-                      //   "mountPath": "/kaniko/.docker",
-                      // }
+                      {
+                        "name": "docker",
+                        "mountPath": "/kaniko/.docker",
+                      }
                     ]
                   },
                 ],
@@ -125,12 +126,12 @@ export default {
       ]
     };
 
-    console.log("dockerImages sync res", JSON.stringify(res));
+    if (settings.debug()) console.log("dockerImages sync res", JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    console.log("dockerImages customize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log("dockerImages customize req", JSON.stringify(request.body));
 
     var res = {
       "relatedResources": [
@@ -145,7 +146,7 @@ export default {
       ]
     };
 
-    console.log("dockerImages customize res", JSON.stringify(res));
+    if (settings.debug()) console.log("dockerImages customize res", JSON.stringify(res));
     response.status(200).json(res);
   }
 }
