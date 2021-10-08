@@ -1,4 +1,3 @@
-# FROM gcr.io/kaniko-project/executor:latest
 FROM alpine
 
 RUN apk add curl git

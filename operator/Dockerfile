@@ -1,6 +1,6 @@
 FROM node:lts-alpine
 
-RUN apk add curl git docker
+RUN apk add curl git
 
 WORKDIR /app
 COPY ./package*.json /app/

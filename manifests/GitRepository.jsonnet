@@ -20,9 +20,6 @@ function(imagePrefix, buildNumber, namespace, debug) (
                     branch: {
                       type: 'string',
                     },
-                    runtimeNamespace: {
-                      type: 'string',
-                    },
                   },
                 },
               },

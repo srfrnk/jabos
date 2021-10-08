@@ -7,6 +7,7 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
 
+    var namespace = request.body.object.metadata.namespace;
     var repo = request.body.object.spec;
 
     var dir = fs.mkdtempSync('/tempGit/');
@@ -21,6 +22,51 @@ export default {
         "lastUpdate": new Date().toISOString(),
         "latestCommit": latestCommit,
       },
+      "attachments": [
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "Role",
+          "metadata": {
+            "name": "builder",
+            "namespace": namespace,
+          },
+          "rules": [
+            {
+              "apiGroups": ["jabos.io"],
+              "resources": ["docker-images", "jsonnet-manifests"],
+              "verbs": ["patch"],
+            }
+          ],
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "RoleBinding",
+          "metadata": {
+            "name": "builder",
+            "namespace": namespace,
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "Role",
+            "name": "builder",
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "namespace": namespace,
+              "name": "builder",
+            }
+          ],
+        },
+        {
+          "apiVersion": 'v1',
+          "kind": 'ServiceAccount',
+          "metadata": {
+            "name": "builder",
+            "namespace": namespace,
+          },
+        }
+      ],
     };
 
     if (settings.debug()) console.log("gitRepositories sync res", JSON.stringify(res));

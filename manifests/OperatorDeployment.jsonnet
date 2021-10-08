@@ -26,12 +26,6 @@ function(imagePrefix, buildNumber, namespace, debug) (
             value: debug,
           },
         ],
-        volumeMounts+: [
-          {
-            name: 'dockersock',
-            mountPath: '/var/run/docker.sock',
-          },
-        ],
         ports+: [
           {
             name: 'web',
@@ -60,14 +54,6 @@ function(imagePrefix, buildNumber, namespace, debug) (
             cpu: '500m',
             memory: '500Mi',
           },
-        },
-      },
-    ],
-    volumes=[
-      {
-        name: 'dockersock',
-        hostPath: {
-          path: '/var/run/docker.sock',
         },
       },
     ],

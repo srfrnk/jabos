@@ -1,18 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
+import builderJob from './builderJob';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("dockerImages sync req", JSON.stringify(request.body));
 
     var name = request.body.object.metadata.name;
+    var namespace = request.body.object.metadata.namespace;
     var spec = request.body.object.spec;
     var builtCommit = request.body.object.metadata.annotations.builtCommit;
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
     var latestCommit = repo.metadata.annotations.latestCommit;
 
     var jobName = `image-${name}-${latestCommit}`.substring(0, 62);
-    var podLabel = `${name}-${latestCommit}`.substring(0, 62);
 
     var res = {
       "annotations": {
@@ -20,109 +21,90 @@ export default {
         "latestCommit": latestCommit,
       },
       "attachments": latestCommit == builtCommit ? [] : [
-        {
-          "apiVersion": "batch/v1",
-          "kind": "Job",
-          "metadata": {
-            "name": jobName
-          },
-          "spec": {
-            "completions": 1,
-            "completionMode": "NonIndexed",
-            "backoffLimit": 100,
-            "activeDeadlineSeconds": 3600,
-            "parallelism": 1,
-            "template": {
-              "metadata": {
-                "name": jobName,
-                "labels": {
-                  "docker-image-build": podLabel
+        builderJob({
+          jobName,
+          imagePrefix: settings.imagePrefix(),
+          buildNumber: settings.buildNumber(),
+          commit: latestCommit,
+          name,
+          namespace,
+          type: "docker-images",
+          containers: [
+            {
+              "env": [],
+              "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
+              "args": [repo.spec.url, repo.spec.branch, latestCommit, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
+              "imagePullPolicy": "IfNotPresent",
+              "name": "docker-image-builder",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
                 }
               },
-              "spec": {
-                "restartPolicy": "OnFailure",
-                "initContainers": [
-                  {
-                    "env": [],
-                    "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-                    "args": [repo.spec.url, repo.spec.branch, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-                    "imagePullPolicy": "IfNotPresent",
-                    "name": "docker-image-builder",
-                    "resources": {
-                      "limits": {
-                        "cpu": "500m",
-                        "memory": "500Mi"
-                      },
-                      "requests": {
-                        "cpu": "100m",
-                        "memory": "100Mi"
-                      }
-                    },
-                    "volumeMounts": [
-                      {
-                        "name": "git-temp",
-                        "mountPath": "/gitTemp",
-                      },
-                      {
-                        "name": "docker",
-                        "mountPath": "/kaniko/.docker",
-                      }
-                    ]
-                  },
-                ],
-                "containers": [
-                  {
-                    "env": [
-                    ],
-                    "image": "gcr.io/kaniko-project/executor:latest",
-                    "args": [
-                      `--context=dir:///gitTemp/${spec.contextPath}`,
-                      `--dockerfile=${spec.dockerFile}`,
-                      `--destination=${spec.imageName}:${latestCommit}`
-                    ].concat(spec.insecureRegistry ? [
-                      '--insecure',
-                      '--skip-tls-verify',
-                      '--skip-tls-verify-pull',
-                      '--insecure-pull'
-                    ] : []),
-                    "imagePullPolicy": "IfNotPresent",
-                    "name": "kaniko",
-                    "resources": {
-                      "limits": {
-                        "cpu": "500m",
-                        "memory": "500Mi"
-                      },
-                      "requests": {
-                        "cpu": "100m",
-                        "memory": "100Mi"
-                      }
-                    },
-                    "volumeMounts": [
-                      {
-                        "name": "git-temp",
-                        "mountPath": "/gitTemp",
-                      },
-                      {
-                        "name": "docker",
-                        "mountPath": "/kaniko/.docker",
-                      }
-                    ]
-                  },
-                ],
-                "volumes": [
-                  {
-                    "name": "git-temp",
-                    "emptyDir": {}
-                  },
-                  {
-                    "name": "docker",
-                    "emptyDir": {}
-                  },
-                ]
-              }
+              "volumeMounts": [
+                {
+                  "name": "git-temp",
+                  "mountPath": "/gitTemp",
+                },
+                {
+                  "name": "docker",
+                  "mountPath": "/kaniko/.docker",
+                }
+              ]
+            },
+            {
+              "env": [],
+              "image": "gcr.io/kaniko-project/executor:latest",
+              "args": [
+                `--context=dir:///gitTemp/${spec.contextPath}`,
+                `--dockerfile=${spec.dockerFile}`,
+                `--destination=${spec.imageName}:${latestCommit}`
+              ].concat(spec.insecureRegistry ? [
+                '--insecure',
+                '--skip-tls-verify',
+                '--skip-tls-verify-pull',
+                '--insecure-pull'
+              ] : []),
+              "imagePullPolicy": "IfNotPresent",
+              "name": "kaniko",
+              "resources": {
+                "limits": {
+                  "cpu": "500m",
+                  "memory": "500Mi"
+                },
+                "requests": {
+                  "cpu": "100m",
+                  "memory": "100Mi"
+                }
+              },
+              "volumeMounts": [
+                {
+                  "name": "git-temp",
+                  "mountPath": "/gitTemp",
+                },
+                {
+                  "name": "docker",
+                  "mountPath": "/kaniko/.docker",
+                }
+              ]
             }
-          }
-        }
+          ],
+          volumes: [
+            {
+              "name": "git-temp",
+              "emptyDir": {}
+            },
+            {
+              "name": "docker",
+              "emptyDir": {}
+            },
+          ]
+        })
       ]
     };
 

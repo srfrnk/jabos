@@ -76,4 +76,49 @@
                                                            ports: ports,
                                                          },
                                                        }),
+  ServiceAccount(name, namespace):: ({
+                                       apiVersion: 'v1',
+                                       kind: 'ServiceAccount',
+                                       metadata: {
+                                         name: name,
+                                         namespace: namespace,
+                                       },
+                                     }),
+  Role(name, namespace, rules=[]):: ({
+                                       apiVersion: 'rbac.authorization.k8s.io/v1',
+                                       kind: 'Role',
+                                       metadata: {
+                                         name: name,
+                                         namespace: namespace,
+                                       },
+                                       rules: rules,
+                                     }),
+  PolicyRule(apiGroups=[], resources=[], verbs=[], resourceNames=[], nonResourceURLs=[]):: ({
+                                                                                              apiGroups: apiGroups,
+                                                                                              resources: resources,
+                                                                                              verbs: verbs,
+                                                                                              resourceNames: resourceNames,
+                                                                                              nonResourceURLs: nonResourceURLs,
+                                                                                            }),
+
+  RoleBinding(name, namespace, roleName, subjects=[]):: ({
+                                                           apiVersion: 'rbac.authorization.k8s.io/v1',
+                                                           kind: 'RoleBinding',
+                                                           metadata: {
+                                                             name: name,
+                                                             namespace: namespace,
+                                                           },
+                                                           roleRef: {
+                                                             apiGroup: 'rbac.authorization.k8s.io/v1',
+                                                             kind: 'Role',
+                                                             name: roleName,
+                                                           },
+                                                           subjects: subjects,
+                                                         }),
+  Subject(apiGroup, kind, name, namespace):: ({
+                                                apiGroup: apiGroup,
+                                                kind: kind,
+                                                namespace: namespace,
+                                                name: name,
+                                              }),
 }

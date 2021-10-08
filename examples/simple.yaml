@@ -15,7 +15,6 @@ metadata:
   namespace: simple-example-build-env
 spec:
   url: https://github.com/srfrnk/jabos.git
-  runtimeNamespace: simple-example-runtime-env
   branch: main
 ---
 apiVersion: jabos.io/v1
@@ -28,22 +27,12 @@ spec:
   contextPath: operator
   imageName: registry.kube-system:80/example-image
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: jabos.io/v1
+kind: JsonnetManifest
 metadata:
-  name: test-deployment
-  labels:
-    app: test-deployment
+  name: simple-jsonnet-manifest
+  namespace: simple-example-build-env
 spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-deployment
-  template:
-    metadata:
-      labels:
-        app: test-deployment
-    spec:
-      containers:
-        - name: test-deployment
-          image: registry.kube-system:80/example-image:fee06a712f1ed7b2f36381213b9ba3f30ba80b0c
+  gitRepository: first-repo
+  path: examples/simple
+  targetNamespace: simple-example-runtime-env
