@@ -6,12 +6,12 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("dockerImages sync req", JSON.stringify(request.body));
 
-    var name = request.body.object.metadata.name;
-    var namespace = request.body.object.metadata.namespace;
-    var spec = request.body.object.spec;
-    var builtCommit = request.body.object.metadata.annotations.builtCommit;
+    var name: string = request.body.object.metadata.name;
+    var namespace: string = request.body.object.metadata.namespace;
+    var spec: any = request.body.object.spec;
+    var builtCommit: string = request.body.object.metadata.annotations.builtCommit;
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
-    var latestCommit = repo.metadata.annotations.latestCommit;
+    var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var jobName = `image-${name}-${latestCommit}`.substring(0, 62);
 

@@ -7,6 +7,8 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                          apiVersion: 'jabos.io/v1',
                                          resource: 'git-repositories',
                                        },
+                                     ],
+                                     attachments=[
                                        {
                                          apiVersion: 'rbac.authorization.k8s.io/v1',
                                          resource: 'roles',
@@ -14,6 +16,10 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                        {
                                          apiVersion: 'rbac.authorization.k8s.io/v1',
                                          resource: 'rolebindings',
+                                       },
+                                       {
+                                         apiVersion: 'v1',
+                                         resource: 'serviceaccounts',
                                        },
                                      ],
                                      syncHook={

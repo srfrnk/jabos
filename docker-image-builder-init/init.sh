@@ -1,5 +1,7 @@
 #! /bin/sh
 
+set -e
+
 echo "Args: $@"
 
 URL=$1

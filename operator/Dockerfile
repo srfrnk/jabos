@@ -1,6 +1,7 @@
-FROM node:lts-alpine
+FROM node:lts
 
-RUN apk add curl git
+RUN apt-get update -y
+RUN apt-get install -yy curl git wget
 
 WORKDIR /app
 COPY ./package*.json /app/

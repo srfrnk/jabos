@@ -1,5 +1,7 @@
 #! /bin/sh
 
+set -e
+
 echo "Args: $@"
 
 TYPE=$1
@@ -13,8 +15,8 @@ SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
 TOKEN=$(cat ${SERVICEACCOUNT}/token)
 CACERT=${SERVICEACCOUNT}/ca.crt
 
-curl --fail-with-body --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/api
+curl --fail --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/api
 
-curl --fail-with-body --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -H "Content-Type:application/json-patch+json" \
+curl --fail --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -H "Content-Type:application/json-patch+json" \
   -X PATCH ${APISERVER}/apis/jabos.io/v1/namespaces/${NAMESPACE}/${TYPE}/${NAME} \
   -d "[{\"op\": \"replace\", \"path\": \"/metadata/annotations/builtCommit\", \"value\":\"${COMMIT}\"}]"

@@ -73,12 +73,12 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
-      - name: manifest-builder
+      - name: jsonnet-manifest-builder
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-builder
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet-manifest-builder
         with:
-          context: manifest-builder
+          context: jsonnet-manifest-builder
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -124,7 +124,8 @@ jobs:
           tag_name: ${{env.VERSION}}.${{env.BUILD_NUMBER}}
           release_name: Build ${{env.VERSION}}.${{env.BUILD_NUMBER}}
           draft: false
-          prerelease: true
+          prerelease: false
+
       - name: Upload Release Asset
         id: upload-release-asset
         uses: actions/upload-release-asset@v1

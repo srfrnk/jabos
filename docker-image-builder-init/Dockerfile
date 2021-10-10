@@ -1,6 +1,7 @@
-FROM alpine
+FROM ubuntu
 
-RUN apk add curl git
+RUN apt-get update -y
+RUN apt-get install -yy curl git wget
 
 COPY ./init.sh /
 

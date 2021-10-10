@@ -6,14 +6,15 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("jsonnetManifests sync req", JSON.stringify(request.body));
 
-    var name = request.body.object.metadata.name;
-    var namespace = request.body.object.metadata.namespace;
-    var spec = request.body.object.spec;
-    var builtCommit = request.body.object.metadata.annotations.builtCommit;
+    var name: string = request.body.object.metadata.name;
+    var namespace: string = request.body.object.metadata.namespace;
+    var spec: any = request.body.object.spec;
+    var builtCommit: string = request.body.object.metadata.annotations.builtCommit;
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
-    var latestCommit = repo.metadata.annotations.latestCommit;
+    var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var jobName = `manifest-${name}-${latestCommit}`.substring(0, 62);
+    var jsonnetArgs = `--tla-str "${spec.commitTLAKey}=${latestCommit}"`;
 
     var res = {
       "annotations": {
@@ -32,10 +33,10 @@ export default {
           containers: [
             {
               "env": [],
-              "image": `${settings.imagePrefix()}manifest-builder:${settings.buildNumber()}`,
-              "args": [repo.spec.url, repo.spec.branch, latestCommit],
+              "image": `${settings.imagePrefix()}jsonnet-manifest-builder:${settings.buildNumber()}`,
+              "args": [repo.spec.url, repo.spec.branch, latestCommit, spec.path, spec.targetNamespace, jsonnetArgs],
               "imagePullPolicy": "IfNotPresent",
-              "name": "manifest-builder",
+              "name": "jsonnet-manifest-builder",
               "resources": {
                 "limits": {
                   "cpu": "500m",

@@ -1,21 +1,22 @@
 {
-  CRD(kind, singular, plural, group, shortNames=[]):: ({
-                                                         apiVersion: 'apiextensions.k8s.io/v1',
-                                                         kind: 'CustomResourceDefinition',
-                                                         metadata: {
-                                                           name: plural + '.' + group,
-                                                         },
-                                                         spec: {
-                                                           group: group,
-                                                           scope: 'Namespaced',
-                                                           names: {
-                                                             plural: plural,
-                                                             singular: singular,
-                                                             kind: kind,
-                                                             shortNames: shortNames,
-                                                           },
-                                                         },
-                                                       }),
+  CRD(isCluserScoped, kind, singular, plural, group, shortNames=[], versions=[]):: ({
+                                                                                      apiVersion: 'apiextensions.k8s.io/v1',
+                                                                                      kind: 'CustomResourceDefinition',
+                                                                                      metadata: {
+                                                                                        name: plural + '.' + group,
+                                                                                      },
+                                                                                      spec: {
+                                                                                        group: group,
+                                                                                        scope: if isCluserScoped then 'Cluster' else 'Namespaced',
+                                                                                        versions: versions,
+                                                                                        names: {
+                                                                                          plural: plural,
+                                                                                          singular: singular,
+                                                                                          kind: kind,
+                                                                                          shortNames: shortNames,
+                                                                                        },
+                                                                                      },
+                                                                                    }),
   Deployment(namespace, name, replicas, containers=[], volumes=[]):: ({
                                                                         apiVersion: 'apps/v1',
                                                                         kind: 'Deployment',

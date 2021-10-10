@@ -1,6 +1,7 @@
-FROM alpine
+FROM ubuntu
 
-RUN apk add curl git
+RUN apt-get update -y
+RUN apt-get install -yy curl git wget
 
 RUN \
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\

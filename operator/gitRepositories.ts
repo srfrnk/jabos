@@ -7,8 +7,8 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
 
-    var namespace = request.body.object.metadata.namespace;
-    var repo = request.body.object.spec;
+    var namespace: string = request.body.object.metadata.namespace;
+    var repo: any = request.body.object.spec;
 
     var dir = fs.mkdtempSync('/tempGit/');
     await exec(`git clone --bare --single-branch --depth 1 --branch ${repo.branch} ${repo.url} ${dir}`);

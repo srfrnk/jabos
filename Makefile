@@ -6,8 +6,10 @@ setup: FORCE
 	kubectl apply -f manifests/minikube-registry.yaml
 	- kubectl create namespace jabos
 	- kubectl create namespace efk
+	- kubectl create namespace example-build-env
+	- kubectl create namespace example-runtime-env
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
-	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/download/1.0.17/efk-manifests-1.0.17.yaml
+	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/latest/download/efk-manifests.yaml
 	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer
 	@tput bold
 	@tput setaf 2
@@ -24,7 +26,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build ./jsonnet -t jsonnet:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./operator -t operator:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./manifest-builder -t manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build ./jsonnet-manifest-builder -t jsonnet-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./post-builder -t post-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
@@ -38,3 +40,6 @@ manifests: FORCE build_number
 
 build: FORCE images manifests
 	kubectl apply -n jabos -f build/manifests.yaml
+
+deploy-example-simple: FORCE
+	kubectl apply -f https://raw.githubusercontent.com/srfrnk/jabos-examples/main/simple-build.yaml
