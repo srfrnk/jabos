@@ -51,6 +51,17 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
+      - name: kubectl
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kubectl
+        with:
+          context: kubectl
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
       - name: operator
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         env:
@@ -90,6 +101,19 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}post-builder
         with:
           context: post-builder
+          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}},IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: manifest-deployer
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-deployer
+        with:
+          context: manifest-deployer
+          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}},IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -99,6 +123,7 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+
   manifests:
     runs-on: ubuntu-latest
     env:

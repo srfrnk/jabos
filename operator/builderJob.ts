@@ -1,6 +1,13 @@
 export default function (options: {
-  jobName: string, imagePrefix: string, buildNumber: string, type: string, name: string,
-  namespace: string, commit: string, containers: any[], volumes: any[]
+  jobName: string,
+  imagePrefix: string,
+  buildNumber: string,
+  type: string,
+  name: string,
+  namespace: string,
+  commit: string,
+  containers: any[],
+  volumes: any[]
 }) {
   return {
     "apiVersion": "batch/v1",

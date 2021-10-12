@@ -1,14 +1,8 @@
-FROM ubuntu
+ARG IMAGE_PREFIX
+ARG IMAGE_VERSION
 
-RUN apt-get update -y
-RUN apt-get install -yy curl git wget
-
-RUN \
-  curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
-  chmod u+x kubectl && mv kubectl /bin/kubectl
+FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
 
 COPY ./post-build.sh /
-
-USER 1000
 
 ENTRYPOINT ["/post-build.sh"]

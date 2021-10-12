@@ -8,8 +8,7 @@ URL=$1
 BRANCH=$2
 COMMIT=$3
 SRC_PATH=$4
-TARGET_NAMESPACE=$5
-JSONNET_ARGS=$6
+JSONNET_ARGS=$5
 
 git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp
 cd /gitTemp
@@ -22,4 +21,8 @@ for file in $(find ${ROOT_PATH} -name '*.jsonnet'); do
   bash -c "jsonnet ${file} ${JSONNET_ARGS} > /build/${outfile}.json"
 done
 
-yq e -I 2 -P '(. | select(has(0))| .[] | splitDoc) // .' $(find /build -name '*.json')
+yq e -I 2 -P '(. | select(has(0))| .[] | splitDoc) // .' $(find /build -name '*.json') > /manifests/manifests.yaml
+
+# TODO: upload the manifests yaml to a package/version manager for auditing
+
+sleep 5 # Just to allow fluentd gathering logs before termination

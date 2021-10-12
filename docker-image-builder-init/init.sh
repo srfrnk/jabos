@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 set -e
 
@@ -14,4 +14,5 @@ cd /gitTemp
 git checkout ${COMMIT}
 
 echo -n "${DOCKER_CONFIG}" | base64 -d > /kaniko/.docker/config.json
-cat /kaniko/.docker/config.json
+
+sleep 5 # Just to allow fluentd gathering logs before termination

@@ -1,6 +1,7 @@
-#! /bin/sh
+#! /bin/bash
 
 set -e
+trap "sleep 5" EXIT # Just to allow fluentd gathering logs before termination
 
 echo "Args: $@"
 
@@ -9,14 +10,16 @@ NAME=$2
 NAMESPACE=$3
 COMMIT=$4
 
-APISERVER=https://kubernetes.default.svc
-SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
-# NAMESPACE=$(cat ${SERVICEACCOUNT}/namespace)
-TOKEN=$(cat ${SERVICEACCOUNT}/token)
-CACERT=${SERVICEACCOUNT}/ca.crt
+source /setup.sh
 
-curl --fail --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -X GET ${APISERVER}/api
+kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} \
+  apply view-last-applied -n ${NAMESPACE} ${TYPE}.jabos.io ${NAME} > /tmp/current.yaml
+echo "current:"
+cat /tmp/current.yaml
 
-curl --fail --cacert ${CACERT} --header "Authorization: Bearer ${TOKEN}" -H "Content-Type:application/json-patch+json" \
-  -X PATCH ${APISERVER}/apis/jabos.io/v1/namespaces/${NAMESPACE}/${TYPE}/${NAME} \
-  -d "[{\"op\": \"replace\", \"path\": \"/metadata/annotations/builtCommit\", \"value\":\"${COMMIT}\"}]"
+yq e -P ".metadata.annotations.builtCommit=\"${COMMIT}\"" /tmp/current.yaml > /tmp/updated.yaml
+echo ""
+echo "updated:"
+cat /tmp/updated.yaml
+
+kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} apply -f /tmp/updated.yaml

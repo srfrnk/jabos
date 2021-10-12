@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
-import builderJob from './builderJob';
+import manifestBuilderJob from './manifestBuilderJob';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -13,7 +13,6 @@ export default {
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
-    var jobName = `manifest-${name}-${latestCommit}`.substring(0, 62);
     var jsonnetArgs = `--tla-str "${spec.commitTLAKey}=${latestCommit}"`;
 
     var res = {
@@ -22,19 +21,19 @@ export default {
         "latestCommit": latestCommit,
       },
       "attachments": latestCommit == builtCommit ? [] : [
-        builderJob({
-          jobName,
+        manifestBuilderJob({
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
           commit: latestCommit,
           name,
           namespace,
+          targetNamespace: spec.targetNamespace,
           type: "jsonnet-manifests",
           containers: [
             {
               "env": [],
               "image": `${settings.imagePrefix()}jsonnet-manifest-builder:${settings.buildNumber()}`,
-              "args": [repo.spec.url, repo.spec.branch, latestCommit, spec.path, spec.targetNamespace, jsonnetArgs],
+              "args": [repo.spec.url, repo.spec.branch, latestCommit, spec.path, jsonnetArgs],
               "imagePullPolicy": "IfNotPresent",
               "name": "jsonnet-manifest-builder",
               "resources": {
@@ -48,8 +47,7 @@ export default {
                 }
               },
             }
-          ],
-          volumes: []
+          ]
         })
       ]
     };
