@@ -47,7 +47,7 @@ jobs:
         with:
           context: jsonnet
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -58,7 +58,7 @@ jobs:
         with:
           context: kubectl
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -69,7 +69,7 @@ jobs:
         with:
           context: operator
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -80,7 +80,7 @@ jobs:
         with:
           context: docker-image-builder-init
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -91,7 +91,7 @@ jobs:
         with:
           context: jsonnet-manifest-builder
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
@@ -101,7 +101,7 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}post-builder
         with:
           context: post-builder
-          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}},IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}} , IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -113,9 +113,11 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-deployer
         with:
           context: manifest-deployer
-          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}},IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          build-args:
+            - IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            - IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
