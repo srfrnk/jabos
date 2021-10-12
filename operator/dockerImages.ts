@@ -19,6 +19,7 @@ export default {
       "annotations": {
         "lastUpdate": new Date().toISOString(),
         "latestCommit": latestCommit,
+        "builtCommit": builtCommit
       },
       "attachments": latestCommit == builtCommit ? [] : [
         builderJob({

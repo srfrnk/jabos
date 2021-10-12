@@ -101,7 +101,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}post-builder
         with:
           context: post-builder
-          build-args: IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}} , IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -113,9 +115,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-deployer
         with:
           context: manifest-deployer
-          build-args:
-            - IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            - IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
