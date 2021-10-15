@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
+import { k8sName } from './misc';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -9,15 +10,14 @@ export default {
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
-    var builtCommit: string = request.body.object.metadata.annotations.builtCommit;
+    var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
-    var jobName = `image-${name}-${latestCommit}`.substring(0, 62);
+    var jobName = k8sName(`image-${name}`, latestCommit);
 
     var res = {
       "annotations": {
-        "lastUpdate": new Date().toISOString(),
         "latestCommit": latestCommit,
         "builtCommit": builtCommit
       },

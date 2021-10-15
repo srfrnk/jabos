@@ -1,5 +1,6 @@
 import builderJob from './builderJob';
 import settings from './settings';
+import { k8sName } from './misc';
 
 export default function (options: {
   imagePrefix: string,
@@ -11,7 +12,7 @@ export default function (options: {
   commit: string,
   containers: any[]
 }) {
-  var jobName = `manifest-${options.name}-${options.commit}`.substring(0, 62);
+  var jobName = k8sName(`manifest-${options.name}`, options.commit);
   options.containers.forEach(container => {
     container.volumeMounts = [
       {

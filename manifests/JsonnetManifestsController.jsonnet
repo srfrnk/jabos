@@ -16,6 +16,14 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                            method: 'InPlace',
                                          },
                                        },
+                                       {
+                                         apiVersion: 'rbac.authorization.k8s.io/v1',
+                                         resource: 'roles',
+                                       },
+                                       {
+                                         apiVersion: 'rbac.authorization.k8s.io/v1',
+                                         resource: 'rolebindings',
+                                       },
                                      ],
                                      syncHook={
                                        webhook: {

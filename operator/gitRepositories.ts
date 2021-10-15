@@ -19,7 +19,6 @@ export default {
 
     var res = {
       "annotations": {
-        "lastUpdate": new Date().toISOString(),
         "latestCommit": latestCommit,
       },
       "attachments": [
@@ -34,7 +33,7 @@ export default {
             {
               "apiGroups": ["jabos.io"],
               "resources": ["docker-images", "jsonnet-manifests"],
-              "verbs": ["patch"],
+              "verbs": ["get", "list", "watch", "patch"],
             }
           ],
         },

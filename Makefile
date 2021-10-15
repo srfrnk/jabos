@@ -6,8 +6,7 @@ setup: FORCE
 	kubectl apply -f manifests/minikube-registry.yaml
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
-	- kubectl create --save-config namespace example-build-env
-	- kubectl create --save-config namespace example-runtime-env
+	- kubectl create --save-config namespace example-env
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
 	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/latest/download/efk-manifests.yaml
 	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer

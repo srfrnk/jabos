@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import manifestBuilderJob from './manifestBuilderJob';
+import manifestBuilderRole from './manifestBuilderRole';
+import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -9,7 +11,7 @@ export default {
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
-    var builtCommit: string = request.body.object.metadata.annotations.builtCommit;
+    var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
     var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
@@ -17,10 +19,11 @@ export default {
 
     var res = {
       "annotations": {
-        "lastUpdate": new Date().toISOString(),
         "latestCommit": latestCommit,
       },
       "attachments": latestCommit == builtCommit ? [] : [
+        manifestBuilderRole({ namespace, targetNamespace: spec.targetNamespace }),
+        manifestBuilderRoleBinding({ namespace, targetNamespace: spec.targetNamespace }),
         manifestBuilderJob({
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
