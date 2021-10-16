@@ -163,5 +163,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./jabos-manifests.yaml
-          asset_name: jabos-manifests-${{env.VERSION}}.${{env.BUILD_NUMBER}}.yaml
+          asset_name: jabos-manifests.yaml
           asset_content_type: text/yaml
