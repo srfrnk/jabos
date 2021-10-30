@@ -17,34 +17,35 @@
                                                                                         },
                                                                                       },
                                                                                     }),
-  Deployment(namespace, name, replicas, containers=[], volumes=[]):: ({
-                                                                        apiVersion: 'apps/v1',
-                                                                        kind: 'Deployment',
-                                                                        metadata: {
-                                                                          name: name,
-                                                                          namespace: namespace,
-                                                                        },
-                                                                        spec: {
-                                                                          replicas: replicas,
-                                                                          selector: {
-                                                                            matchLabels: {
-                                                                              app: name,
-                                                                            },
-                                                                          },
-                                                                          template: {
-                                                                            metadata: {
-                                                                              labels:
-                                                                                {
-                                                                                  app: name,
-                                                                                },
-                                                                            },
-                                                                            spec: {
-                                                                              containers: containers,
-                                                                              volumes: volumes,
-                                                                            },
-                                                                          },
-                                                                        },
-                                                                      }),
+  Deployment(namespace, name, replicas, serviceAccountName=null, containers=[], volumes=[]):: ({
+                                                                                                 apiVersion: 'apps/v1',
+                                                                                                 kind: 'Deployment',
+                                                                                                 metadata: {
+                                                                                                   name: name,
+                                                                                                   namespace: namespace,
+                                                                                                 },
+                                                                                                 spec: {
+                                                                                                   replicas: replicas,
+                                                                                                   selector: {
+                                                                                                     matchLabels: {
+                                                                                                       app: name,
+                                                                                                     },
+                                                                                                   },
+                                                                                                   template: {
+                                                                                                     metadata: {
+                                                                                                       labels:
+                                                                                                         {
+                                                                                                           app: name,
+                                                                                                         },
+                                                                                                     },
+                                                                                                     spec: {
+                                                                                                       [if serviceAccountName != null then 'serviceAccountName' else null]: serviceAccountName,
+                                                                                                       containers: containers,
+                                                                                                       volumes: volumes,
+                                                                                                     },
+                                                                                                   },
+                                                                                                 },
+                                                                                               }),
   Container(name, image):: ({
                               name: name,
                               image: image,
@@ -110,7 +111,7 @@
                                                              namespace: namespace,
                                                            },
                                                            roleRef: {
-                                                             apiGroup: 'rbac.authorization.k8s.io/v1',
+                                                             apiGroup: 'rbac.authorization.k8s.io',
                                                              kind: 'Role',
                                                              name: roleName,
                                                            },

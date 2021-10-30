@@ -1,3 +1,6 @@
+ARG IMAGE_PREFIX
+ARG IMAGE_VERSION
+
 FROM ubuntu
 
 RUN apt-get update -y
@@ -12,7 +15,7 @@ RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 
 RUN useradd -ms /bin/bash user
 
-COPY ./setup.sh /
+COPY ./kubectl-setup.sh /
 COPY ./kube-config.yaml /home/user/.kube/config
 
 RUN chown -R user /home/user

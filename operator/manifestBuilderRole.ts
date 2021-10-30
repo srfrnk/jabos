@@ -1,4 +1,5 @@
 export default function (options: {
+  name: string,
   namespace: string,
   targetNamespace: string,
 }) {
@@ -6,7 +7,7 @@ export default function (options: {
     "apiVersion": "rbac.authorization.k8s.io/v1",
     "kind": "Role",
     "metadata": {
-      "name": "deployer",
+      "name": `deployer-${options.name}`,
       "namespace": options.targetNamespace,
     },
     "rules": [

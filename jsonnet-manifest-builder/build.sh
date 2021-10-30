@@ -10,6 +10,11 @@ COMMIT=$3
 SRC_PATH=$4
 JSONNET_ARGS=$5
 
+if [ -n "${SSH_KEY}" ]; then
+  eval "$(ssh-agent -s)" >&2
+  echo "${SSH_PASSPHRASE}" | setsid -w ssh-add <(printf -- "${SSH_KEY}") >&2
+fi
+
 git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp
 cd /gitTemp
 git checkout ${COMMIT}

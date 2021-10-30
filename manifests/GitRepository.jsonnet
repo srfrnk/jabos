@@ -24,6 +24,22 @@ function(imagePrefix, buildNumber, namespace, debug) (
                          branch: {
                            type: 'string',
                          },
+                         ssh: {
+                           type: 'object',
+                           properties: {
+                             secret: {
+                               type: 'string',
+                             },
+                             passphrase: {
+                               type: 'string',
+                               default: 'passphrase',
+                             },
+                             key: {
+                               type: 'string',
+                               default: 'key',
+                             },
+                           },
+                         },
                        },
                      },
                    },

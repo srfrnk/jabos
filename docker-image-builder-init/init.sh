@@ -9,6 +9,11 @@ BRANCH=$2
 COMMIT=$3
 DOCKER_CONFIG=$4
 
+if [ -n "${SSH_KEY}" ]; then
+  eval "$(ssh-agent -s)" >&2
+  echo "${SSH_PASSPHRASE}" | setsid -w ssh-add <(printf -- "${SSH_KEY}") >&2
+fi
+
 git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp
 cd /gitTemp
 git checkout ${COMMIT}

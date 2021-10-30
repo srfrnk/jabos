@@ -1,4 +1,6 @@
 export default function (options: {
+  name: string,
+  gitRepositoryName: string,
   namespace: string,
   targetNamespace: string,
 }) {
@@ -6,19 +8,19 @@ export default function (options: {
     "apiVersion": "rbac.authorization.k8s.io/v1",
     "kind": "RoleBinding",
     "metadata": {
-      "name": "deployer",
+      "name": `deployer-${options.name}`,
       "namespace": options.targetNamespace,
     },
     "roleRef": {
       "apiGroup": "rbac.authorization.k8s.io",
       "kind": "Role",
-      "name": "deployer",
+      "name": `deployer-${options.name}`,
     },
     "subjects": [
       {
         "kind": "ServiceAccount",
         "namespace": options.namespace,
-        "name": "builder",
+        "name": `builder-${options.gitRepositoryName}`,
       }
     ],
   };

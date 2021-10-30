@@ -18,25 +18,54 @@ export default {
     var jsonnetArgs = `--tla-str "${spec.commitTLAKey}=${latestCommit}"`;
 
     var res = {
-      "annotations": {
+      "annotations": !latestCommit ? {} : {
         "latestCommit": latestCommit,
       },
-      "attachments": latestCommit == builtCommit ? [] : [
-        manifestBuilderRole({ namespace, targetNamespace: spec.targetNamespace }),
-        manifestBuilderRoleBinding({ namespace, targetNamespace: spec.targetNamespace }),
+      "attachments": (!latestCommit || latestCommit === builtCommit) ? [] : [
+        manifestBuilderRole({
+          name,
+          namespace,
+          targetNamespace: spec.targetNamespace
+        }),
+        manifestBuilderRoleBinding({
+          name,
+          gitRepositoryName: spec.gitRepository,
+          namespace,
+          targetNamespace: spec.targetNamespace
+        }),
         manifestBuilderJob({
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
           commit: latestCommit,
           name,
           namespace,
+          gitRepository: spec.gitRepository,
           targetNamespace: spec.targetNamespace,
           type: "jsonnet-manifests",
           containers: [
             {
-              "env": [],
               "image": `${settings.imagePrefix()}jsonnet-manifest-builder:${settings.buildNumber()}`,
               "args": [repo.spec.url, repo.spec.branch, latestCommit, spec.path, jsonnetArgs],
+              "env": !repo.spec.ssh ? [] : [
+                {
+                  "name": "SSH_PASSPHRASE",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": repo.spec.ssh.secret,
+                      "key": repo.spec.ssh.passphrase
+                    }
+                  }
+                },
+                {
+                  "name": "SSH_KEY",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": repo.spec.ssh.secret,
+                      "key": repo.spec.ssh.key
+                    }
+                  }
+                }
+              ],
               "imagePullPolicy": "IfNotPresent",
               "name": "jsonnet-manifest-builder",
               "resources": {

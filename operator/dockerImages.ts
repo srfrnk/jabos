@@ -17,11 +17,10 @@ export default {
     var jobName = k8sName(`image-${name}`, latestCommit);
 
     var res = {
-      "annotations": {
-        "latestCommit": latestCommit,
-        "builtCommit": builtCommit
+      "annotations": !latestCommit ? {} : {
+        "latestCommit": latestCommit
       },
-      "attachments": latestCommit == builtCommit ? [] : [
+      "attachments": (!latestCommit || latestCommit === builtCommit) ? [] : [
         builderJob({
           jobName,
           imagePrefix: settings.imagePrefix(),
@@ -29,12 +28,32 @@ export default {
           commit: latestCommit,
           name,
           namespace,
+          serviceAccountName: `builder-${spec.gitRepository}`,
           type: "docker-images",
           containers: [
             {
-              "env": [],
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
               "args": [repo.spec.url, repo.spec.branch, latestCommit, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
+              "env": !repo.spec.ssh ? [] : [
+                {
+                  "name": "SSH_PASSPHRASE",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": repo.spec.ssh.secret,
+                      "key": repo.spec.ssh.passphrase
+                    }
+                  }
+                },
+                {
+                  "name": "SSH_KEY",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": repo.spec.ssh.secret,
+                      "key": repo.spec.ssh.key
+                    }
+                  }
+                }
+              ],
               "imagePullPolicy": "IfNotPresent",
               "name": "docker-image-builder",
               "resources": {

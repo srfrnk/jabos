@@ -21,6 +21,13 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                          apiVersion: 'v1',
                                          resource: 'serviceaccounts',
                                        },
+                                       {
+                                         apiVersion: 'batch/v1',
+                                         resource: 'jobs',
+                                         updateStrategy: {
+                                           method: 'InPlace',
+                                         },
+                                       },
                                      ],
                                      syncHook={
                                        webhook: {

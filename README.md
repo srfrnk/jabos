@@ -3,6 +3,22 @@
 **Just Another Boring Ops System**
 Jabos attempts to be a fully automated K8s GitOps framework.
 
+## TL;DR - What does that mean?
+
+### What you need to do?
+
+1. Installing Jabos into your K8s cluster using
+1. Setting up the K8s objects for your
+   - Git Repository
+   - Docker images
+   - Manifest folder
+
+### What happens next?
+
+1. Any new commits would be picked up from Git automatically
+1. Docker images would get build from new commits and pushed automatically
+1. New manifest versions would be deployed automatically
+
 ## Goals
 
 - Automate all steps to deploy from Git repositories into a K8s cluster
@@ -43,6 +59,10 @@ Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-exte
 - `spec`
   - `url`: The URL to use to access the git repository.
   - `branch`: The name of the branch to watch and pull from.
+  - `ssh`: credentials for ssh access
+    - `secret`: name of secret (in the same namespace) to use
+    - `passphrase`: name of the key inside the secret to use for ssh passphrase. Default: "passphrase"
+    - `key`: name of the key inside the secret to use for ssh key. Default: "key"
 
 E.g.:
 
@@ -158,8 +178,32 @@ function(latestCommitId) {
     },
   },
 }
-
 ```
+
+## Github Repository Authentication
+
+### Using SSH Keys
+
+1. [Create an SSH key and add it to GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) - **Optionally skip the "adding it to the ssh-agent" section.**
+1. Create a secret with the passphrase and key created in the previous step. (i.e. `kubectl create secret generic -n example-env first-repo-private --from-file=passphrase=./build/passphrase --from-file=key=./build/key`)
+1. Deploy a `GitRepository` with the `ssh` configuration to point to the secret created in the previous step. E.g.:
+
+```yaml
+apiVersion: jabos.io/v1
+kind: GitRepository
+metadata:
+  name: first-repo-private
+  namespace: example-env
+spec:
+  url: git@github.com:srfrnk/jabos-examples-private.git
+  branch: main
+  ssh:
+    secret: first-repo-private
+```
+
+### Using Deploy Keys (**Not yet supported**)
+
+1. Follow instruction [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
 
 ## Development
 
@@ -179,6 +223,11 @@ function(latestCommitId) {
 1. Run `make setup` once
 1. Run `make build` after each code change
 1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601/app/discover)
+1. To deploy examples
+   1. Locally clone [jabos-examples-private repo](https://github.com/srfrnk/jabos-examples-private)
+   1. Follow instructions from the README file in the cloned folder
+   1. Back within the `jabos` folder (from second step) run `make deploy-examples`
+   1. The examples would be deployed into namespace `example-env`
 
 ## Roadmap
 

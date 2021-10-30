@@ -4,6 +4,7 @@ export default function (options: {
   buildNumber: string,
   type: string,
   name: string,
+  serviceAccountName: string,
   namespace: string,
   commit: string,
   containers: any[],
@@ -29,7 +30,7 @@ export default function (options: {
           }
         },
         "spec": {
-          "serviceAccountName": "builder",
+          "serviceAccountName": options.serviceAccountName,
           "restartPolicy": "OnFailure",
           "initContainers": options.containers,
           "containers": [

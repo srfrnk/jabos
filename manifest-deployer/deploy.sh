@@ -6,10 +6,7 @@ echo "Args: $@"
 
 NAMESPACE=$1
 
-APISERVER=https://kubernetes.default.svc
-SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
-TOKEN=$(cat ${SERVICEACCOUNT}/token)
-CACERT=${SERVICEACCOUNT}/ca.crt
+source /kubectl-setup.sh
 
 kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} \
   -n ${NAMESPACE} apply -f /manifests/manifests.yaml

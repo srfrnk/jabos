@@ -1,38 +1,37 @@
 import { Request, Response, NextFunction } from 'express';
-import fs from 'fs';
-import exec from './exec';
 import settings from './settings';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
 
+    var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
     var repo: any = request.body.object.spec;
 
-    var dir = fs.mkdtempSync('/tempGit/');
-    await exec(`git clone --bare --single-branch --depth 1 --branch ${repo.branch} ${repo.url} ${dir}`);
-    var { stdout: latestCommit } = await exec('git log -n 1 --pretty=format:"%H" | head -n 1', {
-      cwd: dir
-    });
-    fs.rmdirSync(dir, { recursive: true });
+    var jobName = `git-repository-updater-${name}-${Math.floor(Math.random() * 10e6)}i`;
+
+    var jobs = Object.keys(request.body.attachments['Job.batch/v1']);
+    if (jobs.length > 0) {
+      var job = request.body.attachments['Job.batch/v1'][jobs[0]];
+      if (job.status.succeeded !== 1) {
+        jobName = job.metadata.name;
+      }
+    }
 
     var res = {
-      "annotations": {
-        "latestCommit": latestCommit,
-      },
       "attachments": [
         {
           "apiVersion": "rbac.authorization.k8s.io/v1",
           "kind": "Role",
           "metadata": {
-            "name": "builder",
+            "name": `builder-${name}`,
             "namespace": namespace,
           },
           "rules": [
             {
               "apiGroups": ["jabos.io"],
-              "resources": ["docker-images", "jsonnet-manifests"],
+              "resources": ["docker-images", "jsonnet-manifests", "git-repositories"],
               "verbs": ["get", "list", "watch", "patch"],
             }
           ],
@@ -41,19 +40,19 @@ export default {
           "apiVersion": "rbac.authorization.k8s.io/v1",
           "kind": "RoleBinding",
           "metadata": {
-            "name": "builder",
+            "name": `builder-${name}`,
             "namespace": namespace,
           },
           "roleRef": {
             "apiGroup": "rbac.authorization.k8s.io",
             "kind": "Role",
-            "name": "builder",
+            "name": `builder-${name}`,
           },
           "subjects": [
             {
               "kind": "ServiceAccount",
               "namespace": namespace,
-              "name": "builder",
+              "name": `builder-${name}`,
             }
           ],
         },
@@ -61,9 +60,73 @@ export default {
           "apiVersion": 'v1',
           "kind": 'ServiceAccount',
           "metadata": {
-            "name": "builder",
+            "name": `builder-${name}`,
             "namespace": namespace,
           },
+        },
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "metadata": {
+            "name": jobName
+          },
+          "spec": {
+            "completions": 1,
+            "completionMode": "NonIndexed",
+            "backoffLimit": 100,
+            "activeDeadlineSeconds": 3600,
+            "parallelism": 1,
+            "template": {
+              "metadata": {
+                "name": jobName,
+                "labels": {
+                  "job": jobName
+                }
+              },
+              "spec": {
+                "serviceAccountName": `builder-${name}`,
+                "restartPolicy": "OnFailure",
+                "containers": [
+                  {
+                    "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
+                    "args": [repo.url, repo.branch, namespace, name],
+                    "env": !repo.ssh ? [] : [
+                      {
+                        "name": "SSH_PASSPHRASE",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": repo.ssh.secret,
+                            "key": repo.ssh.passphrase
+                          }
+                        }
+                      },
+                      {
+                        "name": "SSH_KEY",
+                        "valueFrom": {
+                          "secretKeyRef": {
+                            "name": repo.ssh.secret,
+                            "key": repo.ssh.key
+                          }
+                        }
+                      }
+                    ],
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "git-repository-updater",
+                    "resources": {
+                      "limits": {
+                        "cpu": "500m",
+                        "memory": "500Mi"
+                      },
+                      "requests": {
+                        "cpu": "100m",
+                        "memory": "100Mi"
+                      }
+                    },
+                  }
+                ],
+              }
+            }
+          }
         }
       ],
     };

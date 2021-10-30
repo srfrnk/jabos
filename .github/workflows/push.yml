@@ -46,6 +46,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet
         with:
           context: jsonnet
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -57,6 +60,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kubectl
         with:
           context: kubectl
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -68,6 +74,23 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}operator
         with:
           context: operator
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: git-repository-updater
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}git-repository-updater
+        with:
+          context: git-repository-updater
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -79,6 +102,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}docker-image-builder-init
         with:
           context: docker-image-builder-init
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -90,6 +116,9 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet-manifest-builder
         with:
           context: jsonnet-manifest-builder
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -165,3 +194,14 @@ jobs:
           asset_path: ./jabos-manifests.yaml
           asset_name: jabos-manifests.yaml
           asset_content_type: text/yaml
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./README.md
+          asset_name: README.md
+          asset_content_type: text/markdown

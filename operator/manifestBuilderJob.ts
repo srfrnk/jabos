@@ -9,6 +9,7 @@ export default function (options: {
   name: string,
   namespace: string,
   targetNamespace: string,
+  gitRepository: string,
   commit: string,
   containers: any[]
 }) {
@@ -28,6 +29,7 @@ export default function (options: {
     commit: options.commit,
     name: options.name,
     namespace: options.namespace,
+    serviceAccountName: `builder-${options.gitRepository}`,
     type: options.type,
     containers: options.containers.concat([
       {

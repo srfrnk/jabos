@@ -5,6 +5,7 @@ function(imagePrefix, buildNumber, namespace, debug) (
     namespace=namespace,
     name='operator',
     replicas=1,
+    serviceAccountName='operator',
     containers=[
       kube.Container(name='operator', image=imagePrefix + 'operator:' + buildNumber) +
       {
@@ -24,6 +25,14 @@ function(imagePrefix, buildNumber, namespace, debug) (
           {
             name: 'DEBUG',
             value: debug,
+          },
+          {
+            name: 'NAMESPACE',
+            valueFrom: {
+              fieldRef: {
+                fieldPath: 'metadata.namespace',
+              },
+            },
           },
         ],
         ports+: [
