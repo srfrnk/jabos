@@ -176,10 +176,11 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           name: Build ${{env.VERSION}}.${{env.BUILD_NUMBER}}
           tag_name: ${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
           draft: false
           prerelease: false
 
