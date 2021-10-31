@@ -10,9 +10,12 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
-    "express-async-handler": "^1.1.4"
+    "express-async-handler": "^1.1.4",
+    "express-prometheus-middleware": "^1.2.0",
+    "prom-client": "^14.0.0"
   },
   "devDependencies": {
+    "@types/express-prometheus-middleware": "^1.2.1",
     "@types/express": "^4.17.13",
     "@types/node": "^16.10.1",
     "nodemon": "^2.0.13",

@@ -216,6 +216,7 @@ spec:
 1. `minikube` installed (To install minikube see [this](https://minikube.sigs.k8s.io/docs/start/))
 1. `NodeJS` installed (To install NodeJS see [this](https://nodejs.org))
 1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
+1. `GNU Parallel` installed for [your OS](https://www.gnu.org/software/parallel/). For Debian based you can use `sudo apt-get install parallel`.
 
 ### Environment Setup
 
@@ -239,3 +240,7 @@ spec:
 - Jabos uses [minikube](https://github.com/kubernetes/minikube) for local development
 - Jabos uses [metacontroller](https://github.com/metacontroller/metacontroller) to control K8s operators.
 - Jabos uses [efk-stack-helm](https://github.com/srfrnk/efk-stack-helm) for local centralized logging.
+- Jabos uses [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for local monitoring and alerting.
+- Jabos uses [GNU Parallel](https://www.gnu.org/software/parallel/) for local port-forwarding to multiple services
+- Jabos uses [expressjs](https://github.com/expressjs/express) as the web server to run the operator
+- Jabos uses [express-prometheus-middleware](https://github.com/joao-fontenele/express-prometheus-middleware) to export basic metrics to prometheus

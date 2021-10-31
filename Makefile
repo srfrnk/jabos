@@ -7,15 +7,23 @@ setup: FORCE
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
 	- kubectl create --save-config namespace example-env
+	- kubectl create --save-config namespace prometheus
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
 	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/latest/download/efk-manifests.yaml
+	- helm upgrade -i -n prometheus prometheus kube-prometheus-stack --repo https://prometheus-community.github.io/helm-charts \
+		--set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
+		--set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false \
+		--set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
+		--set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false
 	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer
 	@tput bold
 	@tput setaf 2
 	@echo
-	@echo "Now you can run: kubectl port-forward -n efk svc/efk-kibana 5601"
-	@echo "Then you can view in browser: open http://localhost:5601/app/discover"
+	@echo "You can view Kibana in your browser by going to http://localhost:5601/app/discover"
+	@echo "You can view Grafana in your browser by going to http://localhost:3000 (User:'admin' Password:'prom-operator')"
+	@echo
 	@tput sgr0
+	make service-port-forward
 
 build_number: FORCE
 	$(eval BUILD_NUMBER=$(shell od -An -N10 -i /dev/urandom | tr -d ' -' ))
@@ -50,3 +58,6 @@ deploy-examples: FORCE
 	git clone --single-branch --branch main -- https://github.com/srfrnk/jabos-examples-private.git ./build/tmp
 	kubectl apply -f ./build/tmp/simple-build.yaml
 	rm -rf ./build/tmp
+
+service-port-forward: FORCE
+	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "prometheus svc/prometheus-grafana 3000:80"

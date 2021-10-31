@@ -65,19 +65,20 @@
                               },
                               imagePullPolicy: 'IfNotPresent',
                             }),
-  HeadlessService(namespace, name, selector, ports):: ({
-                                                         apiVersion: 'v1',
-                                                         kind: 'Service',
-                                                         metadata: {
-                                                           name: name,
-                                                           namespace: namespace,
-                                                         },
-                                                         spec: {
-                                                           clusterIP: 'None',
-                                                           selector: selector,
-                                                           ports: ports,
-                                                         },
-                                                       }),
+  HeadlessService(namespace, name, labels, selector, ports):: ({
+                                                                 apiVersion: 'v1',
+                                                                 kind: 'Service',
+                                                                 metadata: {
+                                                                   name: name,
+                                                                   namespace: namespace,
+                                                                   [if labels != null then 'labels' else null]: labels,
+                                                                 },
+                                                                 spec: {
+                                                                   clusterIP: 'None',
+                                                                   selector: selector,
+                                                                   ports: ports,
+                                                                 },
+                                                               }),
   ServiceAccount(name, namespace):: ({
                                        apiVersion: 'v1',
                                        kind: 'ServiceAccount',
