@@ -175,12 +175,12 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v1
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          name: Build ${{env.VERSION}}.${{env.BUILD_NUMBER}}
           tag_name: ${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          release_name: Build ${{env.VERSION}}.${{env.BUILD_NUMBER}}
           draft: false
           prerelease: false
 
