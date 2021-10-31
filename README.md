@@ -3,6 +3,8 @@
 **Just Another Boring Ops System**
 Jabos attempts to be a fully automated K8s GitOps framework.
 
+**This is WIP** - any comments, requests or issues would be welcome! please use [this link](https://github.com/srfrnk/jabos/issues)
+
 ## TL;DR - What does that mean?
 
 ### What you need to do?
@@ -229,16 +231,11 @@ spec:
    1. Back within the `jabos` folder (from second step) run `make deploy-examples`
    1. The examples would be deployed into namespace `example-env`
 
-## Roadmap
-
-- Support separate build and deployment/runtime namespaces.
-- Support non-public GitHub access (HTTPS and SSH).
-- Support non-public GitLab access.
-- Support external image registries (configuration and auth).
-- Support kustomize manifests
-- Support non-template manifests (JSON and YAML)
-- Support helm charts
-
 ## Credits
 
 - Jabos uses [the kaniko project](https://github.com/GoogleContainerTools/kaniko) to build docker images inside the kubernetes cluster.
+- Jabos uses [yq](https://github.com/mikefarah/yq) to parse and update yaml and json data.
+- Jabos uses [jsonnet](github.com/google/go-jsonnet) to process jsonnet templates and create K8s manifests.
+- Jabos uses [minikube](https://github.com/kubernetes/minikube) for local development
+- Jabos uses [metacontroller](https://github.com/metacontroller/metacontroller) to control K8s operators.
+- Jabos uses [efk-stack-helm](https://github.com/srfrnk/efk-stack-helm) for local centralized logging.
