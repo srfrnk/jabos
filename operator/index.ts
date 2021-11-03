@@ -1,21 +1,22 @@
 import express, { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler'
-import promMid from 'express-prometheus-middleware';
+import prometheusMiddleware from 'express-prometheus-middleware';
 
 import gitRepositories from './gitRepositories';
 import dockerImages from './dockerImages';
 import jsonnetManifests from './jsonnetManifests';
+import settings from './settings';
+import { addMetric, setMetric } from './metrics';
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}.`);
+app.listen(settings.port(), () => {
+  console.log(`Server running on port ${settings.port()}.`);
 });
 
-app.use(promMid({
+app.use(prometheusMiddleware({
   metricsPath: '/metrics',
   collectDefaultMetrics: true,
   requestDurationBuckets: [0.1, 0.5, 1, 1.5],
@@ -38,7 +39,7 @@ app.use(promMid({
    * The prefix option will cause all metrics to have the given prefix.
    * E.g.: `app_prefix_http_requests_total`
    */
-  prefix: 'jabos_operator_',
+  prefix: settings.prometheusMetricPrefix(),
   /**
    * Can add custom labels with customLabels and transformLabels options
    */
@@ -52,6 +53,9 @@ app.use(promMid({
 app.get('/', asyncHandler(async (request: Request, response: Response, next: NextFunction) => {
   response.status(200).json({ status: 'ok' });
 }));
+
+app.post('/addMetric/:metric', asyncHandler(addMetric));
+app.post('/setMetric/:metric', asyncHandler(setMetric));
 
 app.post('/git-repositories-sync', asyncHandler(gitRepositories.sync));
 app.post('/git-repositories-customize', asyncHandler(gitRepositories.customize));

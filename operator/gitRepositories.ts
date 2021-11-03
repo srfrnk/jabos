@@ -90,7 +90,12 @@ export default {
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
                     "args": [repo.url, repo.branch, namespace, name],
-                    "env": !repo.ssh ? [] : [
+                    "env": ([
+                      {
+                        "name": "JABOS_OPERATOR_URL",
+                        "value": `http://operator.${settings.namespace()}:${settings.port()}/`
+                      },
+                    ] as any[]).concat(!repo.ssh ? [] : [
                       {
                         "name": "SSH_PASSPHRASE",
                         "valueFrom": {
@@ -109,7 +114,7 @@ export default {
                           }
                         }
                       }
-                    ],
+                    ]),
                     "imagePullPolicy": "IfNotPresent",
                     "name": "git-repository-updater",
                     "resources": {

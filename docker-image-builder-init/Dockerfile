@@ -4,12 +4,9 @@ ARG IMAGE_VERSION
 FROM ubuntu
 
 RUN apt-get update -y
-RUN apt-get install -yy curl git wget
+RUN apt-get install -yy curl wget
 
 RUN useradd -ms /bin/bash user
-
-RUN mkdir /home/user/.ssh &&\
-  printf "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config
 
 COPY ./init.sh /
 

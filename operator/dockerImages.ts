@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
 import { k8sName } from './misc';
+import { addDockerImageBuildTrigger } from './metrics';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -15,47 +16,34 @@ export default {
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var jobName = k8sName(`image-${name}`, latestCommit);
+    var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
 
     var res = {
       "annotations": !latestCommit ? {} : {
         "latestCommit": latestCommit
       },
-      "attachments": (!latestCommit || latestCommit === builtCommit) ? [] : [
+      "attachments": triggerJob ? [
         builderJob({
           jobName,
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
           commit: latestCommit,
+          repoUrl: repo.spec.url,
+          repoBranch: repo.spec.branch,
+          repoSsh: repo.spec.ssh,
           name,
           namespace,
           serviceAccountName: `builder-${spec.gitRepository}`,
           type: "docker-images",
+          metricName: 'dockerImageBuilder',
+          metricLabels: { "namespace": namespace, "docker_image": name },
           containers: [
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-              "args": [repo.spec.url, repo.spec.branch, latestCommit, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-              "env": !repo.spec.ssh ? [] : [
-                {
-                  "name": "SSH_PASSPHRASE",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": repo.spec.ssh.secret,
-                      "key": repo.spec.ssh.passphrase
-                    }
-                  }
-                },
-                {
-                  "name": "SSH_KEY",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": repo.spec.ssh.secret,
-                      "key": repo.spec.ssh.key
-                    }
-                  }
-                }
-              ],
+              "args": [Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
+              "env": [],
               "imagePullPolicy": "IfNotPresent",
-              "name": "docker-image-builder",
+              "name": "docker-image-builder-init",
               "resources": {
                 "limits": {
                   "cpu": "500m",
@@ -68,17 +56,12 @@ export default {
               },
               "volumeMounts": [
                 {
-                  "name": "git-temp",
-                  "mountPath": "/gitTemp",
-                },
-                {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
                 }
               ]
             },
             {
-              "env": [],
               "image": "gcr.io/kaniko-project/executor:latest",
               "args": [
                 `--context=dir:///gitTemp/${spec.contextPath}`,
@@ -90,6 +73,7 @@ export default {
                 '--skip-tls-verify-pull',
                 '--insecure-pull'
               ] : []),
+              "env": [],
               "imagePullPolicy": "IfNotPresent",
               "name": "kaniko",
               "resources": {
@@ -116,17 +100,17 @@ export default {
           ],
           volumes: [
             {
-              "name": "git-temp",
-              "emptyDir": {}
-            },
-            {
               "name": "docker",
               "emptyDir": {}
             },
           ]
         })
-      ]
+      ] : [],
     };
+
+    if (triggerJob) {
+      addDockerImageBuildTrigger(namespace, name, latestCommit);
+    }
 
     if (settings.debug()) console.log("dockerImages sync res", JSON.stringify(res));
     response.status(200).json(res);

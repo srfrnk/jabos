@@ -1,21 +1,20 @@
 ARG IMAGE_PREFIX
 ARG IMAGE_VERSION
 
-FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION} as kubectl
+FROM ubuntu
 
-USER root
+RUN apt-get update -y
+RUN apt-get install -yy curl git wget
 
-RUN apt-get install -yy bc
-
-RUN mkdir /gitTemp && chown user /gitTemp
+RUN useradd -ms /bin/bash user
 
 RUN mkdir /home/user/.ssh &&\
   printf "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
   touch /home/user/.ssh/known_hosts &&\
   chown user /home/user/.ssh/known_hosts
 
-COPY ./get_latest_commit.sh /
+COPY ./pre-build.sh /
 
 USER user
 
-ENTRYPOINT ["/get_latest_commit.sh"]
+ENTRYPOINT ["/pre-build.sh"]

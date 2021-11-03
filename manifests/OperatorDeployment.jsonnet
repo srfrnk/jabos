@@ -27,6 +27,10 @@ function(imagePrefix, buildNumber, namespace, debug) (
             value: debug,
           },
           {
+            name: 'PROMETHEUS_METRIC_PREFIX',
+            value: globals.prometheusMetricPrefix,
+          },
+          {
             name: 'NAMESPACE',
             valueFrom: {
               fieldRef: {

@@ -207,6 +207,54 @@ spec:
 
 1. Follow instruction [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
 
+### Metrics
+
+All metrics are exported into `Prometheus` using the `ServiceMonitor` API by `kube-prometheus-stack`.
+To otherwise configure `Prometheus` to collect the metrics you need to point it to 'OPERATOR_POD_IP:3000/metrics'.
+
+All metrics exported are prefixed with `jabos_operator_`.
+Numerous metrics are exported most of them describe `nodsjs` and `expresjs` operations.
+
+Important metrics for the operation of Jabos are:
+
+```yaml
+# HELP jabos_operator_latest_commit_changed new "latest commit" detected for git repository
+# TYPE jabos_operator_latest_commit_changed counter
+
+# HELP jabos_operator_docker_image_build_trigger new build triggered for a docker image
+# TYPE jabos_operator_docker_image_build_trigger counter
+
+# HELP jabos_operator_jsonnet_manifests_build_trigger new build triggered for jsonnet manifests
+# TYPE jabos_operator_jsonnet_manifests_build_trigger counter
+
+# HELP jabos_operator_git_repository_updater_start GitRepositoryUpdater start
+# TYPE jabos_operator_git_repository_updater_start counter
+
+# HELP jabos_operator_git_repository_updater_end GitRepositoryUpdater end
+# TYPE jabos_operator_git_repository_updater_end counter
+
+# HELP jabos_operator_git_repository_updater_duration GitRepositoryUpdater duration
+# TYPE jabos_operator_git_repository_updater_duration gauge
+
+# HELP jabos_operator_docker_image_builder_start DockerImageBuilder start
+# TYPE jabos_operator_docker_image_builder_start counter
+
+# HELP jabos_operator_docker_image_builder_end DockerImageBuilder end
+# TYPE jabos_operator_docker_image_builder_end counter
+
+# HELP jabos_operator_docker_image_builder_duration DockerImageBuilder duration
+# TYPE jabos_operator_docker_image_builder_duration gauge
+
+# HELP jabos_operator_jsonnet_manifests_builder_start JsonnetManifestsBuilder start
+# TYPE jabos_operator_jsonnet_manifests_builder_start counter
+
+# HELP jabos_operator_jsonnet_manifests_builder_end JsonnetManifestsBuilder end
+# TYPE jabos_operator_jsonnet_manifests_builder_end counter
+
+# HELP jabos_operator_jsonnet_manifests_builder_duration JsonnetManifestsBuilder duration
+# TYPE jabos_operator_jsonnet_manifests_builder_duration gauge
+```
+
 ## Development
 
 ### Prerequisites
