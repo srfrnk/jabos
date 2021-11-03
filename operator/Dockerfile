@@ -4,18 +4,13 @@ ARG IMAGE_VERSION
 FROM node:lts
 
 RUN apt-get update -y
-RUN apt-get install -yy curl git wget
-
-RUN mkdir /home/node/.ssh &&\
-  printf "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/node/.ssh/config
+RUN apt-get install -yy curl wget
 
 WORKDIR /app
 COPY ./package*.json /app/
 RUN npm install
 
 COPY . /app
-
-RUN mkdir /tempGit && chown node /tempGit
 
 USER node
 

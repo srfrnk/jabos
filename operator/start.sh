@@ -1,5 +1,5 @@
 #! /bin/bash
 
-set -e
+set -Ee
 
 npx nodemon index.ts

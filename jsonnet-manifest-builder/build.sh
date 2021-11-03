@@ -1,23 +1,18 @@
 #! /bin/bash
 
-set -e
+set -Ee
+
+function exit {
+  echo "Exiting"
+  sleep 10 # Just to allow fluentd gathering logs before termination
+}
+
+trap exit EXIT
 
 echo "Args: $@"
 
-URL=$1
-BRANCH=$2
-COMMIT=$3
-SRC_PATH=$4
-JSONNET_ARGS=$5
-
-if [ -n "${SSH_KEY}" ]; then
-  eval "$(ssh-agent -s)" >&2
-  echo "${SSH_PASSPHRASE}" | setsid -w ssh-add <(printf -- "${SSH_KEY}") >&2
-fi
-
-git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp
-cd /gitTemp
-git checkout ${COMMIT}
+SRC_PATH=$1
+JSONNET_ARGS=$2
 
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
@@ -29,5 +24,3 @@ done
 yq e -I 2 -P '(. | select(has(0))| .[] | splitDoc) // .' $(find /build -name '*.json') > /manifests/manifests.yaml
 
 # TODO: upload the manifests yaml to a package/version manager for auditing
-
-sleep 5 # Just to allow fluentd gathering logs before termination

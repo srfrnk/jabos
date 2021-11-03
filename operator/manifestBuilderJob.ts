@@ -11,26 +11,36 @@ export default function (options: {
   targetNamespace: string,
   gitRepository: string,
   commit: string,
-  containers: any[]
+  repoUrl: string,
+  repoBranch: string,
+  repoSsh: { secret: string, passphrase: string, key: string },
+  containers: any[],
+  metricName: string,
+  metricLabels: {}
 }) {
   var jobName = k8sName(`manifest-${options.name}`, options.commit);
   options.containers.forEach(container => {
-    container.volumeMounts = [
+    container.volumeMounts = (container.volumeMounts || []).concat([
       {
         "name": "manifests",
         "mountPath": "/manifests",
       }
-    ].concat(container.volumeMounts || []);
+    ]);
   });
   return builderJob({
     jobName,
     imagePrefix: settings.imagePrefix(),
     buildNumber: settings.buildNumber(),
     commit: options.commit,
+    repoUrl: options.repoUrl,
+    repoBranch: options.repoBranch,
+    repoSsh: options.repoSsh,
     name: options.name,
     namespace: options.namespace,
     serviceAccountName: `builder-${options.gitRepository}`,
     type: options.type,
+    metricName: options.metricName,
+    metricLabels: options.metricLabels,
     containers: options.containers.concat([
       {
         "env": [],

@@ -1,8 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+
 import settings from './settings';
 import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
+import { addJsonnetManifestsBuildTrigger } from './metrics';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -16,54 +18,50 @@ export default {
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var jsonnetArgs = `--tla-str "${spec.commitTLAKey}=${latestCommit}"`;
+    var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
+
+    var attachments = [
+      manifestBuilderRole({
+        name,
+        namespace,
+        targetNamespace: spec.targetNamespace
+      }),
+      manifestBuilderRoleBinding({
+        name,
+        gitRepositoryName: spec.gitRepository,
+        namespace,
+        targetNamespace: spec.targetNamespace
+      }),
+    ];
 
     var res = {
       "annotations": !latestCommit ? {} : {
         "latestCommit": latestCommit,
       },
-      "attachments": (!latestCommit || latestCommit === builtCommit) ? [] : [
-        manifestBuilderRole({
-          name,
-          namespace,
-          targetNamespace: spec.targetNamespace
-        }),
-        manifestBuilderRoleBinding({
-          name,
-          gitRepositoryName: spec.gitRepository,
-          namespace,
-          targetNamespace: spec.targetNamespace
-        }),
+      "attachments": (attachments as any[]).concat(triggerJob ? [
         manifestBuilderJob({
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
           commit: latestCommit,
+          repoUrl: repo.spec.url,
+          repoBranch: repo.spec.branch,
+          repoSsh: repo.spec.ssh,
           name,
           namespace,
           gitRepository: spec.gitRepository,
           targetNamespace: spec.targetNamespace,
           type: "jsonnet-manifests",
+          metricName: 'jsonnetManifestsBuilder',
+          metricLabels: { "namespace": namespace, "jsonnet_manifests": name },
           containers: [
             {
               "image": `${settings.imagePrefix()}jsonnet-manifest-builder:${settings.buildNumber()}`,
-              "args": [repo.spec.url, repo.spec.branch, latestCommit, spec.path, jsonnetArgs],
-              "env": !repo.spec.ssh ? [] : [
+              "args": [spec.path, jsonnetArgs],
+              "env": [],
+              "volumeMounts": [
                 {
-                  "name": "SSH_PASSPHRASE",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": repo.spec.ssh.secret,
-                      "key": repo.spec.ssh.passphrase
-                    }
-                  }
-                },
-                {
-                  "name": "SSH_KEY",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": repo.spec.ssh.secret,
-                      "key": repo.spec.ssh.key
-                    }
-                  }
+                  "name": "git-temp",
+                  "mountPath": "/gitTemp",
                 }
               ],
               "imagePullPolicy": "IfNotPresent",
@@ -81,8 +79,12 @@ export default {
             }
           ]
         })
-      ]
+      ] : [])
     };
+
+    if (triggerJob) {
+      addJsonnetManifestsBuildTrigger(namespace, name, latestCommit);
+    }
 
     if (settings.debug()) console.log("jsonnetManifests sync res", JSON.stringify(res));
     response.status(200).json(res);

@@ -207,6 +207,54 @@ spec:
 
 1. Follow instruction [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
 
+### Metrics
+
+All metrics are exported into `Prometheus` using the `ServiceMonitor` API by `kube-prometheus-stack`.
+To otherwise configure `Prometheus` to collect the metrics you need to point it to 'OPERATOR_POD_IP:3000/metrics'.
+
+All metrics exported are prefixed with `jabos_operator_`.
+Numerous metrics are exported most of them describe `nodsjs` and `expresjs` operations.
+
+Important metrics for the operation of Jabos are:
+
+```yaml
+# HELP jabos_operator_latest_commit_changed new "latest commit" detected for git repository
+# TYPE jabos_operator_latest_commit_changed counter
+
+# HELP jabos_operator_docker_image_build_trigger new build triggered for a docker image
+# TYPE jabos_operator_docker_image_build_trigger counter
+
+# HELP jabos_operator_jsonnet_manifests_build_trigger new build triggered for jsonnet manifests
+# TYPE jabos_operator_jsonnet_manifests_build_trigger counter
+
+# HELP jabos_operator_git_repository_updater_start GitRepositoryUpdater start
+# TYPE jabos_operator_git_repository_updater_start counter
+
+# HELP jabos_operator_git_repository_updater_end GitRepositoryUpdater end
+# TYPE jabos_operator_git_repository_updater_end counter
+
+# HELP jabos_operator_git_repository_updater_duration GitRepositoryUpdater duration
+# TYPE jabos_operator_git_repository_updater_duration gauge
+
+# HELP jabos_operator_docker_image_builder_start DockerImageBuilder start
+# TYPE jabos_operator_docker_image_builder_start counter
+
+# HELP jabos_operator_docker_image_builder_end DockerImageBuilder end
+# TYPE jabos_operator_docker_image_builder_end counter
+
+# HELP jabos_operator_docker_image_builder_duration DockerImageBuilder duration
+# TYPE jabos_operator_docker_image_builder_duration gauge
+
+# HELP jabos_operator_jsonnet_manifests_builder_start JsonnetManifestsBuilder start
+# TYPE jabos_operator_jsonnet_manifests_builder_start counter
+
+# HELP jabos_operator_jsonnet_manifests_builder_end JsonnetManifestsBuilder end
+# TYPE jabos_operator_jsonnet_manifests_builder_end counter
+
+# HELP jabos_operator_jsonnet_manifests_builder_duration JsonnetManifestsBuilder duration
+# TYPE jabos_operator_jsonnet_manifests_builder_duration gauge
+```
+
 ## Development
 
 ### Prerequisites
@@ -216,6 +264,7 @@ spec:
 1. `minikube` installed (To install minikube see [this](https://minikube.sigs.k8s.io/docs/start/))
 1. `NodeJS` installed (To install NodeJS see [this](https://nodejs.org))
 1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
+1. `GNU Parallel` installed for [your OS](https://www.gnu.org/software/parallel/). For Debian based you can use `sudo apt-get install parallel`.
 
 ### Environment Setup
 
@@ -239,3 +288,7 @@ spec:
 - Jabos uses [minikube](https://github.com/kubernetes/minikube) for local development
 - Jabos uses [metacontroller](https://github.com/metacontroller/metacontroller) to control K8s operators.
 - Jabos uses [efk-stack-helm](https://github.com/srfrnk/efk-stack-helm) for local centralized logging.
+- Jabos uses [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for local monitoring and alerting.
+- Jabos uses [GNU Parallel](https://www.gnu.org/software/parallel/) for local port-forwarding to multiple services
+- Jabos uses [expressjs](https://github.com/expressjs/express) as the web server to run the operator
+- Jabos uses [express-prometheus-middleware](https://github.com/joao-fontenele/express-prometheus-middleware) to export basic metrics to prometheus

@@ -1,7 +1,13 @@
 #! /bin/bash
 
-set -e
-trap "sleep 5" EXIT # Just to allow fluentd gathering logs before termination
+set -Ee
+
+function exit {
+  echo "Exiting"
+  sleep 10 # Just to allow fluentd gathering logs before termination
+}
+
+trap exit EXIT
 
 export APISERVER=https://kubernetes.default.svc
 SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
