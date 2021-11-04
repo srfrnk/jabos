@@ -96,7 +96,7 @@ spec:
   - `dockerFile`: The name of the Dockerfile to use for the docker build. Default: "Dockerfile"
   - `imageName`: The full image name excluding the tag part. Usually this will be prefixed with the registry address (e.g. `registry.kube-system:80/example-image`)
   - `insecureRegistry`: "True" to use insecure registries with docker push. Default: False
-  - `dockerConfig`: Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required.
+  - `dockerConfig`: Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**
 
 E.g.:
 
@@ -275,6 +275,8 @@ Important metrics for the operation of Jabos are:
 1. Run `make build` after each code change
 1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601/app/discover)
 1. To deploy examples
+   1. Locally clone [jabos-examples repo](https://github.com/srfrnk/jabos-examples)
+   1. Follow instructions from the README file in the cloned folder
    1. Locally clone [jabos-examples-private repo](https://github.com/srfrnk/jabos-examples-private)
    1. Follow instructions from the README file in the cloned folder
    1. Back within the `jabos` folder (from second step) run `make deploy-examples`

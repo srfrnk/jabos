@@ -41,7 +41,26 @@ export default {
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
               "args": [Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-              "env": [],
+              "env": !spec.dockerHub ? [] : [
+                {
+                  "name": "DOCKER_HUB_USERNAME",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": spec.dockerHub.secret,
+                      "key": spec.dockerHub.username
+                    }
+                  }
+                },
+                {
+                  "name": "DOCKER_HUB_PASSWORD",
+                  "valueFrom": {
+                    "secretKeyRef": {
+                      "name": spec.dockerHub.secret,
+                      "key": spec.dockerHub.password
+                    }
+                  }
+                }
+              ],
               "imagePullPolicy": "IfNotPresent",
               "name": "docker-image-builder-init",
               "resources": {

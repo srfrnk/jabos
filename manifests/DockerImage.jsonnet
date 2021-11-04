@@ -45,7 +45,23 @@ function(imagePrefix, buildNumber, namespace, debug) (
                            type: 'object',
                            additionalProperties: true,
                            default: {},
-                           description: 'Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required.',
+                           description: 'Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**',
+                         },
+                         dockerHub: {
+                           type: 'object',
+                           properties: {
+                             secret: {
+                               type: 'string',
+                             },
+                             username: {
+                               type: 'string',
+                               default: 'username',
+                             },
+                             password: {
+                               type: 'string',
+                               default: 'password',
+                             },
+                           },
                          },
                        },
                      },

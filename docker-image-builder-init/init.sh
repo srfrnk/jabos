@@ -9,8 +9,13 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
+DOCKER_CONFIG=$(echo -n "$1" | base64 -d)
 
-DOCKER_CONFIG=$1
+echo "Args: ${DOCKER_CONFIG}"
 
-echo -n "${DOCKER_CONFIG}" | base64 -d > /kaniko/.docker/config.json
+if [ -n "${DOCKER_HUB_USERNAME}" ]; then
+  AUTH=$(echo -n ${DOCKER_HUB_USERNAME}:${DOCKER_HUB_PASSWORD} | base64)
+  DOCKER_CONFIG=$(echo ''"${DOCKER_CONFIG}"'' | yq e -o=json -I=0 ".auths[\"https://index.docker.io/v1/\"].auth=\"${AUTH}\"" -)
+fi
+
+echo -n "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
