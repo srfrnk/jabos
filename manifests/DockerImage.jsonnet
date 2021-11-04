@@ -52,14 +52,17 @@ function(imagePrefix, buildNumber, namespace, debug) (
                            properties: {
                              secret: {
                                type: 'string',
+                               description: 'Name of secret to use. **Must be in the same namespace**',
                              },
                              username: {
                                type: 'string',
                                default: 'username',
+                               description: 'Name of the key inside the secret to use for username. Default: "username"',
                              },
                              password: {
                                type: 'string',
                                default: 'password',
+                               description: 'Name of the key inside the secret to use for password. Default: "password"',
                              },
                            },
                          },
