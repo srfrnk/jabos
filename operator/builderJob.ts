@@ -106,6 +106,7 @@ export default function (options: {
                 {
                   "name": "timer",
                   "mountPath": "/timer",
+                  "readOnly": true
                 }
               ],
               "imagePullPolicy": "IfNotPresent",

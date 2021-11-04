@@ -40,7 +40,7 @@ export default {
           containers: [
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-              "args": [Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
+              "args": [spec.imageName, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
               "env": !spec.dockerHub ? [] : [
                 {
                   "name": "DOCKER_HUB_USERNAME",
@@ -77,6 +77,11 @@ export default {
                 {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
+                },
+                {
+                  "name": "kaniko-secrets",
+                  "mountPath": "/secrets",
+                  "readOnly": true
                 }
               ]
             },
@@ -109,20 +114,41 @@ export default {
                 {
                   "name": "git-temp",
                   "mountPath": "/gitTemp",
+                  "readOnly": true
                 },
                 {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
+                  "readOnly": true
                 }
               ]
             }
           ],
-          volumes: [
+          volumes: ([
             {
               "name": "docker",
               "emptyDir": {}
             },
-          ]
+          ] as any[]).concat([
+            {
+              "name": "kaniko-secrets",
+              "projected": {
+                "sources": [].concat(!spec.gcp ? [] : [
+                  {
+                    "secret": {
+                      "name": spec.gcp.secret,
+                      "items": [
+                        {
+                          "key": spec.gcp.serviceAccountKey,
+                          "path": "gcp_service_account.json"
+                        }
+                      ]
+                    }
+                  }
+                ])
+              }
+            }
+          ])
         })
       ] : [],
     };

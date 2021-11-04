@@ -62,6 +62,7 @@ export default {
                 {
                   "name": "git-temp",
                   "mountPath": "/gitTemp",
+                  "readOnly": true
                 }
               ],
               "imagePullPolicy": "IfNotPresent",

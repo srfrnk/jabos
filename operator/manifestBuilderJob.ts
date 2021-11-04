@@ -52,6 +52,7 @@ export default function (options: {
           {
             "name": "manifests",
             "mountPath": "/manifests",
+            "readOnly": true
           }
         ],
         "resources": {

@@ -66,6 +66,20 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              },
                            },
                          },
+                         gcp: {
+                           type: 'object',
+                           properties: {
+                             secret: {
+                               type: 'string',
+                               description: 'Name of secret to use. **Must be in the same namespace**',
+                             },
+                             serviceAccountKey: {
+                               type: 'string',
+                               default: 'service_account.json',
+                               description: 'Name of the key inside the secret to use for the service account json key. Default: "service_account.json"',
+                             },
+                           },
+                         },
                        },
                      },
                    },
