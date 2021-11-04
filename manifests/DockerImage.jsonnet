@@ -20,26 +20,32 @@ function(imagePrefix, buildNumber, namespace, debug) (
                        properties: {
                          gitRepository: {
                            type: 'string',
+                           description: 'The name of a `GitRepository` object which defines the codebase for the image. **Must be in the same namespace**.',
                          },
                          contextPath: {
                            type: 'string',
                            default: '.',
+                           description: 'The path **relative to the git repository root** where the context for the docker build is found. Default: "." (Repository root)',
                          },
                          dockerFile: {
                            type: 'string',
                            default: 'Dockerfile',
+                           description: 'The name of the Dockerfile to use for the docker build. Default: "Dockerfile"',
                          },
                          imageName: {
                            type: 'string',
+                           description: 'The full image name excluding the tag part. Usually this will be prefixed with the registry address (e.g. `registry.kube-system:80/example-image`)',
                          },
                          insecureRegistry: {
                            type: 'boolean',
                            default: true,
+                           description: '"true" to use insecure registries with docker push. Default: false',
                          },
                          dockerConfig: {
                            type: 'object',
                            additionalProperties: true,
                            default: {},
+                           description: 'Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required.',
                          },
                        },
                      },

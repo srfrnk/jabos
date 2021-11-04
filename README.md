@@ -61,10 +61,10 @@ Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-exte
 - `spec`
   - `url`: The URL to use to access the git repository.
   - `branch`: The name of the branch to watch and pull from.
-  - `ssh`: credentials for ssh access
-    - `secret`: name of secret (in the same namespace) to use
-    - `passphrase`: name of the key inside the secret to use for ssh passphrase. Default: "passphrase"
-    - `key`: name of the key inside the secret to use for ssh key. Default: "key"
+  - `ssh`: Credentials for ssh access
+    - `secret`: Name of secret to use. **Must be in the same namespace**
+    - `passphrase`: Name of the key inside the secret to use for ssh passphrase. Default: "passphrase"
+    - `key`: Name of the key inside the secret to use for ssh key. Default: "key"
 
 E.g.:
 

@@ -20,23 +20,29 @@ function(imagePrefix, buildNumber, namespace, debug) (
                        properties: {
                          url: {
                            type: 'string',
+                           description: 'The URL to use to access the git repository.',
                          },
                          branch: {
                            type: 'string',
+                           description: 'The name of the branch to watch and pull from.',
                          },
                          ssh: {
                            type: 'object',
+                           description: 'Credentials for ssh access',
                            properties: {
                              secret: {
                                type: 'string',
+                               description: 'Name of secret to use. **Must be in the same namespace**',
                              },
                              passphrase: {
                                type: 'string',
                                default: 'passphrase',
+                               description: 'Name of the key inside the secret to use for ssh passphrase. Default: "passphrase"',
                              },
                              key: {
                                type: 'string',
                                default: 'key',
+                               description: 'Name of the key inside the secret to use for ssh key. Default: "key"',
                              },
                            },
                          },
