@@ -22,7 +22,7 @@ fi
 if [ -f "/secrets/gcp_service_account.json" ]; then
   AUTH=$(echo -n "_json_key:$(cat /secrets/gcp_service_account.json)" | base64)
   HOST=$(echo "${IMAGE}" | cut -d/ -f1)
-  echo "HOST:${HOST}"
+  echo "HOST: ${HOST}"
   DOCKER_CONFIG=$(echo ''"${DOCKER_CONFIG}"'' | yq e -o=json -I=0 ".auths[\"${HOST}\"].auth=\"${AUTH}\"" -)
 fi
 
