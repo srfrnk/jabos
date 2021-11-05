@@ -182,30 +182,31 @@ function(latestCommitId) {
 }
 ```
 
-## Github Repository Authentication
+## Git Repository Authentication
 
-### Using SSH Keys
+### GitHub
+
+#### Using SSH Keys
 
 1. [Create an SSH key and add it to GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) - **Optionally skip the "adding it to the ssh-agent" section.**
 1. Create a secret with the passphrase and key created in the previous step. (i.e. `kubectl create secret generic -n example-env first-repo-private --from-file=passphrase=./build/passphrase --from-file=key=./build/key`)
-1. Deploy a `GitRepository` with the `ssh` configuration to point to the secret created in the previous step. E.g.:
+1. Add an `ssh` property to each applicable `GitRepository` object to point to the secret.
 
-```yaml
-apiVersion: jabos.io/v1
-kind: GitRepository
-metadata:
-  name: first-repo-private
-  namespace: example-env
-spec:
-  url: git@github.com:srfrnk/jabos-examples-private.git
-  branch: main
-  ssh:
-    secret: first-repo-private
-```
+## Image Registry Authentication
 
-### Using Deploy Keys (**Not yet supported**)
+### Docker Hub
 
-1. Follow instruction [here](https://docs.github.com/en/developers/overview/managing-deploy-keys#setup-2)
+1. Obtain your Docker Hub username.
+1. Obtain your Docker Hub password or [access token](https://docs.docker.com/docker-hub/access-tokens/).
+1. Create secret with the credentials. (i.e. `kubectl create secret generic -n example-env docker-image --from-file=username=./build/username --from-file=password=./build/password`)
+1. Add a `dockerHub` property to any applicable `DockerImage` object to point to the secret.
+
+### GCP (GCR and Artifact Registry)
+
+1. Obtain a Service Account with the required permissions.
+1. Obtain the Service Account JSON key.
+1. Create secret with the JSON key. (i.e. `kubectl create secret generic -n example-env docker-image --from-file=service_account.json=./build/service_account.json`)
+1. Add a `gcp` property to any applicable `DockerImage` object to point to the secret.
 
 ### Metrics
 
