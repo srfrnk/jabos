@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import gitRepositorySshSecretEnv from './gitRepositorySshSecretEnv';
+import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 import settings from './settings';
 
 export default {
@@ -90,31 +92,7 @@ export default {
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
                     "args": [repo.url, repo.branch, namespace, name],
-                    "env": ([
-                      {
-                        "name": "JABOS_OPERATOR_URL",
-                        "value": `http://operator.${settings.namespace()}:${settings.port()}/`
-                      },
-                    ] as any[]).concat(!repo.ssh ? [] : [
-                      {
-                        "name": "SSH_PASSPHRASE",
-                        "valueFrom": {
-                          "secretKeyRef": {
-                            "name": repo.ssh.secret,
-                            "key": repo.ssh.passphrase
-                          }
-                        }
-                      },
-                      {
-                        "name": "SSH_KEY",
-                        "valueFrom": {
-                          "secretKeyRef": {
-                            "name": repo.ssh.secret,
-                            "key": repo.ssh.key
-                          }
-                        }
-                      }
-                    ]),
+                    "env": jabosOperatorUrlEnv().concat(gitRepositorySshSecretEnv(repo.ssh)),
                     "imagePullPolicy": "IfNotPresent",
                     "name": "git-repository-updater",
                     "resources": {

@@ -36,13 +36,13 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              },
                              passphrase: {
                                type: 'string',
-                               default: 'passphrase',
-                               description: 'Name of the key inside the secret to use for ssh passphrase. Default: "passphrase"',
+                               default: 'git_ssh_passphrase',
+                               description: 'Name of the key inside the secret to use for ssh passphrase. Default: "git_ssh_passphrase"',
                              },
                              key: {
                                type: 'string',
-                               default: 'key',
-                               description: 'Name of the key inside the secret to use for ssh key. Default: "key"',
+                               default: 'git_ssh_key',
+                               description: 'Name of the key inside the secret to use for ssh key. Default: "git_ssh_key"',
                              },
                            },
                          },

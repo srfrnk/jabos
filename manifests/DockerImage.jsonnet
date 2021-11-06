@@ -56,13 +56,13 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              },
                              username: {
                                type: 'string',
-                               default: 'username',
-                               description: 'Name of the key inside the secret to use for username. Default: "username"',
+                               default: 'docker_hub_username',
+                               description: 'Name of the key inside the secret to use for username. Default: "docker_hub_username"',
                              },
                              password: {
                                type: 'string',
-                               default: 'password',
-                               description: 'Name of the key inside the secret to use for password. Default: "password"',
+                               default: 'docker_hub_password',
+                               description: 'Name of the key inside the secret to use for password. Default: "docker_hub_password"',
                              },
                            },
                          },
@@ -75,8 +75,27 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              },
                              serviceAccountKey: {
                                type: 'string',
-                               default: 'service_account.json',
-                               description: 'Name of the key inside the secret to use for the service account json key. Default: "service_account.json"',
+                               default: 'gcp_service_account.json',
+                               description: 'Name of the key inside the secret to use for the service account json key. Default: "gcp_service_account.json"',
+                             },
+                           },
+                         },
+                         aws: {
+                           type: 'object',
+                           properties: {
+                             secret: {
+                               type: 'string',
+                               description: 'Name of secret to use. **Must be in the same namespace**',
+                             },
+                             accessKeyId: {
+                               type: 'string',
+                               default: 'aws_access_key_id',
+                               description: 'Name of the key inside the secret to use for the aws_access_key_id. Default: "aws_access_key_id"',
+                             },
+                             secretAccessKey: {
+                               type: 'string',
+                               default: 'aws_secret_access_key',
+                               description: 'Name of the key inside the secret to use for the aws_secret_access_key. Default: "aws_secret_access_key"',
                              },
                            },
                          },

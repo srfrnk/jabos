@@ -3,6 +3,9 @@ import settings from './settings';
 import builderJob from './builderJob';
 import { k8sName } from './misc';
 import { addDockerImageBuildTrigger } from './metrics';
+import dockerHubSecretEnv from './dockerHubSecretEnv';
+import gcpSecretSources from './gcpSecretSources';
+import awsSecretSources from './awsSecretSources';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -41,26 +44,7 @@ export default {
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
               "args": [spec.imageName, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-              "env": !spec.dockerHub ? [] : [
-                {
-                  "name": "DOCKER_HUB_USERNAME",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": spec.dockerHub.secret,
-                      "key": spec.dockerHub.username
-                    }
-                  }
-                },
-                {
-                  "name": "DOCKER_HUB_PASSWORD",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": spec.dockerHub.secret,
-                      "key": spec.dockerHub.password
-                    }
-                  }
-                }
-              ],
+              "env": dockerHubSecretEnv(spec.dockerHub),
               "imagePullPolicy": "IfNotPresent",
               "name": "docker-image-builder-init",
               "resources": {
@@ -77,6 +61,10 @@ export default {
                 {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
+                },
+                {
+                  "name": "aws",
+                  "mountPath": "/kaniko/.aws",
                 },
                 {
                   "name": "kaniko-secrets",
@@ -120,6 +108,11 @@ export default {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
                   "readOnly": true
+                },
+                {
+                  "name": "aws",
+                  "mountPath": "/root/.aws/",
+                  "readOnly": true
                 }
               ]
             }
@@ -133,20 +126,14 @@ export default {
             {
               "name": "kaniko-secrets",
               "projected": {
-                "sources": [].concat(!spec.gcp ? [] : [
-                  {
-                    "secret": {
-                      "name": spec.gcp.secret,
-                      "items": [
-                        {
-                          "key": spec.gcp.serviceAccountKey,
-                          "path": "gcp_service_account.json"
-                        }
-                      ]
-                    }
-                  }
-                ])
+                "sources": [].concat(gcpSecretSources(spec.gcp))
+                  .concat(awsSecretSources(spec.aws))
               }
+            }
+          ]).concat(!spec.aws ? [] : [
+            {
+              "name": "aws",
+              "emptyDir": {}
             }
           ])
         })

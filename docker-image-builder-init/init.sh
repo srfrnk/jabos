@@ -26,4 +26,9 @@ if [ -f "/secrets/gcp_service_account.json" ]; then
   DOCKER_CONFIG=$(echo ''"${DOCKER_CONFIG}"'' | yq e -o=json -I=0 ".auths[\"${HOST}\"].auth=\"${AUTH}\"" -)
 fi
 
-echo -n "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
+if [ -f "/secrets/aws_access_key_id" ]; then
+  DOCKER_CONFIG=$(echo ''"${DOCKER_CONFIG}"'' | yq e -o=json -I=0 ".credsStore=\"ecr-login\"" -)
+  printf "[default]\naws_access_key_id=$(cat /secrets/aws_access_key_id)\naws_secret_access_key=$(cat /secrets/aws_secret_access_key)" > /kaniko/.aws/credentials
+fi
+
+printf "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
