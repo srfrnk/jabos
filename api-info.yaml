@@ -1,0 +1,4 @@
+api-info:
+  version: 0.0.0
+  title: Jabos - Just Another Boring Ops System
+  description: Jabos attempts to be a fully automated K8s GitOps framework.

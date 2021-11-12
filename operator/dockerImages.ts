@@ -3,6 +3,9 @@ import settings from './settings';
 import builderJob from './builderJob';
 import { k8sName } from './misc';
 import { addDockerImageBuildTrigger } from './metrics';
+import dockerHubSecretEnv from './dockerHubSecretEnv';
+import gcpSecretSources from './gcpSecretSources';
+import awsSecretSources from './awsSecretSources';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
@@ -40,8 +43,8 @@ export default {
           containers: [
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-              "args": [Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-              "env": [],
+              "args": [spec.imageName, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
+              "env": dockerHubSecretEnv(spec.dockerHub),
               "imagePullPolicy": "IfNotPresent",
               "name": "docker-image-builder-init",
               "resources": {
@@ -58,6 +61,15 @@ export default {
                 {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
+                },
+                {
+                  "name": "aws",
+                  "mountPath": "/kaniko/.aws",
+                },
+                {
+                  "name": "kaniko-secrets",
+                  "mountPath": "/secrets",
+                  "readOnly": true
                 }
               ]
             },
@@ -90,20 +102,40 @@ export default {
                 {
                   "name": "git-temp",
                   "mountPath": "/gitTemp",
+                  "readOnly": true
                 },
                 {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
+                  "readOnly": true
+                },
+                {
+                  "name": "aws",
+                  "mountPath": "/root/.aws/",
+                  "readOnly": true
                 }
               ]
             }
           ],
-          volumes: [
+          volumes: ([
             {
               "name": "docker",
               "emptyDir": {}
             },
-          ]
+          ] as any[]).concat([
+            {
+              "name": "kaniko-secrets",
+              "projected": {
+                "sources": [].concat(gcpSecretSources(spec.gcp))
+                  .concat(awsSecretSources(spec.aws))
+              }
+            }
+          ]).concat(!spec.aws ? [] : [
+            {
+              "name": "aws",
+              "emptyDir": {}
+            }
+          ])
         })
       ] : [],
     };

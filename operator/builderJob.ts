@@ -1,3 +1,4 @@
+import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 import settings from './settings';
 
 export default function (options: {
@@ -43,12 +44,7 @@ export default function (options: {
             {
               "image": `${settings.imagePrefix()}pre-builder:${settings.buildNumber()}`,
               "args": [options.repoUrl, options.repoBranch, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": ([
-                {
-                  "name": "JABOS_OPERATOR_URL",
-                  "value": `http://operator.${settings.namespace()}:${settings.port()}/`
-                },
-              ] as any[]).concat(!options.repoSsh ? [] : [
+              "env": jabosOperatorUrlEnv().concat(!options.repoSsh ? [] : [
                 {
                   "name": "SSH_PASSPHRASE",
                   "valueFrom": {
@@ -96,16 +92,12 @@ export default function (options: {
             {
               "image": `${options.imagePrefix}post-builder:${options.buildNumber}`,
               "args": [options.type, options.name, options.namespace, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": [
-                {
-                  "name": "JABOS_OPERATOR_URL",
-                  "value": `http://operator.${settings.namespace()}:${settings.port()}/`
-                },
-              ],
+              "env": jabosOperatorUrlEnv(),
               "volumeMounts": [
                 {
                   "name": "timer",
                   "mountPath": "/timer",
+                  "readOnly": true
                 }
               ],
               "imagePullPolicy": "IfNotPresent",
