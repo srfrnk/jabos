@@ -29,8 +29,6 @@ build_number: FORCE
 	$(eval BUILD_NUMBER=$(shell od -An -N10 -i /dev/urandom | tr -d ' -' ))
 
 images: FORCE build_number
-	docker build ./jsonnet -t jsonnet:latest
-	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./jsonnet -t jsonnet:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kubectl -t kubectl:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./operator -t operator:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./git-repository-updater -t git-repository-updater:${BUILD_NUMBER}
@@ -42,7 +40,7 @@ images: FORCE build_number
 
 manifests: FORCE build_number
 	- mkdir build
-	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src,readonly" jsonnet -- \
+	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src,readonly" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- \
 		--tla-str 'imagePrefix=' \
 		--tla-str 'buildNumber=${BUILD_NUMBER}' \
 		--tla-str 'namespace=jabos' \
