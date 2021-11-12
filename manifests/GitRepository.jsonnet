@@ -14,9 +14,12 @@ function(imagePrefix, buildNumber, namespace, debug) (
                schema: {
                  openAPIV3Schema: {
                    type: 'object',
+                   description: '`GitRepository` objects define a git codebase and how to pull from it.',
+                   required: ['spec'],
                    properties: {
                      spec: {
                        type: 'object',
+                       required: ['url', 'branch'],
                        properties: {
                          url: {
                            type: 'string',
@@ -28,7 +31,7 @@ function(imagePrefix, buildNumber, namespace, debug) (
                          },
                          ssh: {
                            type: 'object',
-                           description: 'Credentials for ssh access',
+                           description: 'Credentials for `SSH` access',
                            properties: {
                              secret: {
                                type: 'string',
@@ -37,12 +40,12 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              passphrase: {
                                type: 'string',
                                default: 'git_ssh_passphrase',
-                               description: 'Name of the key inside the secret to use for ssh passphrase. Default: "git_ssh_passphrase"',
+                               description: 'Name of the key inside the secret to use for `SSH` passphrase.',
                              },
                              key: {
                                type: 'string',
                                default: 'git_ssh_key',
-                               description: 'Name of the key inside the secret to use for ssh key. Default: "git_ssh_key"',
+                               description: 'Name of the key inside the secret to use for `SSH` key.',
                              },
                            },
                          },

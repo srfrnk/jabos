@@ -1,5 +1,5 @@
 {
-  Manifests(kind, singular, plural, shortNames=[], specProperties={}):: (
+  Manifests(description, kind, singular, plural, shortNames=[], required=[], specProperties={}):: (
     local kube = import './kube.libsonnet';
     kube.CRD(isCluserScoped=false,
              kind=kind,
@@ -15,9 +15,12 @@
                  schema: {
                    openAPIV3Schema: {
                      type: 'object',
+                     description: description,
+                     required: ['spec'],
                      properties: {
                        spec: {
                          type: 'object',
+                         required: ['gitRepository', 'targetNamespace'] + required,
                          properties: {
                            gitRepository: {
                              type: 'string',

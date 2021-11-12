@@ -49,21 +49,15 @@ Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-exte
 
 ### GitRepository
 
-`GitRepository` objects define a git codebase and how to pull from it.
-
-See [definition here](./manifests/GitRepository.jsonnet)
+See [API Docs here](https://srfrnk.github.io/jabos/#crd-GitRepository)
 
 ### DockerImage
 
-`DockerImage` objects define images, how to build and push them.
-
-See [definition here](./manifests/DockerImage.jsonnet)
+See [API Docs here](https://srfrnk.github.io/jabos/#crd-DockerImage)
 
 ### JsonnetManifest
 
-`JsonnetManifest` objects define a folder with [jsonnet](https://jsonnet.org/) based manifests to deploy.
-
-See [definition here](./manifests/JsonnetManifests.jsonnet)
+See [API Docs here](https://srfrnk.github.io/jabos/#crd-JsonnetManifest)
 
 `example.jsonnet`:
 

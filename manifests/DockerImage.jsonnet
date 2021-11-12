@@ -14,9 +14,12 @@ function(imagePrefix, buildNumber, namespace, debug) (
                schema: {
                  openAPIV3Schema: {
                    type: 'object',
+                   description: '`DockerImage` objects define images, how to build and push them.',
+                   required: ['spec'],
                    properties: {
                      spec: {
                        type: 'object',
+                       required: ['gitRepository', 'imageName'],
                        properties: {
                          gitRepository: {
                            type: 'string',
@@ -25,12 +28,12 @@ function(imagePrefix, buildNumber, namespace, debug) (
                          contextPath: {
                            type: 'string',
                            default: '.',
-                           description: 'The path **relative to the git repository root** where the context for the docker build is found. Default: "." (Repository root)',
+                           description: 'The path **relative to the git repository root** where the context for the docker build is found.',
                          },
                          dockerFile: {
                            type: 'string',
                            default: 'Dockerfile',
-                           description: 'The name of the Dockerfile to use for the docker build. Default: "Dockerfile"',
+                           description: 'The name of the Dockerfile to use for the docker build.',
                          },
                          imageName: {
                            type: 'string',
@@ -39,16 +42,18 @@ function(imagePrefix, buildNumber, namespace, debug) (
                          insecureRegistry: {
                            type: 'boolean',
                            default: true,
-                           description: '"true" to use insecure registries with docker push. Default: false',
+                           description: '"true" to use insecure registries with docker push.',
                          },
                          dockerConfig: {
                            type: 'object',
                            additionalProperties: true,
                            default: {},
-                           description: 'Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**',
+                           description: 'Docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**',
                          },
                          dockerHub: {
                            type: 'object',
+                           required: ['secret'],
+                           description: '`Docker Hub` credentials to use',
                            properties: {
                              secret: {
                                type: 'string',
@@ -57,17 +62,19 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              username: {
                                type: 'string',
                                default: 'docker_hub_username',
-                               description: 'Name of the key inside the secret to use for username. Default: "docker_hub_username"',
+                               description: 'Name of the key inside the secret to use for username.',
                              },
                              password: {
                                type: 'string',
                                default: 'docker_hub_password',
-                               description: 'Name of the key inside the secret to use for password. Default: "docker_hub_password"',
+                               description: 'Name of the key inside the secret to use for password.',
                              },
                            },
                          },
                          gcp: {
                            type: 'object',
+                           required: ['secret'],
+                           description: '`GCP` credentials to use',
                            properties: {
                              secret: {
                                type: 'string',
@@ -76,12 +83,14 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              serviceAccountKey: {
                                type: 'string',
                                default: 'gcp_service_account.json',
-                               description: 'Name of the key inside the secret to use for the service account json key. Default: "gcp_service_account.json"',
+                               description: 'Name of the key inside the secret to use for the service account json key.',
                              },
                            },
                          },
                          aws: {
                            type: 'object',
+                           required: ['secret'],
+                           description: '`AWS` credentials to use',
                            properties: {
                              secret: {
                                type: 'string',
@@ -90,12 +99,12 @@ function(imagePrefix, buildNumber, namespace, debug) (
                              accessKeyId: {
                                type: 'string',
                                default: 'aws_access_key_id',
-                               description: 'Name of the key inside the secret to use for the aws_access_key_id. Default: "aws_access_key_id"',
+                               description: 'Name of the key inside the secret to use for the aws_access_key_id.',
                              },
                              secretAccessKey: {
                                type: 'string',
                                default: 'aws_secret_access_key',
-                               description: 'Name of the key inside the secret to use for the aws_secret_access_key. Default: "aws_secret_access_key"',
+                               description: 'Name of the key inside the secret to use for the aws_secret_access_key.',
                              },
                            },
                          },
