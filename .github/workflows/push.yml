@@ -178,6 +178,7 @@ jobs:
 
       - run: |-
           mkdir ./build
+          mkdir ./build/input
           mkdir ./build/output
 
       - run: |-
@@ -188,20 +189,17 @@ jobs:
             --tla-str 'namespace=${{env.NAMESPACE}}' \
             --tla-str 'debug=false' \
             > ./build/jabos-manifests.yaml
+          cp ./build/jabos-manifests.yaml ./build/input/jabos-manifests.yaml
 
       - uses: srfrnk/setup-yq@v1.0.2
 
       - run: |-
-          yq e -i '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml
+          yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
 
       - run: |-
-          docker run --mount "type=bind,src=$(pwd),dst=/input,readonly" \
+          docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input" \
             --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
-            ubuntu bash -c 'echo "test" > /output/index.html'
-
-          # docker run --mount "type=bind,src=$(pwd),dst=/input,readonly" \
-          #   --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
-          #   ghcr.io/srfrnk/crd-api-doc-gen:latest /input/build /output /input/api-info.yaml
+            ghcr.io/srfrnk/crd-api-doc-gen:latest /input /output /input/api-info.yaml
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@4.1.5
