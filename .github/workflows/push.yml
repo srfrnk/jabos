@@ -178,6 +178,9 @@ jobs:
 
       - run: |-
           mkdir ./build
+          mkdir ./build/output
+
+      - run: |-
           docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" \
             ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet:latest -- \
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
@@ -190,9 +193,11 @@ jobs:
 
       - run: |-
           yq e -i '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml
-          mkdir ./build/output
-          docker run --mount "type=bind,src=$(pwd),dst=/data,readonly" \
-            ghcr.io/srfrnk/crd-api-doc-gen:latest /data/build /data/build/output /data/api-info.yaml
+
+      - run: |-
+          docker run --mount "type=bind,src=$(pwd),dst=/input,readonly" \
+            --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
+            ghcr.io/srfrnk/crd-api-doc-gen:latest /input/build /output /input/api-info.yaml
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@4.1.5
