@@ -29,7 +29,7 @@
                            path: {
                              type: 'string',
                              default: '.',
-                             description: 'The folder path **relative to the git repository root** where the jsonnet manifests are found. Default: "." (Repository root)',
+                             description: 'The folder path **relative to the git repository root** where the jsonnet manifests are found.',
                            },
                            targetNamespace: {
                              type: 'string',
