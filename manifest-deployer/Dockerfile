@@ -1,8 +1,0 @@
-ARG IMAGE_PREFIX
-ARG IMAGE_VERSION
-
-FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
-
-COPY ./deploy.sh /
-
-ENTRYPOINT ["/deploy.sh"]
