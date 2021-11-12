@@ -14,6 +14,12 @@
 		},
 		{
 			"path": "../crd-api-doc-gen"
+		},
+		{
+			"path": "../grafana-dashboard-operator"
+		},
+		{
+			"path": "../k8s-jsonnet-manifest-packager"
 		}
 	],
 }
