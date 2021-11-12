@@ -12,5 +12,8 @@
 		{
 			"path": "../efk-stack-helm"
 		},
+		{
+			"path": "../crd-api-doc-gen"
+		}
 	],
 }
