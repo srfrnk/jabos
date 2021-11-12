@@ -197,7 +197,11 @@ jobs:
       - run: |-
           docker run --mount "type=bind,src=$(pwd),dst=/input,readonly" \
             --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
-            ghcr.io/srfrnk/crd-api-doc-gen:latest /input/build /output /input/api-info.yaml
+            ubuntu bash -c 'echo "test" > /output/index.html'
+
+          # docker run --mount "type=bind,src=$(pwd),dst=/input,readonly" \
+          #   --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
+          #   ghcr.io/srfrnk/crd-api-doc-gen:latest /input/build /output /input/api-info.yaml
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@4.1.5
