@@ -189,6 +189,7 @@ jobs:
       - uses: chrisdickinson/setup-yq@latest
 
       - run: |-
+          yq --help
           yq e -i '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml
           mkdir ./build/output
           docker run --mount "type=bind,src=$(pwd),dst=/data,readonly" \
