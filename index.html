@@ -304,7 +304,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 0.0.46</div>
+                <div class="app-desc">Version: 0.0.47</div>
             </p>
           </div>
         </div>
@@ -845,18 +845,21 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     var defs = {}
     defs["DockerImage"] = {
   "title" : "DockerImage",
+  "required" : [ "spec" ],
   "type" : "object",
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/DockerImage_spec"
     }
   },
+  "description" : "`DockerImage` objects define images, how to build and push them.",
   "xml" : {
     "name" : "jabos.io",
     "namespace" : "v1"
   }
 };
     defs["DockerImage_spec"] = {
+  "required" : [ "gitRepository", "imageName" ],
   "type" : "object",
   "properties" : {
     "aws" : {
@@ -864,18 +867,18 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     },
     "contextPath" : {
       "type" : "string",
-      "description" : "The path **relative to the git repository root** where the context for the docker build is found. Default: \".\" (Repository root)",
+      "description" : "The path **relative to the git repository root** where the context for the docker build is found.",
       "default" : "."
     },
     "dockerConfig" : {
       "type" : "object",
       "additionalProperties" : true,
-      "description" : "Optional docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**",
+      "description" : "Docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**",
       "default" : { }
     },
     "dockerFile" : {
       "type" : "string",
-      "description" : "The name of the Dockerfile to use for the docker build. Default: \"Dockerfile\"",
+      "description" : "The name of the Dockerfile to use for the docker build.",
       "default" : "Dockerfile"
     },
     "dockerHub" : {
@@ -894,17 +897,18 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     },
     "insecureRegistry" : {
       "type" : "boolean",
-      "description" : "\"true\" to use insecure registries with docker push. Default: false",
+      "description" : "\"true\" to use insecure registries with docker push.",
       "default" : true
     }
   }
 };
     defs["DockerImage_spec_aws"] = {
+  "required" : [ "secret" ],
   "type" : "object",
   "properties" : {
     "accessKeyId" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for the aws_access_key_id. Default: \"aws_access_key_id\"",
+      "description" : "Name of the key inside the secret to use for the aws_access_key_id.",
       "default" : "aws_access_key_id"
     },
     "secret" : {
@@ -913,17 +917,19 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     },
     "secretAccessKey" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for the aws_secret_access_key. Default: \"aws_secret_access_key\"",
+      "description" : "Name of the key inside the secret to use for the aws_secret_access_key.",
       "default" : "aws_secret_access_key"
     }
-  }
+  },
+  "description" : "`AWS` credentials to use"
 };
     defs["DockerImage_spec_dockerHub"] = {
+  "required" : [ "secret" ],
   "type" : "object",
   "properties" : {
     "password" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for password. Default: \"docker_hub_password\"",
+      "description" : "Name of the key inside the secret to use for password.",
       "default" : "docker_hub_password"
     },
     "secret" : {
@@ -932,12 +938,14 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     },
     "username" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for username. Default: \"docker_hub_username\"",
+      "description" : "Name of the key inside the secret to use for username.",
       "default" : "docker_hub_username"
     }
-  }
+  },
+  "description" : "`Docker Hub` credentials to use"
 };
     defs["DockerImage_spec_gcp"] = {
+  "required" : [ "secret" ],
   "type" : "object",
   "properties" : {
     "secret" : {
@@ -946,25 +954,29 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     },
     "serviceAccountKey" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for the service account json key. Default: \"gcp_service_account.json\"",
+      "description" : "Name of the key inside the secret to use for the service account json key.",
       "default" : "gcp_service_account.json"
     }
-  }
+  },
+  "description" : "`GCP` credentials to use"
 };
     defs["GitRepository"] = {
   "title" : "GitRepository",
+  "required" : [ "spec" ],
   "type" : "object",
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/GitRepository_spec"
     }
   },
+  "description" : "`GitRepository` objects define a git codebase and how to pull from it.",
   "xml" : {
     "name" : "jabos.io",
     "namespace" : "v1"
   }
 };
     defs["GitRepository_spec"] = {
+  "required" : [ "branch", "url" ],
   "type" : "object",
   "properties" : {
     "branch" : {
@@ -985,12 +997,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "key" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for ssh key. Default: \"git_ssh_key\"",
+      "description" : "Name of the key inside the secret to use for `SSH` key.",
       "default" : "git_ssh_key"
     },
     "passphrase" : {
       "type" : "string",
-      "description" : "Name of the key inside the secret to use for ssh passphrase. Default: \"git_ssh_passphrase\"",
+      "description" : "Name of the key inside the secret to use for `SSH` passphrase.",
       "default" : "git_ssh_passphrase"
     },
     "secret" : {
@@ -998,27 +1010,30 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "description" : "Name of secret to use. **Must be in the same namespace**"
     }
   },
-  "description" : "Credentials for ssh access"
+  "description" : "Credentials for `SSH` access"
 };
     defs["JsonnetManifest"] = {
   "title" : "JsonnetManifest",
+  "required" : [ "spec" ],
   "type" : "object",
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/JsonnetManifest_spec"
     }
   },
+  "description" : "`JsonnetManifest` objects define a folder with [jsonnet](https://jsonnet.org/) based manifests to deploy.",
   "xml" : {
     "name" : "jabos.io",
     "namespace" : "v1"
   }
 };
     defs["JsonnetManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
   "type" : "object",
   "properties" : {
     "commitTLAKey" : {
       "type" : "string",
-      "description" : "The name of a [Top-Level Argument (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below. Default: \"latestCommitHash\"",
+      "description" : "The name of a [Top-Level Argument (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below.",
       "default" : "latestCommitHash"
     },
     "gitRepository" : {
