@@ -180,6 +180,7 @@ jobs:
           mkdir ./build
           mkdir ./build/input
           mkdir ./build/output
+          chmod -R 777 ./build/output
 
       - run: |-
           docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" \
@@ -197,7 +198,7 @@ jobs:
           yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
 
       - run: |-
-          docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input" \
+          docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
             --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
             ghcr.io/srfrnk/crd-api-doc-gen:latest /input /output /input/api-info.yaml
 
