@@ -166,6 +166,7 @@ jobs:
         run: |-
           mkdir ./build
           mkdir ./build/input
+          chmod -R 777 ./manifests
           docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src" \
             ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
