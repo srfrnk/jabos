@@ -4,7 +4,7 @@ function(imagePrefix, buildNumber, namespace, debug) (
   local globals = import './globals.libsonnet';
 
   [
-    kube.HeadlessService(namespace=namespace, name='operator', labels={
+    kube.Service(headless=true, namespace=namespace, name='operator', labels={
       app: 'operator',
     }, selector={
       app: 'operator',

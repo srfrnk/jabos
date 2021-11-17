@@ -1,7 +1,8 @@
 function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
   local metacontroller = import './metacontroller.libsonnet';
-  metacontroller.DecoratorController(name='git-repositories-controller',
+  metacontroller.DecoratorController(namespace=namespace,
+                                     name='git-repositories-controller',
                                      resources=[
                                        {
                                          apiVersion: 'jabos.io/v1',

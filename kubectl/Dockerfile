@@ -3,8 +3,8 @@ ARG IMAGE_VERSION
 
 FROM ubuntu
 
-RUN apt-get update -y
-RUN apt-get install -yy curl git wget
+RUN apt-get update -y &&\
+  apt-get install -yy curl wget
 
 RUN \
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\

@@ -63,15 +63,15 @@ export default {
                   "mountPath": "/kaniko/.docker",
                 },
                 {
-                  "name": "aws",
-                  "mountPath": "/kaniko/.aws",
-                },
-                {
                   "name": "kaniko-secrets",
                   "mountPath": "/secrets",
                   "readOnly": true
-                }
-              ]
+                },
+              ].concat(!spec.aws ? [] : [
+                {
+                  "name": "aws",
+                  "mountPath": "/kaniko/.aws",
+                }]),
             },
             {
               "image": "gcr.io/kaniko-project/executor:latest",
@@ -108,13 +108,13 @@ export default {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
                   "readOnly": true
-                },
-                {
-                  "name": "aws",
-                  "mountPath": "/root/.aws/",
-                  "readOnly": true
-                }
-              ]
+                },].concat(!spec.aws ? [] : [
+                  {
+                    "name": "aws",
+                    "mountPath": "/root/.aws/",
+                    "readOnly": true
+                  }
+                ])
             }
           ],
           volumes: ([

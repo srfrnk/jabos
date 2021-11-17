@@ -1,8 +1,7 @@
 {
   Manifests(description, kind, singular, plural, shortNames=[], required=[], specProperties={}):: (
     local kube = import './kube.libsonnet';
-    kube.CRD(isCluserScoped=false,
-             kind=kind,
+    kube.CRD(kind=kind,
              singular=singular,
              plural=plural,
              group='jabos.io',

@@ -40,7 +40,7 @@ images: FORCE build_number
 
 manifests: FORCE build_number
 	- mkdir build
-	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src,readonly" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- \
+	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
 		--tla-str 'imagePrefix=' \
 		--tla-str 'buildNumber=${BUILD_NUMBER}' \
 		--tla-str 'namespace=jabos' \
@@ -54,7 +54,7 @@ deploy-examples: FORCE
 	kubectl apply -f https://raw.githubusercontent.com/srfrnk/jabos-examples/main/simple-build.yaml
 
 	- rm -rf ./build/tmp
-	git clone --single-branch --branch main -- https://github.com/srfrnk/jabos-examples-private.git ./build/tmp
+	git clone --single-branch --branch main -- git@github.com:srfrnk/jabos-examples-private.git ./build/tmp
 	kubectl apply -f ./build/tmp/simple-build.yaml
 	rm -rf ./build/tmp
 

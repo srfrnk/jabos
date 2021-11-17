@@ -162,15 +162,12 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - run: |-
+      - name: Package
+        run: |-
           mkdir ./build
           mkdir ./build/input
-          mkdir ./build/output
-          chmod -R 777 ./build/output
-
-      - run: |-
-          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src,readonly" \
-            ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- \
+          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src" \
+            ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
             --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             --tla-str 'namespace=${{env.NAMESPACE}}' \
@@ -180,10 +177,11 @@ jobs:
 
       - uses: srfrnk/setup-yq@v1.0.2
 
-      - run: |-
+      - name: Generate Docs
+        run: |-
+          mkdir ./build/output
+          chmod -R 777 ./build/output
           yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
-
-      - run: |-
           docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
             --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
             ghcr.io/srfrnk/crd-api-doc-gen:latest /input /output /input/api-info.yaml

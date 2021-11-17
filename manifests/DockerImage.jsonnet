@@ -1,7 +1,6 @@
 function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
-  kube.CRD(isCluserScoped=false,
-           kind='DockerImage',
+  kube.CRD(kind='DockerImage',
            singular='docker-image',
            plural='docker-images',
            group='jabos.io',

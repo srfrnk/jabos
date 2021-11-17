@@ -1,7 +1,6 @@
 function(imagePrefix, buildNumber, namespace, debug) (
   local kube = import './kube.libsonnet';
-  kube.CRD(isCluserScoped=false,
-           kind='GitRepository',
+  kube.CRD(kind='GitRepository',
            singular='git-repository',
            plural='git-repositories',
            group='jabos.io',

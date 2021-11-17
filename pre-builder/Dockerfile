@@ -3,8 +3,8 @@ ARG IMAGE_VERSION
 
 FROM ubuntu
 
-RUN apt-get update -y
-RUN apt-get install -yy curl git wget
+RUN apt-get update -y &&\
+  apt-get install -yy curl git
 
 RUN useradd -ms /bin/bash user
 
