@@ -1,5 +1,6 @@
 FORCE:
 
+setup: SHELL:=/bin/bash
 setup: FORCE
 	minikube addons enable registry
 	minikube addons enable registry-aliases
@@ -7,14 +8,25 @@ setup: FORCE
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
 	- kubectl create --save-config namespace example-env
-	- kubectl create --save-config namespace prometheus
+	- kubectl create --save-config namespace monitoring
+	- kubectl create --save-config namespace grafana-dashboard-operator
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
 	kubectl apply -n efk -f https://github.com/srfrnk/efk-stack-helm/releases/latest/download/efk-manifests.yaml
-	- helm upgrade -i -n prometheus prometheus kube-prometheus-stack --repo https://prometheus-community.github.io/helm-charts \
+	- helm upgrade -i --wait -n monitoring kube-prometheus-stack kube-prometheus-stack --repo https://prometheus-community.github.io/helm-charts \
 		--set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
 		--set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false \
 		--set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
 		--set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false
+	kubectl apply -n grafana-dashboard-operator -f https://github.com/srfrnk/grafana-dashboard-operator/releases/latest/download/grafana-dashboard-operator-manifests.yaml
+	- kubectl delete secret -n grafana-dashboard-operator grafana-api
+	TOKEN="null"; \
+		while [ "$${TOKEN}" = "null" ]; do \
+			TOKEN=$$(echo "curl -X POST -H \"Content-Type: application/json\" -d '{\"name\":\"apikey$${RANDOM}\", \"role\": \"Admin\"}' \
+			http://admin:prom-operator@kube-prometheus-stack-grafana/api/auth/keys 2>/dev/null ; echo" \
+			| kubectl run -i --rm -n monitoring --image curlimages/curl curl$${RANDOM} -- sh 2>/dev/null \
+			| grep -v -e "pod .* deleted" | yq eval '.key' -); \
+		done; \
+		kubectl -n grafana-dashboard-operator create secret generic grafana-api --from-literal=token=$${TOKEN}
 	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer
 	@tput bold
 	@tput setaf 2
@@ -59,4 +71,4 @@ deploy-examples: FORCE
 	rm -rf ./build/tmp
 
 service-port-forward: FORCE
-	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "prometheus svc/prometheus-grafana 3000:80"
+	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "monitoring svc/kube-prometheus-stack-grafana 3000:80"
