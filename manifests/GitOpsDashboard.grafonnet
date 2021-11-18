@@ -1,0 +1,97 @@
+local grafana = import './vendor/grafonnet/grafana.libsonnet';
+local dashboard = grafana.dashboard;
+local row = grafana.row;
+local singlestat = grafana.singlestat;
+local prometheus = grafana.prometheus;
+local template = grafana.template;
+{
+  folder: 'jabos',
+  overwrite: true,
+  dashboard: dashboard.new(
+    'GitOps',
+    schemaVersion=16,
+    tags=['jabos', 'gitops'],
+    graphTooltip=1,
+  ).addPanel(
+    grafana.graphPanel.new(
+      'GitRepository update duration seconds (update latest commit true/false)',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(jabos_operator_git_repository_updater_duration) by(git_repository,latest_commit_update)',
+        legendFormat='{{git_repository}} - {{latest_commit_update}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'GitRepository updates per minute',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_git_repository_updater_start[1m])*60',
+        legendFormat='{{git_repository}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'DockerImage update duration seconds',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='jabos_operator_docker_image_builder_duration',
+        legendFormat='{{docker_image}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'DockerImage updates per minute',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_docker_image_builder_start[1m])*60',
+        legendFormat='{{docker_image}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'JsonnetManifests update duration seconds',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='jabos_operator_jsonnet_manifests_builder_duration',
+        legendFormat='{{jsonnet_manifests}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'JsonnetManifests updates per minute',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_jsonnet_manifests_builder_start[1m])*60',
+        legendFormat='{{jsonnet_manifests}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ),
+}

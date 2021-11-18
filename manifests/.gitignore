@@ -1,3 +1,4 @@
 kube.libsonnet
 metacontroller.libsonnet
 monitoring.libsonnet
+grafana-dashboard.libsonnet

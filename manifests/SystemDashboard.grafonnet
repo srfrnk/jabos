@@ -1,0 +1,97 @@
+local grafana = import './vendor/grafonnet/grafana.libsonnet';
+local dashboard = grafana.dashboard;
+local row = grafana.row;
+local singlestat = grafana.singlestat;
+local prometheus = grafana.prometheus;
+local template = grafana.template;
+{
+  folder: 'jabos',
+  overwrite: true,
+  dashboard: dashboard.new(
+    'System',
+    schemaVersion=16,
+    tags=['jabos'],
+    graphTooltip=1,
+  ).addPanel(
+    grafana.graphPanel.new(
+      'HTTP requests per minute',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_http_requests_total[1m])',
+        legendFormat='{{route}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'HTTP request duration seconds',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(rate(jabos_operator_http_request_duration_seconds_sum[1m]))by(route)/sum(rate(jabos_operator_http_request_duration_seconds_count[1m]))by(route)',
+        legendFormat='{{route}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'HTTP request length bytes',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(rate(jabos_operator_http_request_length_bytes_sum[1m]))by(route)/sum(rate(jabos_operator_http_request_length_bytes_count[1m]))by(route)',
+        legendFormat='{{route}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'HTTP response length bytes',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(rate(jabos_operator_http_response_length_bytes_sum[1m]))by(route)/sum(rate(jabos_operator_http_response_length_bytes_count[1m]))by(route)',
+        legendFormat='{{route}}',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'CPU seconds',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(rate(jabos_operator_process_cpu_seconds_total[1m]))',
+        legendFormat='',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+    },
+  ).addPanel(
+    grafana.graphPanel.new(
+      'Memory MB',
+    )
+    .addTarget(
+      prometheus.target(
+        expr='sum(jabos_operator_process_resident_memory_bytes)/1048576',
+        legendFormat='',
+      )
+    ), gridPos={
+      h: 10,
+      w: 12,
+      x: 12,
+    },
+  ),
+}
