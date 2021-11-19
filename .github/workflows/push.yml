@@ -44,9 +44,6 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kubectl
         with:
           context: kubectl
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -58,9 +55,6 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}operator
         with:
           context: operator
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -86,9 +80,6 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}docker-image-builder-init
         with:
           context: docker-image-builder-init
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -100,9 +91,6 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet-manifest-builder
         with:
           context: jsonnet-manifest-builder
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
@@ -128,9 +116,6 @@ jobs:
           IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}pre-builder
         with:
           context: pre-builder
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
           push: true
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache

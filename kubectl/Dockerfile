@@ -1,6 +1,3 @@
-ARG IMAGE_PREFIX
-ARG IMAGE_VERSION
-
 FROM ubuntu
 
 RUN apt-get update -y &&\
