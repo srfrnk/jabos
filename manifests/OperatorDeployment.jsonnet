@@ -31,6 +31,10 @@ function(imagePrefix, buildNumber, namespace, debug) (
             value: globals.prometheusMetricPrefix,
           },
           {
+            name: 'JOB_ACTIVE_DEADLINE_SECONDS',
+            value: std.toString(globals.jobActiveDeadlineSeconds),
+          },
+          {
             name: 'NAMESPACE',
             valueFrom: {
               fieldRef: {

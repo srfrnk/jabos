@@ -28,7 +28,8 @@ export default function (options: {
       "completions": 1,
       "completionMode": "NonIndexed",
       "backoffLimit": 100,
-      "activeDeadlineSeconds": 3600,
+      "activeDeadlineSeconds": parseInt(settings.jobActiveDeadlineSeconds()),
+      "ttlSecondsAfterFinished": 30,
       "parallelism": 1,
       "template": {
         "metadata": {
