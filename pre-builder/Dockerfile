@@ -6,7 +6,7 @@ RUN apt-get update -y &&\
 RUN useradd -ms /bin/bash user
 
 RUN mkdir /home/user/.ssh &&\
-  printf "Host github.com\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
+  printf "Host *\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
   touch /home/user/.ssh/known_hosts &&\
   chown user /home/user/.ssh/known_hosts
 

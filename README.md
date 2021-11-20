@@ -200,9 +200,6 @@ Important metrics for the operation of Jabos are:
 1. To deploy examples
    1. Locally clone [jabos-examples repo](https://github.com/srfrnk/jabos-examples)
    1. Follow instructions from the README file in the cloned folder
-   1. Locally clone [jabos-examples-private repo](https://github.com/srfrnk/jabos-examples-private)
-   1. Follow instructions from the README file in the cloned folder
-   1. Back within the `jabos` folder (from second step) run `make deploy-examples`
    1. The examples would be deployed into namespace `example-env`
 
 ## Credits

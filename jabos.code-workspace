@@ -23,6 +23,9 @@
 		},
 		{
 			"path": "../k8s-jsonnet-libs"
+		},
+		{
+			"path": "../jabos-examples-gitlab"
 		}
 	],
 }

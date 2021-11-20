@@ -63,12 +63,13 @@ build: FORCE images manifests
 	kubectl apply -n jabos -f build/manifests.yaml
 
 deploy-examples: FORCE
-	kubectl apply -f https://raw.githubusercontent.com/srfrnk/jabos-examples/main/simple-build.yaml
+	make -C ../jabos-examples set-secret
+	make -C ../jabos-examples-private set-secret
+	make -C ../jabos-examples-gitlab set-secret
 
-	- rm -rf ./build/tmp
-	git clone --single-branch --branch main -- git@github.com:srfrnk/jabos-examples-private.git ./build/tmp
-	kubectl apply -f ./build/tmp/simple-build.yaml
-	rm -rf ./build/tmp
+	kubectl apply -f ../jabos-examples/simple-build.yaml
+	kubectl apply -f ../jabos-examples-private/simple-build.yaml
+	kubectl apply -f ../jabos-examples-gitlab/simple-build.yaml
 
 service-port-forward: FORCE
 	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "monitoring svc/kube-prometheus-stack-grafana 3000:80"
