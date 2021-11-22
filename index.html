@@ -295,6 +295,9 @@ p {
                         <li class="">
                           <a href="#crd-JsonnetManifest">JsonnetManifest</a>
                         </li>
+                        <li class="">
+                          <a href="#crd-PlainManifest">PlainManifest</a>
+                        </li>
           </ul>
         </nav>
       </div>
@@ -304,7 +307,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 0.0.60</div>
+                <div class="app-desc">Version: 0.0.62</div>
             </p>
           </div>
         </div>
@@ -315,6 +318,8 @@ p {
                         <section id="crd-GitRepository" class="crd" data="GitRepository">
                         </section>
                         <section id="crd-JsonnetManifest" class="crd" data="JsonnetManifest">
+                        </section>
+                        <section id="crd-PlainManifest" class="crd" data="PlainManifest">
                         </section>
           </div>
           <script>
@@ -1044,6 +1049,55 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "type" : "string",
       "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
       "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
+};
+    defs["PlainManifest"] = {
+  "title" : "PlainManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/PlainManifest_spec"
+    }
+  },
+  "description" : "`PlainManifest` objects define a folder with plain manifests to deploy (YAML/YML/JSON).",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["PlainManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "commitReplacementString" : {
+      "type" : "string",
+      "description" : "The string to replace with the commit hash for the build. Will be prefixed by `replacementPrefix` and suffixed by `replacementSuffix`. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "LATEST_COMMIT_HASH"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "replacementPrefix" : {
+      "type" : "string",
+      "description" : "The string to prefix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\$\\\\{"
+    },
+    "replacementSuffix" : {
+      "type" : "string",
+      "description" : "The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\}"
     },
     "targetNamespace" : {
       "type" : "string",
