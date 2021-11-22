@@ -22,6 +22,12 @@ const metrics = {
     labelNames: ['namespace', 'jsonnet_manifests', 'commit'],
   }),
 
+  plainManifestsBuildTrigger: new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}plain_manifests_build_trigger`,
+    help: 'new build triggered for plain manifests',
+    labelNames: ['namespace', 'plain_manifests', 'commit'],
+  }),
+
   gitRepositoryUpdaterStart: new prometheusClient.Counter({
     name: `${settings.prometheusMetricPrefix()}git_repository_updater_start`,
     help: 'GitRepositoryUpdater start',
@@ -75,35 +81,49 @@ const metrics = {
     help: 'JsonnetManifestsBuilder duration',
     labelNames: ['namespace', 'jsonnet_manifests'],
   }),
+
+  plainManifestsBuilderStart: new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_start`,
+    help: 'PlainManifestsBuilder start',
+    labelNames: ['namespace', 'plain_manifests'],
+  }),
+
+  plainManifestsBuilderEnd: new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_end`,
+    help: 'PlainManifestsBuilder end',
+    labelNames: ['namespace', 'plain_manifests', 'success'],
+  }),
+
+  plainManifestsBuilderDuration: new prometheusClient.Gauge({
+    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_duration`,
+    help: 'PlainManifestsBuilder duration',
+    labelNames: ['namespace', 'plain_manifests'],
+  }),
 };
 
-export function addLatestCommitChanged(namespace: string, gitRepository: string, latestCommit: string): void {
-  metrics.latestCommitChanged.inc({ 'namespace': namespace, 'git_repository': gitRepository, 'latest_commit': latestCommit }, 1);
+export function addMetric(metric: string, labels: any) {
+  metrics[metric].inc(labels, 1);
 }
 
-export function addDockerImageBuildTrigger(namespace: string, dockerImage: string, commit: string): void {
-  metrics.dockerImageBuildTrigger.inc({ 'namespace': namespace, 'docker_image': dockerImage, 'commit': commit }, 1);
+export function setMetric(metric: string, labels: any, value: number) {
+  metrics[metric].set(labels, value);
 }
 
-export function addJsonnetManifestsBuildTrigger(namespace: string, jsonnetManifests: string, commit: string): void {
-  metrics.jsonnetManifestsBuildTrigger.inc({ 'namespace': namespace, 'jsonnet_manifests': jsonnetManifests, 'commit': commit }, 1);
-}
-
-export async function addMetric(request: Request, response: Response, next: NextFunction) {
+export async function addMetricReq(request: Request, response: Response, next: NextFunction) {
   var metric = request.params.metric;
   var labels = request.body;
 
-  metrics[metric].inc(labels, 1);
+  addMetric(metric, labels);
 
   response.status(200).json({});
 }
 
-export async function setMetric(request: Request, response: Response, next: NextFunction) {
+export async function setMetricReq(request: Request, response: Response, next: NextFunction) {
   var metric = request.params.metric;
   var value = parseFloat(typeof request.query.value === "string" ? request.query.value : "0");
   var labels = request.body;
 
-  metrics[metric].set(labels, value);
+  setMetric(metric, labels, value);
 
   response.status(200).json({});
 }

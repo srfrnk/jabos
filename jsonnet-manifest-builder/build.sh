@@ -22,5 +22,3 @@ for file in $(find ${ROOT_PATH} -name '*.jsonnet'); do
 done
 
 yq e -I 2 -P '(. | select(has(0)) | .[] | splitDoc) // .' $(find /build -name '*.json') > /manifests/manifests.yaml
-
-# TODO: upload the manifests yaml to a package/version manager for auditing

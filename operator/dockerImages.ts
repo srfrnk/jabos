@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
 import { k8sName } from './misc';
-import { addDockerImageBuildTrigger } from './metrics';
+import { addMetric } from './metrics';
 import dockerHubSecretEnv from './dockerHubSecretEnv';
 import gcpSecretSources from './gcpSecretSources';
 import awsSecretSources from './awsSecretSources';
@@ -141,7 +141,7 @@ export default {
     };
 
     if (triggerJob) {
-      addDockerImageBuildTrigger(namespace, name, latestCommit);
+      addMetric('dockerImageBuildTrigger', { 'namespace': namespace, 'docker_image': name, 'commit': latestCommit });
     }
 
     if (settings.debug()) console.log("dockerImages sync res", JSON.stringify(res));
