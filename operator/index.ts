@@ -5,8 +5,9 @@ import prometheusMiddleware from 'express-prometheus-middleware';
 import gitRepositories from './gitRepositories';
 import dockerImages from './dockerImages';
 import jsonnetManifests from './jsonnetManifests';
+import plainManifests from './plainManifests';
 import settings from './settings';
-import { addMetric, setMetric } from './metrics';
+import { addMetricReq, setMetricReq } from './metrics';
 
 const app = express();
 
@@ -22,40 +23,15 @@ app.use(prometheusMiddleware({
   requestDurationBuckets: [0.1, 0.5, 1, 1.5],
   requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
   responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
-  /**
-   * Uncomenting the `authenticate` callback will make the `metricsPath` route
-   * require authentication. This authentication callback can make a simple
-   * basic auth test, or even query a remote server to validate access.
-   * To access /metrics you could do:
-   * curl -X GET user:password@localhost:9091/metrics
-   */
-  // authenticate: req => req.headers.authorization === 'Basic dXNlcjpwYXNzd29yZA==',
-  /**
-   * Uncommenting the `extraMasks` config will use the list of regexes to
-   * reformat URL path names and replace the values found with a placeholder value
-  */
-  // extraMasks: [/..:..:..:..:..:../],
-  /**
-   * The prefix option will cause all metrics to have the given prefix.
-   * E.g.: `app_prefix_http_requests_total`
-   */
   prefix: settings.prometheusMetricPrefix(),
-  /**
-   * Can add custom labels with customLabels and transformLabels options
-   */
-  // customLabels: ['contentType'],
-  // transformLabels(labels, req) {
-  //   // eslint-disable-next-line no-param-reassign
-  //   labels.contentType = req.headers['content-type'];
-  // },
 }));
 
 app.get('/', asyncHandler(async (request: Request, response: Response, next: NextFunction) => {
   response.status(200).json({ status: 'ok' });
 }));
 
-app.post('/addMetric/:metric', asyncHandler(addMetric));
-app.post('/setMetric/:metric', asyncHandler(setMetric));
+app.post('/addMetric/:metric', asyncHandler(addMetricReq));
+app.post('/setMetric/:metric', asyncHandler(setMetricReq));
 
 app.post('/git-repositories-sync', asyncHandler(gitRepositories.sync));
 app.post('/git-repositories-customize', asyncHandler(gitRepositories.customize));
@@ -65,6 +41,9 @@ app.post('/docker-images-customize', asyncHandler(dockerImages.customize));
 
 app.post('/jsonnet-manifests-sync', asyncHandler(jsonnetManifests.sync));
 app.post('/jsonnet-manifests-customize', asyncHandler(jsonnetManifests.customize));
+
+app.post('/plain-manifests-sync', asyncHandler(plainManifests.sync));
+app.post('/plain-manifests-customize', asyncHandler(plainManifests.customize));
 
 app.use((err, req, res, next) => {
   console.error("Unhandled Exception:", err);
