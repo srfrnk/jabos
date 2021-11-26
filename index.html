@@ -293,6 +293,9 @@ p {
                           <a href="#crd-GitRepository">GitRepository</a>
                         </li>
                         <li class="">
+                          <a href="#crd-HelmTemplateManifest">HelmTemplateManifest</a>
+                        </li>
+                        <li class="">
                           <a href="#crd-JsonnetManifest">JsonnetManifest</a>
                         </li>
                         <li class="">
@@ -307,7 +310,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 0.0.62</div>
+                <div class="app-desc">Version: 0.0.64</div>
             </p>
           </div>
         </div>
@@ -316,6 +319,8 @@ p {
                         <section id="crd-DockerImage" class="crd" data="DockerImage">
                         </section>
                         <section id="crd-GitRepository" class="crd" data="GitRepository">
+                        </section>
+                        <section id="crd-HelmTemplateManifest" class="crd" data="HelmTemplateManifest">
                         </section>
                         <section id="crd-JsonnetManifest" class="crd" data="JsonnetManifest">
                         </section>
@@ -1016,6 +1021,45 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     }
   },
   "description" : "Credentials for `SSH` access"
+};
+    defs["HelmTemplateManifest"] = {
+  "title" : "HelmTemplateManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/HelmTemplateManifest_spec"
+    }
+  },
+  "description" : "`HelmTemplateManifest` objects define a folder with a [helm](https://helm.sh/) chart to deploy with `helm template`.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["HelmTemplateManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "commitValueKey" : {
+      "type" : "string",
+      "description" : "The key of the value to to set with the commit hash for the build. **Will be used as a Helm command line `--set-string` argument. Must be escaped accordingly.**",
+      "default" : "LATEST_COMMIT_HASH"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
 };
     defs["JsonnetManifest"] = {
   "title" : "JsonnetManifest",
