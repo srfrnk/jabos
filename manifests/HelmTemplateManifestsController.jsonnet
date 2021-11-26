@@ -1,4 +1,4 @@
 function(imagePrefix, buildNumber, namespace, debug) (
   local manifests = (import './manifests.libsonnet');
-  manifests.Controller(namespace=namespace, name='plain')
+  manifests.Controller(namespace=namespace, name='helm-template')
 )

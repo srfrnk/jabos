@@ -1,5 +1,5 @@
 {
-  Manifests(description, kind, singular, plural, shortNames=[], required=[], specProperties={}):: (
+  CRD(description, kind, singular, plural, shortNames=[], required=[], specProperties={}):: (
     local kube = import './kube.libsonnet';
     kube.CRD(kind=kind,
              singular=singular,
@@ -41,5 +41,48 @@
                  },
                },
              ])
+  ),
+  Controller(namespace, name):: (
+    local kube = import './kube.libsonnet';
+    local metacontroller = import './metacontroller.libsonnet';
+    metacontroller.DecoratorController(namespace=namespace,
+                                       name=name + '-manifests-controller',
+                                       resources=[
+                                         {
+                                           apiVersion: 'jabos.io/v1',
+                                           resource: name + '-manifests',
+                                         },
+                                       ],
+                                       attachments=[
+                                         {
+                                           apiVersion: 'batch/v1',
+                                           resource: 'jobs',
+                                           updateStrategy: {
+                                             method: 'InPlace',
+                                           },
+                                         },
+                                         {
+                                           apiVersion: 'rbac.authorization.k8s.io/v1',
+                                           resource: 'roles',
+                                         },
+                                         {
+                                           apiVersion: 'rbac.authorization.k8s.io/v1',
+                                           resource: 'rolebindings',
+                                         },
+                                       ],
+                                       syncHook={
+                                         webhook: {
+                                           url: 'http://operator.' + namespace + ':3000/' + name + '-manifests-sync',
+                                           timeout: '10s',
+                                         },
+                                       },
+                                       customize={
+                                         webhook: {
+                                           url: 'http://operator.' + namespace + ':3000/' + name + '-manifests-customize',
+                                           timeout: '10s',
+                                         },
+                                       },
+                                       resyncPeriodSeconds=30)
+
   ),
 }

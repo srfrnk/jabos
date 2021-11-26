@@ -68,12 +68,22 @@ local template = grafana.template;
     },
   ).addPanel(
     grafana.graphPanel.new(
-      'JsonnetManifests update duration seconds',
+      'Manifests update duration seconds',
     )
     .addTarget(
       prometheus.target(
         expr='jabos_operator_jsonnet_manifests_builder_duration',
         legendFormat='{{jsonnet_manifests}}',
+      )
+    ).addTarget(
+      prometheus.target(
+        expr='jabos_operator_plain_manifests_builder_duration',
+        legendFormat='{{plain_manifests}}',
+      )
+    ).addTarget(
+      prometheus.target(
+        expr='jabos_operator_helm_manifests_builder_duration',
+        legendFormat='{{helm_manifests}}',
       )
     ), gridPos={
       h: 10,
@@ -81,12 +91,22 @@ local template = grafana.template;
     },
   ).addPanel(
     grafana.graphPanel.new(
-      'JsonnetManifests updates per minute',
+      'Manifests updates per minute',
     )
     .addTarget(
       prometheus.target(
         expr='rate(jabos_operator_jsonnet_manifests_builder_start[1m])*60',
         legendFormat='{{jsonnet_manifests}}',
+      )
+    ).addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_plain_manifests_builder_start[1m])*60',
+        legendFormat='{{plain_manifests}}',
+      )
+    ).addTarget(
+      prometheus.target(
+        expr='rate(jabos_operator_helm_manifests_builder_start[1m])*60',
+        legendFormat='{{helm_manifests}}',
       )
     ), gridPos={
       h: 10,

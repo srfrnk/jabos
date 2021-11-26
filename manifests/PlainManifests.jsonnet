@@ -1,6 +1,6 @@
 function(imagePrefix, buildNumber, namespace, debug) (
-  local manifests = (import './manifests.libsonnet').Manifests;
-  manifests(
+  local manifests = (import './manifests.libsonnet');
+  manifests.CRD(
     description='`PlainManifest` objects define a folder with plain manifests to deploy (YAML/YML/JSON).',
     kind='PlainManifest',
     singular='plain-manifest',

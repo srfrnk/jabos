@@ -8,12 +8,13 @@ export default {
     var spec: any = request.body.object.spec;
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
-    var args = [`--tla-str "${spec.commitTLAKey}=${latestCommit}"`];
+    var commitValueKey = spec.commitValueKey;
+    var args = [commitValueKey, latestCommit];
 
-    await genericManifests.sync('jsonnet', 'jsonnet', 'jsonnet', args, request, response);
+    await genericManifests.sync('helmTemplate', 'helm-template', 'helm_template', args, request, response);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    await genericManifests.customize('jsonnet', request, response);
+    await genericManifests.customize('helmTemplate', request, response);
   }
 }
