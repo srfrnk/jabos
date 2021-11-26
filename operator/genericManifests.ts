@@ -7,8 +7,8 @@ import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
 
 export default {
-  async sync(type: string, args: string[], request: Request, response: Response) {
-    if (settings.debug()) console.log(`${type}Manifests sync req`, JSON.stringify(request.body));
+  async sync(metricName: string, type: string, metricLabel: string, args: string[], request: Request, response: Response) {
+    if (settings.debug()) console.log(`${name}Manifests sync req`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
@@ -50,8 +50,8 @@ export default {
           gitRepository: spec.gitRepository,
           targetNamespace: spec.targetNamespace,
           type: `${type}-manifests`,
-          metricName: `${type}ManifestsBuilder`,
-          metricLabels: { "namespace": namespace, [`${type}_manifests`]: name },
+          metricName: `${metricName}ManifestsBuilder`,
+          metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
           containers: [
             {
               "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
@@ -83,15 +83,15 @@ export default {
     };
 
     if (triggerJob) {
-      addMetric(`${type}ManifestsBuildTrigger`, { 'namespace': namespace, [`${type}_manifests`]: name, 'commit': latestCommit });
+      addMetric(`${name}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
     }
 
-    if (settings.debug()) console.log(`${type}Manifests sync res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${name}Manifests sync res`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
-  async customize(type: string, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${type}Manifests customize req`, JSON.stringify(request.body));
+  async customize(metricName: string, request: Request, response: Response) {
+    if (settings.debug()) console.log(`${metricName}Manifests customize req`, JSON.stringify(request.body));
 
     var res = {
       "relatedResources": [
@@ -106,7 +106,7 @@ export default {
       ]
     };
 
-    if (settings.debug()) console.log(`${type}Manifests customize res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests customize res`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }

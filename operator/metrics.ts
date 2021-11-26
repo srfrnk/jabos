@@ -16,18 +16,6 @@ const metrics = {
     labelNames: ['namespace', 'docker_image', 'commit'],
   }),
 
-  jsonnetManifestsBuildTrigger: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}jsonnet_manifests_build_trigger`,
-    help: 'new build triggered for jsonnet manifests',
-    labelNames: ['namespace', 'jsonnet_manifests', 'commit'],
-  }),
-
-  plainManifestsBuildTrigger: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}plain_manifests_build_trigger`,
-    help: 'new build triggered for plain manifests',
-    labelNames: ['namespace', 'plain_manifests', 'commit'],
-  }),
-
   gitRepositoryUpdaterStart: new prometheusClient.Counter({
     name: `${settings.prometheusMetricPrefix()}git_repository_updater_start`,
     help: 'GitRepositoryUpdater start',
@@ -63,50 +51,54 @@ const metrics = {
     help: 'DockerImageBuilder duration',
     labelNames: ['namespace', 'docker_image'],
   }),
-
-  jsonnetManifestsBuilderStart: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}jsonnet_manifests_builder_start`,
-    help: 'JsonnetManifestsBuilder start',
-    labelNames: ['namespace', 'jsonnet_manifests'],
-  }),
-
-  jsonnetManifestsBuilderEnd: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}jsonnet_manifests_builder_end`,
-    help: 'JsonnetManifestsBuilder end',
-    labelNames: ['namespace', 'jsonnet_manifests', 'success'],
-  }),
-
-  jsonnetManifestsBuilderDuration: new prometheusClient.Gauge({
-    name: `${settings.prometheusMetricPrefix()}jsonnet_manifests_builder_duration`,
-    help: 'JsonnetManifestsBuilder duration',
-    labelNames: ['namespace', 'jsonnet_manifests'],
-  }),
-
-  plainManifestsBuilderStart: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_start`,
-    help: 'PlainManifestsBuilder start',
-    labelNames: ['namespace', 'plain_manifests'],
-  }),
-
-  plainManifestsBuilderEnd: new prometheusClient.Counter({
-    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_end`,
-    help: 'PlainManifestsBuilder end',
-    labelNames: ['namespace', 'plain_manifests', 'success'],
-  }),
-
-  plainManifestsBuilderDuration: new prometheusClient.Gauge({
-    name: `${settings.prometheusMetricPrefix()}plain_manifests_builder_duration`,
-    help: 'PlainManifestsBuilder duration',
-    labelNames: ['namespace', 'plain_manifests'],
-  }),
 };
 
+function setupManifestMetrics(type: string, label: string, descriptionName: string): void {
+  metrics[`${type}ManifestsBuildTrigger`] = new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}${label}_manifests_build_trigger`,
+    help: 'new build triggered for ${descriptionName} manifests',
+    labelNames: ['namespace', `${label}_manifests`, 'commit'],
+  });
+
+  metrics[`${type}ManifestsBuilderStart`] = new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}${label}_manifests_builder_start`,
+    help: `${descriptionName}ManifestsBuilder start`,
+    labelNames: ['namespace', `${label}_manifests`],
+  });
+
+  metrics[`${type}ManifestsBuilderEnd`] = new prometheusClient.Counter({
+    name: `${settings.prometheusMetricPrefix()}${label}_manifests_builder_end`,
+    help: `${descriptionName}ManifestsBuilder end`,
+    labelNames: ['namespace', `${label}_manifests`, 'success'],
+  });
+
+  metrics[`${type}ManifestsBuilderDuration`] = new prometheusClient.Gauge({
+    name: `${settings.prometheusMetricPrefix()}${label}_manifests_builder_duration`,
+    help: `${descriptionName}ManifestsBuilder duration`,
+    labelNames: ['namespace', `${label}_manifests`],
+  });
+}
+
+setupManifestMetrics('jsonnet', 'jsonnet', 'Jsonnet');
+setupManifestMetrics('plain', 'plain', 'Plain');
+setupManifestMetrics('helmTemplate', 'helm_template', 'HelmTemplate');
+
 export function addMetric(metric: string, labels: any) {
-  metrics[metric].inc(labels, 1);
+  if (metrics.hasOwnProperty(metric)) {
+    metrics[metric].inc(labels, 1);
+  }
+  else {
+    console.error(`Missing metric label "${metric}"`);
+  }
 }
 
 export function setMetric(metric: string, labels: any, value: number) {
-  metrics[metric].set(labels, value);
+  if (metrics.hasOwnProperty(metric)) {
+    metrics[metric].set(labels, value);
+  }
+  else {
+    console.error(`Missing metric label "${metric}"`);
+  }
 }
 
 export async function addMetricReq(request: Request, response: Response, next: NextFunction) {

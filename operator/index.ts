@@ -4,10 +4,11 @@ import prometheusMiddleware from 'express-prometheus-middleware';
 
 import gitRepositories from './gitRepositories';
 import dockerImages from './dockerImages';
-import jsonnetManifests from './jsonnetManifests';
-import plainManifests from './plainManifests';
 import settings from './settings';
 import { addMetricReq, setMetricReq } from './metrics';
+import jsonnetManifests from './jsonnetManifests';
+import plainManifests from './plainManifests';
+import helmTemplateManifests from './helmTemplateManifests';
 
 const app = express();
 
@@ -44,6 +45,9 @@ app.post('/jsonnet-manifests-customize', asyncHandler(jsonnetManifests.customize
 
 app.post('/plain-manifests-sync', asyncHandler(plainManifests.sync));
 app.post('/plain-manifests-customize', asyncHandler(plainManifests.customize));
+
+app.post('/helm-template-manifests-sync', asyncHandler(helmTemplateManifests.sync));
+app.post('/helm-template-manifests-customize', asyncHandler(helmTemplateManifests.customize));
 
 app.use((err, req, res, next) => {
   console.error("Unhandled Exception:", err);
