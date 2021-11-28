@@ -5,16 +5,17 @@ import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
+import { getRepo } from './misc';
 
 export default {
   async sync(metricName: string, type: string, metricLabel: string, args: string[], request: Request, response: Response) {
-    if (settings.debug()) console.log(`${name}Manifests sync req`, JSON.stringify(request.body));
+    if (settings.debug()) console.log(`${metricName}Manifests sync req`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
     var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
-    var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
+    var repo = getRepo(request);
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
@@ -83,10 +84,10 @@ export default {
     };
 
     if (triggerJob) {
-      addMetric(`${name}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
+      addMetric(`${metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
     }
 
-    if (settings.debug()) console.log(`${name}Manifests sync res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests sync res`, JSON.stringify(res));
     response.status(200).json(res);
   },
 

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
-import { k8sName } from './misc';
+import { getRepo, k8sName } from './misc';
 import { addMetric } from './metrics';
 import dockerHubSecretEnv from './dockerHubSecretEnv';
 import gcpSecretSources from './gcpSecretSources';
@@ -15,7 +15,7 @@ export default {
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
     var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
-    var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
+    var repo = getRepo(request);
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
     var jobName = k8sName(`image-${name}`, latestCommit);
