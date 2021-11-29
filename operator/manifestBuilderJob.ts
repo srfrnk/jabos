@@ -45,7 +45,7 @@ export default function (options: {
       {
         "env": [],
         "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
-        "args": [options.targetNamespace],
+        "args": [options.targetNamespace, options.type, options.name],
         "imagePullPolicy": "IfNotPresent",
         "name": "manifest-deployer",
         "volumeMounts": [
