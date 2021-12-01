@@ -36,18 +36,23 @@ app.post('/setMetric/:metric', asyncHandler(setMetricReq));
 
 app.post('/git-repositories-sync', asyncHandler(gitRepositories.sync));
 app.post('/git-repositories-customize', asyncHandler(gitRepositories.customize));
+app.post('/git-repositories-finalize', asyncHandler(gitRepositories.finalize));
 
 app.post('/docker-images-sync', asyncHandler(dockerImages.sync));
 app.post('/docker-images-customize', asyncHandler(dockerImages.customize));
+app.post('/docker-images-finalize', asyncHandler(dockerImages.finalize));
 
 app.post('/jsonnet-manifests-sync', asyncHandler(jsonnetManifests.sync));
 app.post('/jsonnet-manifests-customize', asyncHandler(jsonnetManifests.customize));
+app.post('/jsonnet-manifests-finalize', asyncHandler(jsonnetManifests.finalize));
 
 app.post('/plain-manifests-sync', asyncHandler(plainManifests.sync));
 app.post('/plain-manifests-customize', asyncHandler(plainManifests.customize));
+app.post('/plain-manifests-finalize', asyncHandler(plainManifests.finalize));
 
 app.post('/helm-template-manifests-sync', asyncHandler(helmTemplateManifests.sync));
 app.post('/helm-template-manifests-customize', asyncHandler(helmTemplateManifests.customize));
+app.post('/helm-template-manifests-finalize', asyncHandler(helmTemplateManifests.finalize));
 
 app.use((err, req, res, next) => {
   console.error("Unhandled Exception:", err);

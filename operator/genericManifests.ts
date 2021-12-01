@@ -109,5 +109,18 @@ export default {
 
     if (settings.debug()) console.log(`${metricName}Manifests customize res`, JSON.stringify(res));
     response.status(200).json(res);
+  },
+
+  async finalize(metricName: string, request: Request, response: Response) {
+    if (settings.debug()) console.log(`${metricName}Manifests finalize req`, JSON.stringify(request.body));
+
+    var res = {
+      "annotations": {},
+      "attachments": [],
+      "finalized": true,
+    }
+
+    if (settings.debug()) console.log(`${metricName}Manifests finalize res`, JSON.stringify(res));
+    response.status(200).json(res);
   }
 }

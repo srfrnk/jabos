@@ -166,5 +166,18 @@ export default {
 
     if (settings.debug()) console.log("dockerImages customize res", JSON.stringify(res));
     response.status(200).json(res);
+  },
+
+  async finalize(request: Request, response: Response, next: NextFunction) {
+    if (settings.debug()) console.log("dockerImages finalize req", JSON.stringify(request.body));
+
+    var res = {
+      "annotations": {},
+      "attachments": [],
+      "finalized": true,
+    }
+
+    if (settings.debug()) console.log("dockerImages finalize res", JSON.stringify(res));
+    response.status(200).json(res);
   }
 }

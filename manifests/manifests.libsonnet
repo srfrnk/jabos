@@ -82,6 +82,12 @@
                                            timeout: '10s',
                                          },
                                        },
+                                       finalize={
+                                         webhook: {
+                                           url: 'http://operator.' + namespace + ':3000/' + name + '-manifests-finalize',
+                                           timeout: '10s',
+                                         },
+                                       },
                                        resyncPeriodSeconds=30)
 
   ),

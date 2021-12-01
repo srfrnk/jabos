@@ -16,5 +16,9 @@ export default {
 
   async customize(request: Request, response: Response, next: NextFunction) {
     await genericManifests.customize('jsonnet', request, response);
+  },
+
+  async finalize(request: Request, response: Response, next: NextFunction) {
+    await genericManifests.finalize('jsonnet', request, response);
   }
 }

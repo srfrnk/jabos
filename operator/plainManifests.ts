@@ -19,5 +19,9 @@ export default {
 
   async customize(request: Request, response: Response, next: NextFunction) {
     await genericManifests.customize('plain', request, response);
+  },
+
+  async finalize(request: Request, response: Response, next: NextFunction) {
+    await genericManifests.finalize('plain', request, response);
   }
 }
