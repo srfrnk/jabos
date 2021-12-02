@@ -247,6 +247,10 @@ p {
   font-size: 0.8em;
 }
 
+.crd .prop-enum {
+  font-size: 0.8em;
+}
+
 .crd .prop-required {
   font-weight: bold;
   font-variant:small-caps;
@@ -310,7 +314,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 0.0.64</div>
+                <div class="app-desc">Version: 0.0.67</div>
             </p>
           </div>
         </div>
@@ -361,7 +365,8 @@ p {
               var typeSection = `
                 <td class="prop-type-info">
                   <p class="prop-type">${schema.type||''}</p>
-                  ${!schema.isRequired?'':' <p class="prop-required">required</p>'}
+                  ${!schema.enum?'':`<p class="prop-enum">Enum: ${schema.enum.map(v=>`"${v}"`).join(', ')}</p>`}
+                  ${!schema.isRequired?'':'<p class="prop-required">required</p>'}
                   ${!schema.default?'':`<p class="prop-default">Default: ${JSON.stringify(schema.default)}</p>`}
                 </td>
               `;
@@ -1041,6 +1046,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "required" : [ "gitRepository", "targetNamespace" ],
   "type" : "object",
   "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
     "commitValueKey" : {
       "type" : "string",
       "description" : "The key of the value to to set with the commit hash for the build. **Will be used as a Helm command line `--set-string` argument. Must be escaped accordingly.**",
@@ -1080,6 +1091,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "required" : [ "gitRepository", "targetNamespace" ],
   "type" : "object",
   "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
     "commitTLAKey" : {
       "type" : "string",
       "description" : "The name of a [Top-Level Argument (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below.",
@@ -1119,6 +1136,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "required" : [ "gitRepository", "targetNamespace" ],
   "type" : "object",
   "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
     "commitReplacementString" : {
       "type" : "string",
       "description" : "The string to replace with the commit hash for the build. Will be prefixed by `replacementPrefix` and suffixed by `replacementSuffix`. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
