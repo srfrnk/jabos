@@ -34,6 +34,12 @@
                              type: 'string',
                              description: 'The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**',
                            },
+                           cleanupPolicy: {
+                             type: 'string',
+                             description: 'The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.',
+                             enum: ['Delete', 'Leave'],
+                             default: 'Leave',
+                           },
                          } + specProperties,
                        },
                      },

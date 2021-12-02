@@ -124,6 +124,20 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
 
+      - name: manifest-cleaner
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        env:
+          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-cleaner
+        with:
+          context: manifest-cleaner
+          build-args: |
+            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
+          push: true
+          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
       - name: jsonnet-manifest-builder
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         env:

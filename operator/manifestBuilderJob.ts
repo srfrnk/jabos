@@ -1,6 +1,7 @@
 import builderJob from './builderJob';
 import settings from './settings';
 import { k8sName } from './misc';
+import { type } from 'os';
 
 export default function (options: {
   imagePrefix: string,
@@ -41,6 +42,7 @@ export default function (options: {
     type: options.type,
     metricName: options.metricName,
     metricLabels: options.metricLabels,
+    labels: { type: "manifest-builder", "manifest-builder-type": options.type },
     containers: options.containers.concat([
       {
         "env": [],

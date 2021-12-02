@@ -14,7 +14,7 @@ export default function (options: {
       {
         "apiGroups": ["*"],
         "resources": ["*"],
-        "verbs": ["get", "list", "watch", "create", "update", "patch"/* , "delete" */],
+        "verbs": ["get", "list", "watch", "create", "update", "patch"],
       }
     ],
   };

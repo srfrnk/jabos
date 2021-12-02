@@ -48,6 +48,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./git-repository-updater -t git-repository-updater:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./post-builder -t post-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-deployer -t manifest-deployer:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-cleaner -t manifest-cleaner:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./jsonnet-manifest-builder -t jsonnet-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
@@ -73,5 +74,14 @@ deploy-examples: FORCE
 	kubectl apply -f ../jabos-examples-private/simple-build.yaml
 	kubectl apply -f ../jabos-examples-gitlab/simple-build.yaml
 
+un-deploy-examples: FORCE
+	kubectl delete -f ../jabos-examples/simple-build.yaml
+	kubectl delete -f ../jabos-examples-private/simple-build.yaml
+	kubectl delete -f ../jabos-examples-gitlab/simple-build.yaml
+
 service-port-forward: FORCE
 	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "monitoring svc/kube-prometheus-stack-grafana 3000:80"
+
+build-docs: FORCE manifests
+	docker run --mount "type=bind,src=$$PWD,dst=/data" \
+		ghcr.io/srfrnk/crd-api-doc-gen:latest /data/build /data/build/api-docs /data/api-info.yaml

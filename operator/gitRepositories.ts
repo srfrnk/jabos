@@ -70,7 +70,10 @@ export default {
           "apiVersion": "batch/v1",
           "kind": "Job",
           "metadata": {
-            "name": jobName
+            "name": jobName,
+            "labels": {
+              "type": "git-repository-updater"
+            },
           },
           "spec": {
             "completions": 1,

@@ -40,6 +40,7 @@ export default {
           type: "docker-images",
           metricName: 'dockerImageBuilder',
           metricLabels: { "namespace": namespace, "docker_image": name },
+          labels: { type: 'docker-image-builder' },
           containers: [
             {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,

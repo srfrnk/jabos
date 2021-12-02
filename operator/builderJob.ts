@@ -16,13 +16,15 @@ export default function (options: {
   containers: any[],
   volumes: any[],
   metricName: string,
-  metricLabels: {}
+  metricLabels: {},
+  labels: {}
 }) {
   return {
     "apiVersion": "batch/v1",
     "kind": "Job",
     "metadata": {
-      "name": options.jobName
+      "name": options.jobName,
+      "labels": options.labels
     },
     "spec": {
       "completions": 1,
