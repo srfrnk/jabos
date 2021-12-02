@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 
 import genericManifests from './genericManifests'
+import { getRepo } from './misc';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    var repo: any = Object.values(request.body.related['GitRepository.jabos.io/v1'])[0];
+    var repo = getRepo(request);
     var spec: any = request.body.object.spec;
     var latestCommit: string = repo.metadata.annotations.latestCommit;
 
@@ -18,5 +19,9 @@ export default {
 
   async customize(request: Request, response: Response, next: NextFunction) {
     await genericManifests.customize('plain', request, response);
+  },
+
+  async finalize(request: Request, response: Response, next: NextFunction) {
+    await genericManifests.finalize('plain', request, response);
   }
 }

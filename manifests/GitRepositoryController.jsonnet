@@ -42,5 +42,11 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                          timeout: '10s',
                                        },
                                      },
+                                     finalize={
+                                       webhook: {
+                                         url: 'http://operator.' + namespace + ':3000/git-repositories-finalize',
+                                         timeout: '10s',
+                                       },
+                                     },
                                      resyncPeriodSeconds=30)
 )

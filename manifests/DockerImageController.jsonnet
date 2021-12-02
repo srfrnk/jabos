@@ -30,5 +30,11 @@ function(imagePrefix, buildNumber, namespace, debug) (
                                          timeout: '10s',
                                        },
                                      },
+                                     finalize={
+                                       webhook: {
+                                         url: 'http://operator.' + namespace + ':3000/docker-images-finalize',
+                                         timeout: '10s',
+                                       },
+                                     },
                                      resyncPeriodSeconds=30)
 )

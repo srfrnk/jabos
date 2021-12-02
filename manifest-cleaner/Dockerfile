@@ -1,0 +1,8 @@
+ARG IMAGE_PREFIX
+ARG IMAGE_VERSION
+
+FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
+
+COPY ./clean.sh /
+
+ENTRYPOINT ["/clean.sh"]

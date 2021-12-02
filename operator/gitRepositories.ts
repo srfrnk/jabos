@@ -70,7 +70,10 @@ export default {
           "apiVersion": "batch/v1",
           "kind": "Job",
           "metadata": {
-            "name": jobName
+            "name": jobName,
+            "labels": {
+              "type": "git-repository-updater"
+            },
           },
           "spec": {
             "completions": 1,
@@ -127,6 +130,19 @@ export default {
     };
 
     if (settings.debug()) console.log("gitRepositories customize res", JSON.stringify(res));
+    response.status(200).json(res);
+  },
+
+  async finalize(request: Request, response: Response, next: NextFunction) {
+    if (settings.debug()) console.log("gitRepositories finalize req", JSON.stringify(request.body));
+
+    var res = {
+      "annotations": {},
+      "attachments": [],
+      "finalized": true,
+    }
+
+    if (settings.debug()) console.log("gitRepositories finalize res", JSON.stringify(res));
     response.status(200).json(res);
   }
 }
