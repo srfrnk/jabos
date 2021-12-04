@@ -303,6 +303,9 @@ p {
                           <a href="#crd-JsonnetManifest">JsonnetManifest</a>
                         </li>
                         <li class="">
+                          <a href="#crd-KustomizeManifest">KustomizeManifest</a>
+                        </li>
+                        <li class="">
                           <a href="#crd-PlainManifest">PlainManifest</a>
                         </li>
           </ul>
@@ -314,7 +317,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 0.0.67</div>
+                <div class="app-desc">Version: 0.0.69</div>
             </p>
           </div>
         </div>
@@ -327,6 +330,8 @@ p {
                         <section id="crd-HelmTemplateManifest" class="crd" data="HelmTemplateManifest">
                         </section>
                         <section id="crd-JsonnetManifest" class="crd" data="JsonnetManifest">
+                        </section>
+                        <section id="crd-KustomizeManifest" class="crd" data="KustomizeManifest">
                         </section>
                         <section id="crd-PlainManifest" class="crd" data="PlainManifest">
                         </section>
@@ -1101,6 +1106,55 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "type" : "string",
       "description" : "The name of a [Top-Level Argument (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below.",
       "default" : "latestCommitHash"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
+};
+    defs["KustomizeManifest"] = {
+  "title" : "KustomizeManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/KustomizeManifest_spec"
+    }
+  },
+  "description" : "`KustomizeManifest` objects define a folder with [Kustomize](https://kustomize.io/) based manifests to deploy.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["KustomizeManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "dockerImages" : {
+      "type" : "array",
+      "description" : "List of `DockerImage` objects to update tags built for. **Must be in the same namespace**",
+      "items" : {
+        "type" : "string",
+        "description" : "Name `DockerImage` object. **Must be in the same namespace**"
+      },
+      "default" : [ ]
     },
     "gitRepository" : {
       "type" : "string",
