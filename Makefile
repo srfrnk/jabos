@@ -52,6 +52,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build ./jsonnet-manifest-builder -t jsonnet-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
 	- mkdir build

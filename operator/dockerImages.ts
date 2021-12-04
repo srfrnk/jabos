@@ -68,24 +68,27 @@ export default {
                   "mountPath": "/secrets",
                   "readOnly": true
                 },
-              ].concat(!spec.aws ? [] : [
-                {
-                  "name": "aws",
-                  "mountPath": "/kaniko/.aws",
-                }]),
+                ...(!spec.aws ? [] : [
+                  {
+                    "name": "aws",
+                    "mountPath": "/kaniko/.aws",
+                  }
+                ])
+              ],
             },
             {
               "image": "gcr.io/kaniko-project/executor:latest",
               "args": [
                 `--context=dir:///gitTemp/${spec.contextPath}`,
                 `--dockerfile=${spec.dockerFile}`,
-                `--destination=${spec.imageName}:${latestCommit}`
-              ].concat(spec.insecureRegistry ? [
-                '--insecure',
-                '--skip-tls-verify',
-                '--skip-tls-verify-pull',
-                '--insecure-pull'
-              ] : []),
+                `--destination=${spec.imageName}:${latestCommit}`,
+                ...(spec.insecureRegistry ? [
+                  '--insecure',
+                  '--skip-tls-verify',
+                  '--skip-tls-verify-pull',
+                  '--insecure-pull'
+                ] : [])
+              ],
               "env": [],
               "imagePullPolicy": "IfNotPresent",
               "name": "kaniko",
@@ -109,34 +112,35 @@ export default {
                   "name": "docker",
                   "mountPath": "/kaniko/.docker",
                   "readOnly": true
-                },].concat(!spec.aws ? [] : [
+                },
+                ...(!spec.aws ? [] : [
                   {
                     "name": "aws",
                     "mountPath": "/root/.aws/",
                     "readOnly": true
                   }
                 ])
+              ]
             }
           ],
-          volumes: ([
+          volumes: [
             {
               "name": "docker",
               "emptyDir": {}
             },
-          ] as any[]).concat([
             {
               "name": "kaniko-secrets",
               "projected": {
-                "sources": [].concat(gcpSecretSources(spec.gcp))
-                  .concat(awsSecretSources(spec.aws))
+                "sources": [...gcpSecretSources(spec.gcp), ...awsSecretSources(spec.aws)]
               }
-            }
-          ]).concat(!spec.aws ? [] : [
-            {
-              "name": "aws",
-              "emptyDir": {}
-            }
-          ])
+            },
+            ...(!spec.aws ? [] : [
+              {
+                "name": "aws",
+                "emptyDir": {}
+              }
+            ])
+          ]
         })
       ] : [],
     };

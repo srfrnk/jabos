@@ -39,49 +39,52 @@ export default {
       "annotations": !latestCommit ? {} : {
         "latestCommit": latestCommit,
       },
-      "attachments": (attachments as any[]).concat(triggerJob ? [
-        manifestBuilderJob({
-          imagePrefix: settings.imagePrefix(),
-          buildNumber: settings.buildNumber(),
-          commit: latestCommit,
-          repoUrl: repo.spec.url,
-          repoBranch: repo.spec.branch,
-          repoSsh: repo.spec.ssh,
-          name,
-          namespace,
-          gitRepository: spec.gitRepository,
-          targetNamespace: spec.targetNamespace,
-          type: `${type}-manifests`,
-          metricName: `${metricName}ManifestsBuilder`,
-          metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
-          containers: [
-            {
-              "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
-              "args": [spec.path].concat(args),
-              "env": [],
-              "volumeMounts": [
-                {
-                  "name": "git-temp",
-                  "mountPath": "/gitTemp",
-                  "readOnly": true
-                }
-              ],
-              "imagePullPolicy": "IfNotPresent",
-              "name": `${type}-manifest-builder`,
-              "resources": {
-                "limits": {
-                  "cpu": "500m",
-                  "memory": "500Mi"
+      "attachments": [
+        ...attachments,
+        ...(triggerJob ? [
+          manifestBuilderJob({
+            imagePrefix: settings.imagePrefix(),
+            buildNumber: settings.buildNumber(),
+            commit: latestCommit,
+            repoUrl: repo.spec.url,
+            repoBranch: repo.spec.branch,
+            repoSsh: repo.spec.ssh,
+            name,
+            namespace,
+            gitRepository: spec.gitRepository,
+            targetNamespace: spec.targetNamespace,
+            type: `${type}-manifests`,
+            metricName: `${metricName}ManifestsBuilder`,
+            metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
+            containers: [
+              {
+                "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
+                "args": [spec.path, ...args],
+                "env": [],
+                "volumeMounts": [
+                  {
+                    "name": "git-temp",
+                    "mountPath": "/gitTemp",
+                    "readOnly": true
+                  }
+                ],
+                "imagePullPolicy": "IfNotPresent",
+                "name": `${type}-manifest-builder`,
+                "resources": {
+                  "limits": {
+                    "cpu": "500m",
+                    "memory": "500Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "100Mi"
+                  }
                 },
-                "requests": {
-                  "cpu": "100m",
-                  "memory": "100Mi"
-                }
-              },
-            }
-          ]
-        })
-      ] : [])
+              }
+            ]
+          })
+        ] : [])
+      ]
     };
 
     if (triggerJob) {
@@ -92,7 +95,7 @@ export default {
     response.status(200).json(res);
   },
 
-  async customize(metricName: string, request: Request, response: Response) {
+  async customize(metricName: string, request: Request, response: Response, relatedResources: any[] = []) {
     if (settings.debug()) console.log(`${metricName}Manifests customize req`, JSON.stringify(request.body));
 
     var res = {
@@ -104,7 +107,8 @@ export default {
           "names": [
             request.body.parent.spec.gitRepository
           ]
-        }
+        },
+        ...relatedResources
       ]
     };
 

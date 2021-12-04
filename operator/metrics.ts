@@ -82,6 +82,7 @@ function setupManifestMetrics(type: string, label: string, descriptionName: stri
 setupManifestMetrics('jsonnet', 'jsonnet', 'Jsonnet');
 setupManifestMetrics('plain', 'plain', 'Plain');
 setupManifestMetrics('helmTemplate', 'helm_template', 'HelmTemplate');
+setupManifestMetrics('kustomize', 'kustomize', 'Kustomize');
 
 export function addMetric(metric: string, labels: any) {
   if (metrics.hasOwnProperty(metric)) {
