@@ -96,7 +96,7 @@ export default {
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
                     "args": [repo.url, repo.branch, namespace, name],
-                    "env": jabosOperatorUrlEnv().concat(gitRepositorySshSecretEnv(repo.ssh)),
+                    "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
                     "imagePullPolicy": "IfNotPresent",
                     "name": "git-repository-updater",
                     "resources": {

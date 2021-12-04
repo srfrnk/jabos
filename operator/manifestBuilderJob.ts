@@ -21,12 +21,13 @@ export default function (options: {
 }) {
   var jobName = k8sName(`manifest-${options.name}`, options.commit);
   options.containers.forEach(container => {
-    container.volumeMounts = (container.volumeMounts || []).concat([
+    container.volumeMounts = [
+      ...(container.volumeMounts || []),
       {
         "name": "manifests",
         "mountPath": "/manifests",
       }
-    ]);
+    ];
   });
   return builderJob({
     jobName,
@@ -43,7 +44,8 @@ export default function (options: {
     metricName: options.metricName,
     metricLabels: options.metricLabels,
     labels: { type: "manifest-builder", "manifest-builder-type": options.type },
-    containers: options.containers.concat([
+    containers: [
+      ...options.containers,
       {
         "env": [],
         "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
@@ -68,7 +70,7 @@ export default function (options: {
           }
         },
       }
-    ]),
+    ],
     "volumes": [
       {
         "name": "manifests",

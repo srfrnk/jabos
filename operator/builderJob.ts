@@ -43,11 +43,11 @@ export default function (options: {
         "spec": {
           "serviceAccountName": options.serviceAccountName,
           "restartPolicy": "OnFailure",
-          "initContainers": ([
+          "initContainers": [
             {
               "image": `${settings.imagePrefix()}pre-builder:${settings.buildNumber()}`,
               "args": [options.repoUrl, options.repoBranch, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": jabosOperatorUrlEnv().concat(!options.repoSsh ? [] : [
+              "env": [...jabosOperatorUrlEnv(), ...(!options.repoSsh ? [] : [
                 {
                   "name": "SSH_PASSPHRASE",
                   "valueFrom": {
@@ -66,7 +66,7 @@ export default function (options: {
                     }
                   }
                 }
-              ]),
+              ])],
               "imagePullPolicy": "IfNotPresent",
               "name": "pre-builder",
               "resources": {
@@ -89,8 +89,9 @@ export default function (options: {
                   "mountPath": "/timer",
                 }
               ]
-            }
-          ] as any[]).concat(options.containers),
+            },
+            ...options.containers
+          ],
           "containers": [
             {
               "image": `${options.imagePrefix}post-builder:${options.buildNumber}`,
@@ -117,7 +118,8 @@ export default function (options: {
               },
             }
           ],
-          "volumes": (options.volumes || []).concat([
+          "volumes": [
+            ...(options.volumes || []),
             {
               "name": "git-temp",
               "emptyDir": {}
@@ -126,7 +128,7 @@ export default function (options: {
               "name": "timer",
               "emptyDir": {}
             }
-          ])
+          ]
         }
       }
     }

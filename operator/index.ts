@@ -9,6 +9,7 @@ import { addMetricReq, setMetricReq } from './metrics';
 import jsonnetManifests from './jsonnetManifests';
 import plainManifests from './plainManifests';
 import helmTemplateManifests from './helmTemplateManifests';
+import kustomizeManifests from './kustomizeManifests';
 
 const app = express();
 
@@ -53,6 +54,10 @@ app.post('/plain-manifests-finalize', asyncHandler(plainManifests.finalize));
 app.post('/helm-template-manifests-sync', asyncHandler(helmTemplateManifests.sync));
 app.post('/helm-template-manifests-customize', asyncHandler(helmTemplateManifests.customize));
 app.post('/helm-template-manifests-finalize', asyncHandler(helmTemplateManifests.finalize));
+
+app.post('/kustomize-manifests-sync', asyncHandler(kustomizeManifests.sync));
+app.post('/kustomize-manifests-customize', asyncHandler(kustomizeManifests.customize));
+app.post('/kustomize-manifests-finalize', asyncHandler(kustomizeManifests.finalize));
 
 app.use((err, req, res, next) => {
   console.error("Unhandled Exception:", err);
