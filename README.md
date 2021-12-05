@@ -39,10 +39,12 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 
 ## Installation
 
-- **If you prefer a video version**:
+Video version:
 
-  - [Part 1 - Minikube setup](./docs/part-1.mp4)
-  - [Part 2 - Jabos and prerequisites](./docs/part-2.mp4)
+1. Minikube setup <br/><br/> <video src="./docs/part-1.mp4" width="100%"></video>
+1. Jabos and prerequisites <br/><br/> <video src="./docs/part-2.mp4" width="100%"></video>
+
+Instructions:
 
 1. Make sure Metacontroller is installed on your cluster. Find instructions [here](https://metacontroller.github.io/metacontroller/guide/install.html)
 1. Optionally install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to expose metrics from `jabos`
@@ -52,14 +54,12 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 
 ## Usage
 
-- **If you prefer a video version**:
-
-  - [Part 3 - Configure CRDs](./docs/part-3.mp4)
-  - [Part 4 - Push changes and trigger builds](./docs/part-4.mp4)
-
 Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) in order for users to define a codebase and how to build and deploy that.
 
 See [API Docs here](https://srfrnk.github.io/jabos)
+
+1. Configure CRDs <br/><br/> <video src="./docs/part-3.mp4" width="100%"></video>
+1. Push changes and trigger builds <br/><br/> <video src="./docs/part-4.mp4" width="100%"></video>
 
 ## Jsonnet example
 
