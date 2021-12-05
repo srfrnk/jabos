@@ -41,8 +41,8 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 
 Video version:
 
-1. Minikube setup <br/><br/> <video src="./docs/part-1.mp4" width="100%"></video>
-1. Jabos and prerequisites <br/><br/> <video src="./docs/part-2.mp4" width="100%"></video>
+1. [Minikube setup](https://youtu.be/616aMiKHtks)
+1. [Jabos and prerequisites](https://youtu.be/Ex5hi3GOkjg)
 
 Instructions:
 
@@ -58,8 +58,10 @@ Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-exte
 
 See [API Docs here](https://srfrnk.github.io/jabos)
 
-1. Configure CRDs <br/><br/> <video src="./docs/part-3.mp4" width="100%"></video>
-1. Push changes and trigger builds <br/><br/> <video src="./docs/part-4.mp4" width="100%"></video>
+Video version:
+
+1. [Configure CRDs](https://youtu.be/PqMUliEHx60)
+1. [Push changes and trigger builds](https://youtu.be/OlB6qybsqng)
 
 ## Jsonnet example
 
