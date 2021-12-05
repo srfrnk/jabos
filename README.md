@@ -39,27 +39,31 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 
 ## Installation
 
+- **If you prefer a video version**:
+
+  - [Part 1 - Minikube setup](./docs/part-1.mp4)
+  - [Part 2 - Jabos and prerequisites](./docs/part-2.mp4)
+
 1. Make sure Metacontroller is installed on your cluster. Find instructions [here](https://metacontroller.github.io/metacontroller/guide/install.html)
+1. Optionally install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to expose metrics from `jabos`
+1. Optionally install [grafana-dashboard-operator](https://github.com/srfrnk/grafana-dashboard-operator/) to setup grafana dashboards for `jabos`
 1. Create a namespace for jabos to use. E.g. `kubectl create namespace jabos`. Use the same namespace with the next command.
 1. Run `kubectl apply -n <NAMESPACE> -f https://github.com/srfrnk/jabos/releases/latest/download/jabos-manifests.yaml`
 
 ## Usage
 
+- **If you prefer a video version**:
+
+  - [Part 3 - Configure CRDs](./docs/part-3.mp4)
+  - [Part 4 - Push changes and trigger builds](./docs/part-4.mp4)
+
 Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) in order for users to define a codebase and how to build and deploy that.
 
-### GitRepository
+See [API Docs here](https://srfrnk.github.io/jabos)
 
-See [API Docs here](https://srfrnk.github.io/jabos/#crd-GitRepository)
+## Jsonnet example
 
-### DockerImage
-
-See [API Docs here](https://srfrnk.github.io/jabos/#crd-DockerImage)
-
-### JsonnetManifest
-
-See [API Docs here](https://srfrnk.github.io/jabos/#crd-JsonnetManifest)
-
-`example.jsonnet`:
+Create a file `example.jsonnet`:
 
 ```jsonnet
 function(latestCommitId) {
