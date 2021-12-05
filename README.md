@@ -3,7 +3,7 @@
 **Just Another Boring Ops System**
 Jabos attempts to be a fully automated K8s GitOps framework.
 
-**This is WIP** - any comments, requests or issues would be welcome! please use [this link](https://github.com/srfrnk/jabos/issues)
+**This is WIP** - any comments, requests or issues would be welcome! please use <a href="https://github.com/srfrnk/jabos/issues" target="_blank">this link</a>
 
 ## TL;DR - What does that mean?
 
@@ -41,27 +41,27 @@ Jabos attempts to be a fully automated K8s GitOps framework.
 
 Video version:
 
-1. [Minikube setup](https://youtu.be/616aMiKHtks)
-1. [Jabos and prerequisites](https://youtu.be/Ex5hi3GOkjg)
+1. <a href="https://youtu.be/616aMiKHtks" target="_blank">Minikube setup</a>
+1. <a href="https://youtu.be/Ex5hi3GOkjg" target="_blank">Jabos and prerequisites</a>
 
 Instructions:
 
-1. Make sure Metacontroller is installed on your cluster. Find instructions [here](https://metacontroller.github.io/metacontroller/guide/install.html)
-1. Optionally install [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) to expose metrics from `jabos`
-1. Optionally install [grafana-dashboard-operator](https://github.com/srfrnk/grafana-dashboard-operator/) to setup grafana dashboards for `jabos`
+1. Make sure Metacontroller is installed on your cluster. Find instructions <a href="https://metacontroller.github.io/metacontroller/guide/install.html" target="_blank">here</a>
+1. Optionally install <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack" target="_blank">kube-prometheus-stack</a> to expose metrics from `jabos`
+1. Optionally install <a href="https://github.com/srfrnk/grafana-dashboard-operator/" target="_blank">grafana-dashboard-operator</a> to setup grafana dashboards for `jabos`
 1. Create a namespace for jabos to use. E.g. `kubectl create namespace jabos`. Use the same namespace with the next command.
 1. Run `kubectl apply -n <NAMESPACE> -f https://github.com/srfrnk/jabos/releases/latest/download/jabos-manifests.yaml`
 
 ## Usage
 
-Jabos uses [CRDs](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) in order for users to define a codebase and how to build and deploy that.
+Jabos uses <a href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/" target="_blank">CRDs</a> in order for users to define a codebase and how to build and deploy that.
 
-See [API Docs here](https://srfrnk.github.io/jabos)
+See <a href="https://srfrnk.github.io/jabos" target="_blank">API Docs here</a>
 
 Video version:
 
-1. [Configure CRDs](https://youtu.be/PqMUliEHx60)
-1. [Push changes and trigger builds](https://youtu.be/OlB6qybsqng)
+1. <a href="https://youtu.be/PqMUliEHx60" target="_blank">Configure CRDs</a>
+1. <a href="https://youtu.be/OlB6qybsqng" target="_blank">Push changes and trigger builds</a>
 
 ## Jsonnet example
 
@@ -109,7 +109,7 @@ function(latestCommitId) {
 
 #### Using SSH Keys
 
-1. [Create an SSH key and add it to GitHub](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account) - **Optionally skip the "adding it to the ssh-agent" section.**
+1. <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account" target="_blank">Create an SSH key and add it to GitHub</a> - **Optionally skip the "adding it to the ssh-agent" section.**
 1. Create a secret with the passphrase and key created in the previous step. (i.e. `kubectl create secret generic -n example-env first-repo-private --from-file=git_ssh_passphrase=./build/passphrase --from-file=git_ssh_key=./build/key`)
 1. Add an `ssh` property to each applicable `GitRepository` object to point to the secret.
 
@@ -118,7 +118,7 @@ function(latestCommitId) {
 ### Docker Hub
 
 1. Obtain your Docker Hub username.
-1. Obtain your Docker Hub password or [access token](https://docs.docker.com/docker-hub/access-tokens/).
+1. Obtain your Docker Hub password or <a href="https://docs.docker.com/docker-hub/access-tokens/" target="_blank">access token</a>.
 1. Create secret with the credentials. (i.e. `kubectl create secret generic -n example-env docker-hub --from-file=docker_hub_username=./build/docker_hub_username --from-file=docker_hub_password=./build/docker_hub_password`)
 1. Add a `dockerHub` property to any applicable `DockerImage` object to point to the secret.
 
@@ -131,7 +131,7 @@ function(latestCommitId) {
 
 ### AWS (ECR)
 
-1. Obtain an [Access Key](https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/) with the required permissions.
+1. Obtain an <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/" target="_blank">Access Key</a> with the required permissions.
 1. Obtain the `Access key ID` and `Secret Access Key`.
 1. Create secret with these credentials. (i.e. `kubectl create secret generic -n example-env aws --from-file=aws_access_key_id=./build/aws_access_key_id --from-file=aws_secret_access_key=./build/aws_secret_access_key`)
 1. Add a `aws` property to any applicable `DockerImage` object to point to the secret.
@@ -188,35 +188,35 @@ Important metrics for the operation of Jabos are:
 
 ### Prerequisites
 
-1. `make` installed (Depending on your OS - start [here](https://www.gnu.org/software/make/))
-1. `docker` installed (To install wee [here](https://www.docker.com/get-started))
-1. `minikube` installed (To install minikube see [this](https://minikube.sigs.k8s.io/docs/start/))
-1. `NodeJS` installed (To install NodeJS see [this](https://nodejs.org))
+1. `make` installed (Depending on your OS - start <a href="https://www.gnu.org/software/make/" target="_blank">here</a>)
+1. `docker` installed (To install wee <a href="https://www.docker.com/get-started" target="_blank">here</a>)
+1. `minikube` installed (To install minikube see <a href="https://minikube.sigs.k8s.io/docs/start/" target="_blank">this</a>)
+1. `NodeJS` installed (To install NodeJS see <a href="https://nodejs.org" target="_blank">this</a>)
 1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
-1. `GNU Parallel` installed for [your OS](https://www.gnu.org/software/parallel/). For Debian based you can use `sudo apt-get install parallel`.
+1. `GNU Parallel` installed for <a href="https://www.gnu.org/software/parallel/" target="_blank">your OS</a>. For Debian based you can use `sudo apt-get install parallel`.
 
 ### Environment Setup
 
-1. Clone repo: `git clone git@github.com:srfrnk/jabos.git` (or using HTTPS/GitHub CLI - see instructions [here](https://github.com/srfrnk/jabos))
+1. Clone repo: `git clone git@github.com:srfrnk/jabos.git` (or using HTTPS/GitHub CLI - see instructions <a href="https://github.com/srfrnk/jabos" target="_blank">here</a>)
 1. CD into folder
 1. Start a minikube cluster `minikube start`
 1. Run `make setup` once
 1. Run `make build` after each code change
-1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open [kibana](http://localhost:5601/app/discover)
+1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open <a href="http://localhost:5601/app/discover" target="_blank">kibana</a>
 1. To deploy examples
-   1. Locally clone [jabos-examples repo](https://github.com/srfrnk/jabos-examples)
+   1. Locally clone <a href="https://github.com/srfrnk/jabos-examples" target="_blank">jabos-examples repo</a>
    1. Follow instructions from the README file in the cloned folder
    1. The examples would be deployed into namespace `example-env`
 
 ## Credits
 
-- Jabos uses [the kaniko project](https://github.com/GoogleContainerTools/kaniko) to build docker images inside the kubernetes cluster.
-- Jabos uses [yq](https://github.com/mikefarah/yq) to parse and update yaml and json data.
-- Jabos uses [jsonnet](github.com/google/go-jsonnet) to process jsonnet templates and create K8s manifests.
-- Jabos uses [minikube](https://github.com/kubernetes/minikube) for local development
-- Jabos uses [metacontroller](https://github.com/metacontroller/metacontroller) to control K8s operators.
-- Jabos uses [efk-stack-helm](https://github.com/srfrnk/efk-stack-helm) for local centralized logging.
-- Jabos uses [kube-prometheus-stack](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) for local monitoring and alerting.
-- Jabos uses [GNU Parallel](https://www.gnu.org/software/parallel/) for local port-forwarding to multiple services
-- Jabos uses [expressjs](https://github.com/expressjs/express) as the web server to run the operator
-- Jabos uses [express-prometheus-middleware](https://github.com/joao-fontenele/express-prometheus-middleware) to export basic metrics to prometheus
+- Jabos uses <a href="https://github.com/GoogleContainerTools/kaniko" target="_blank">the kaniko project</a> to build docker images inside the kubernetes cluster.
+- Jabos uses <a href="https://github.com/mikefarah/yq" target="_blank">yq</a> to parse and update yaml and json data.
+- Jabos uses <a href="github.com/google/go-jsonnet" target="_blank">jsonnet</a> to process jsonnet templates and create K8s manifests.
+- Jabos uses <a href="https://github.com/kubernetes/minikube" target="_blank">minikube</a> for local development
+- Jabos uses <a href="https://github.com/metacontroller/metacontroller" target="_blank">metacontroller</a> to control K8s operators.
+- Jabos uses <a href="https://github.com/srfrnk/efk-stack-helm" target="_blank">efk-stack-helm</a> for local centralized logging.
+- Jabos uses <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack" target="_blank">kube-prometheus-stack</a> for local monitoring and alerting.
+- Jabos uses <a href="https://www.gnu.org/software/parallel/" target="_blank">GNU Parallel</a> for local port-forwarding to multiple services
+- Jabos uses <a href="https://github.com/expressjs/express" target="_blank">expressjs</a> as the web server to run the operator
+- Jabos uses <a href="https://github.com/joao-fontenele/express-prometheus-middleware" target="_blank">express-prometheus-middleware</a> to export basic metrics to prometheus
