@@ -1,0 +1,13 @@
+name: 'test action'
+inputs:
+  who:  # id of input
+    required: true
+outputs:
+  what:
+    value: ${{ steps.random-number-generator.outputs.random-id }}
+runs:
+  using: "composite"
+  steps:
+    - run: echo Hello ${{ inputs.who }}.
+    - id: random-number-generator
+      run: echo "::set-output name=random-id::$(echo $RANDOM)"
