@@ -16,5 +16,9 @@ jobs:
     steps:
       - run: |-
           echo start
+      - uses: ./.github/workflows/my-action
+        id: hello
+      - run |-
+          echo ${{ steps.hello.outputs.what }}
       - run: |-
           echo end
