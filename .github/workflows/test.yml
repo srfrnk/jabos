@@ -14,11 +14,11 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      - run: |-
+      - run: |
           echo start
       - uses: ./.github/workflows/my-action
         id: hello
-      - run |-
+      - run |
           echo ${{ steps.hello.outputs.what }}
-      - run: |-
+      - run: |
           echo end
