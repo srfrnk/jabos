@@ -33,9 +33,9 @@ jobs:
           chmod -R 777 ./manifests
           docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src" \
             ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
-            --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
-            --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
-            --tla-str 'namespace=${{env.NAMESPACE}}' \
+            --tla-str 'imagePrefix=' \
+            --tla-str 'buildNumber=123' \
+            --tla-str 'namespace=jabos' \
             --tla-str 'debug=false' \
             > ./build/jabos-manifests.yaml
           
