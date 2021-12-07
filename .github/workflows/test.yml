@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |-
+        echo start
+      - run: |-
+        echo end
