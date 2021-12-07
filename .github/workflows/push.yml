@@ -48,6 +48,15 @@ jobs:
           tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new
+      - continue-on-error: true
+        uses: snyk/actions/docker@14818c4695ecc4045f33c9cee9e795a788711ca4
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kubectl
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
 
       - name: operator
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
