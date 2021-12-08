@@ -39,7 +39,7 @@ jobs:
           password: ${{secrets.GITHUB_TOKEN}}
 
       - name: kubectl
-        uses: ./.github/workflows/my-action
+        uses: ./.github/workflows/actions/image
         with:
           name: kubectl
           context: kubectl
