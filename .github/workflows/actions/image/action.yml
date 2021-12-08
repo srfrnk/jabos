@@ -1,0 +1,32 @@
+name: Image Build
+description: Build, Push and Scan an image
+inputs:
+  name:
+    required: true
+    description: "Name of image"
+  context:
+    required: true
+    description: "Context path"
+  build-args:
+    required: false
+    description: "Optional build args to use"
+    default: ""
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v2
+    - uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      env:
+        IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}${{inputs.name}}
+      with:
+        build-args: ${{inputs.build-args}}
+        context: ${{inputs.context}}
+        push: true
+        tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache-new
+    - run: snyk test --sarif-file-output=snyk.sarif --file="${{inputs.context}}/Dockerfile" --docker "${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}${{inputs.name}}" || true
+      shell: bash
+    - uses: github/codeql-action/upload-sarif@v1
+      with:
+        sarif_file: snyk.sarif
