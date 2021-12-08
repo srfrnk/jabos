@@ -19,6 +19,8 @@ jobs:
           echo start
       - uses: ./.github/workflows/my-action
         id: hello
+        with:
+          who: 657356567
       - run: echo "${{ steps.hello.outputs.what }}"
       - run: |-
           echo end
