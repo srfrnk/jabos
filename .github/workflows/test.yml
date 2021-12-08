@@ -14,6 +14,7 @@ jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - run: |-
           echo start
       - uses: ./.github/workflows/my-action
