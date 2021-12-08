@@ -9,5 +9,7 @@ runs:
   using: "composite"
   steps:
     - run: echo Hello ${{ inputs.who }}.
+      shell: bash
     - id: random-number-generator
       run: echo "::set-output name=random-id::$(echo $RANDOM)"
+      shell: bash
