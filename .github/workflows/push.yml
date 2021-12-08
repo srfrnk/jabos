@@ -40,6 +40,8 @@ jobs:
 
       - name: kubectl
         uses: ./.github/workflows/actions/image
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
           name: kubectl
           context: kubectl
