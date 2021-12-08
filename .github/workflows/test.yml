@@ -19,6 +19,6 @@ jobs:
       - uses: ./.github/workflows/my-action
         id: hello
       - run |-
-          echo "${{ steps.hello.outputs.what }}"
+          echo "${{ hello.outputs.what }}"
       - run: |-
           echo end
