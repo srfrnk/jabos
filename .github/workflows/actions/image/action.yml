@@ -20,7 +20,7 @@ runs:
         tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache-new
-    - run: snyk test --docker ${{env.IMAGE_NAME}}:latest || true
+    - run: snyk test --docker "${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}${{inputs.name}}" || true
       shell: bash
     - uses: github/codeql-action/upload-sarif@v1
       with:
