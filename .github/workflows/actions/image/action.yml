@@ -19,7 +19,9 @@ runs:
       env:
         IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}${{inputs.name}}
       with:
-        build-args: ${{inputs.build-args}}
+        build-args: |
+          IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
+          IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
         context: ${{inputs.context}}
         push: true
         tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest

@@ -51,6 +51,14 @@ jobs:
           name: kubectl
           context: kubectl
 
+      - name: base-manifest-builder
+        uses: ./.github/workflows/actions/image
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+        with:
+          name: base-manifest-builder
+          context: base-manifest-builder
+
       - name: operator
         uses: ./.github/workflows/actions/image
         env:
@@ -66,9 +74,6 @@ jobs:
         with:
           name: git-repository-updater
           context: git-repository-updater
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
 
       - name: docker-image-builder-init
         uses: ./.github/workflows/actions/image
@@ -85,9 +90,6 @@ jobs:
         with:
           name: post-builder
           context: post-builder
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
 
       - name: pre-builder
         uses: ./.github/workflows/actions/image
@@ -104,9 +106,6 @@ jobs:
         with:
           name: manifest-deployer
           context: manifest-deployer
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
 
       - name: manifest-cleaner
         uses: ./.github/workflows/actions/image
@@ -115,9 +114,6 @@ jobs:
         with:
           name: manifest-cleaner
           context: manifest-cleaner
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
 
       - name: jsonnet-manifest-builder
         uses: ./.github/workflows/actions/image

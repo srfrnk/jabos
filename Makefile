@@ -45,14 +45,15 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build ./operator -t operator:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./pre-builder -t pre-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build ./base-manifest-builder -t base-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./git-repository-updater -t git-repository-updater:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./post-builder -t post-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-deployer -t manifest-deployer:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-cleaner -t manifest-cleaner:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./jsonnet-manifest-builder -t jsonnet-manifest-builder:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./jsonnet-manifest-builder -t jsonnet-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
 	- mkdir build

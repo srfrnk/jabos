@@ -5,7 +5,7 @@ FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
 
 USER root
 
-RUN apk add bc
+RUN apk add --update bc
 
 USER user
 

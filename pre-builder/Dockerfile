@@ -1,9 +1,8 @@
-FROM ubuntu
+FROM alpine
 
-RUN apt-get update -y &&\
-  apt-get install -yy curl git
+RUN apk add --update curl git bash
 
-RUN useradd -ms /bin/bash user
+RUN adduser -s /bin/bash -S user
 
 RUN mkdir /home/user/.ssh &&\
   printf "Host *\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
