@@ -183,7 +183,7 @@ jobs:
         with:
           go-version: "1.13"
 
-      - run: snyk test --sarif-file-output=snyk.sarif --file="./build/jabos-manifests.yaml" || true
+      - run: snyk iac test --sarif-file-output=snyk.sarif ./build/jabos-manifests.yaml || true
         shell: bash
         env:
           SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
