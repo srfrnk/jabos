@@ -178,6 +178,18 @@ jobs:
             > ./build/jabos-manifests.yaml
           cp ./build/jabos-manifests.yaml ./build/input/jabos-manifests.yaml
 
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+
+      - run: snyk test --sarif-file-output=snyk.sarif --file="./build/jabos-manifests.yaml" || true
+        shell: bash
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
+          category: manifests
+
       - uses: srfrnk/setup-yq@v1.0.2
 
       - name: Generate Docs
