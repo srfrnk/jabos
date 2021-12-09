@@ -5,7 +5,7 @@ FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION} as kubectl
 
 USER root
 
-RUN apt-get install -yy bc git
+RUN apk add bc git openssh-client
 
 RUN mkdir /gitTemp && chown user /gitTemp
 

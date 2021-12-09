@@ -5,7 +5,7 @@ FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
 
 USER root
 
-RUN apt-get install -yy bc
+RUN apk add bc
 
 USER user
 

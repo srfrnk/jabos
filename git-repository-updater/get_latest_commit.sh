@@ -33,7 +33,7 @@ source /kubectl-setup.sh
 
 if [ -n "${SSH_KEY}" ]; then
   eval "$(ssh-agent -s)" >&2
-  echo "${SSH_PASSPHRASE}" | setsid -w ssh-add <(printf -- "${SSH_KEY}") >&2
+  echo "${SSH_PASSPHRASE}" | setsid ssh-add <(printf -- "${SSH_KEY}") >&2
 fi
 
 git clone --bare --single-branch --depth 1 --branch ${BRANCH} ${URL} /gitTemp
