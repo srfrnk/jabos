@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --update curl wget
+RUN apk add --update curl wget bash coreutils
 
 RUN adduser -s /bin/bash -S user
 

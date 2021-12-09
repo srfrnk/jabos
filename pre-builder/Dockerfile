@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --update curl git bash
+RUN apk add --update curl git bash openssh-client
 
 RUN adduser -s /bin/bash -S user
 
