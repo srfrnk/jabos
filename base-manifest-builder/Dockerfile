@@ -2,7 +2,7 @@ FROM alpine
 
 RUN apk add --update curl wget bash coreutils
 
-RUN adduser -s /bin/bash -S user
+RUN adduser -s /bin/bash -S user -u 1000
 
 RUN mkdir /build && chown user /build
 
@@ -11,6 +11,6 @@ RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
 
 COPY ./build.sh /
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/build.sh"]

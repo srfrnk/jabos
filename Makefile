@@ -61,7 +61,7 @@ manifests: FORCE build_number
 		--tla-str 'imagePrefix=' \
 		--tla-str 'buildNumber=${BUILD_NUMBER}' \
 		--tla-str 'namespace=jabos' \
-		--tla-str 'debug=true' \
+		--tla-str 'isProduction=false' \
 		> build/manifests.yaml
 
 build: FORCE images manifests
@@ -77,9 +77,9 @@ deploy-examples: FORCE
 	kubectl apply -f ../jabos-examples-gitlab/simple-build.yaml
 
 un-deploy-examples: FORCE
-	kubectl delete -f ../jabos-examples/simple-build.yaml
-	kubectl delete -f ../jabos-examples-private/simple-build.yaml
-	kubectl delete -f ../jabos-examples-gitlab/simple-build.yaml
+	- kubectl delete -f ../jabos-examples/simple-build.yaml
+	- kubectl delete -f ../jabos-examples-private/simple-build.yaml
+	- kubectl delete -f ../jabos-examples-gitlab/simple-build.yaml
 
 service-port-forward: FORCE
 	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "monitoring svc/kube-prometheus-stack-grafana 3000:80"

@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local kube = import './kube.libsonnet';
   local globals = import './globals.libsonnet';
   kube.Deployment(
@@ -7,7 +7,7 @@ function(imagePrefix, buildNumber, namespace, debug) (
     replicas=1,
     serviceAccountName='operator',
     containers=[
-      kube.Container(name='operator', image=imagePrefix + 'operator:' + buildNumber) +
+      kube.Container(name='operator', image=imagePrefix + 'operator:' + buildNumber, imagePullPolicy=(if isProduction == 'true' then 'Always' else 'IfNotPresent')) +
       {
         env+: [
           {
@@ -23,8 +23,8 @@ function(imagePrefix, buildNumber, namespace, debug) (
             value: buildNumber,
           },
           {
-            name: 'DEBUG',
-            value: debug,
+            name: 'IS_PRODUCTION',
+            value: isProduction,
           },
           {
             name: 'PROMETHEUS_METRIC_PREFIX',

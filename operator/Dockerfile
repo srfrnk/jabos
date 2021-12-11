@@ -6,6 +6,6 @@ RUN npm install
 
 COPY . /app
 
-USER node
+USER 1000
 
 ENTRYPOINT ["./start.sh"]

@@ -26,7 +26,7 @@ export default {
         "latestCommit": latestCommit
       },
       "attachments": triggerJob ? [
-        builderJob({
+        allowInsecureExecutionForKaniko(builderJob({
           jobName,
           imagePrefix: settings.imagePrefix(),
           buildNumber: settings.buildNumber(),
@@ -46,7 +46,6 @@ export default {
               "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
               "args": [spec.imageName, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
               "env": dockerHubSecretEnv(spec.dockerHub),
-              "imagePullPolicy": "IfNotPresent",
               "name": "docker-image-builder-init",
               "resources": {
                 "limits": {
@@ -90,7 +89,6 @@ export default {
                 ] : [])
               ],
               "env": [],
-              "imagePullPolicy": "IfNotPresent",
               "name": "kaniko",
               "resources": {
                 "limits": {
@@ -141,7 +139,7 @@ export default {
               }
             ])
           ]
-        })
+        }))
       ] : [],
     };
 
@@ -185,4 +183,13 @@ export default {
     if (settings.debug()) console.log("dockerImages finalize res", JSON.stringify(res));
     response.status(200).json(res);
   }
+}
+
+function allowInsecureExecutionForKaniko(job: any): any {
+  var kaniko = job.spec.template.spec.initContainers.filter(container => container.name === "kaniko")[0];
+  kaniko.securityContext.runAsNonRoot = false;
+  kaniko.securityContext.readOnlyRootFilesystem = false;
+  kaniko.securityContext.allowPrivilegeEscalation = true;
+  kaniko.securityContext.capabilities.drop = [];
+  return job;
 }

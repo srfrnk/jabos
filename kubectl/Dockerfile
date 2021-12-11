@@ -9,13 +9,13 @@ RUN \
 RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
 
-RUN adduser -s /bin/bash -S user
+RUN adduser -s /bin/bash -S user -u 1000
 
 COPY ./kubectl-setup.sh /
 COPY ./kube-config.yaml /home/user/.kube/config
 
 RUN chown -R user /home/user
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/setup.sh"]

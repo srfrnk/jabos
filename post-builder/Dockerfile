@@ -7,7 +7,7 @@ USER root
 
 RUN apk add --update bc
 
-USER user
+USER 1000
 
 COPY ./post-build.sh /
 

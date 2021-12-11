@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local kube = import './kube.libsonnet';
   kube.CRD(kind='DockerImage',
            singular='docker-image',

@@ -7,4 +7,4 @@ USER root
 
 COPY ./build.sh /
 
-USER user
+USER 1000

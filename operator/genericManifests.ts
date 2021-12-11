@@ -68,7 +68,6 @@ export default {
                     "readOnly": true
                   }
                 ],
-                "imagePullPolicy": "IfNotPresent",
                 "name": `${type}-manifest-builder`,
                 "resources": {
                   "limits": {
@@ -205,12 +204,23 @@ export default {
               "spec": {
                 "serviceAccountName": `cleaner-${name}`,
                 "restartPolicy": "OnFailure",
+                "securityContext": {
+                  "runAsNonRoot": true,
+                },
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}manifest-cleaner:${settings.buildNumber()}`,
                     "args": [namespace],
                     "env": jabosOperatorUrlEnv(),
-                    "imagePullPolicy": "IfNotPresent",
+                    "imagePullPolicy": settings.imagePullPolicy(),
+                    "securityContext": {
+                      "readOnlyRootFilesystem": true,
+                      "allowPrivilegeEscalation": false,
+                      "runAsNonRoot": true,
+                      "capabilities": {
+                        "drop": ['ALL'],
+                      },
+                    },
                     "name": "manifest-cleaner",
                     "resources": {
                       "limits": {
@@ -227,10 +237,18 @@ export default {
                         "name": "manifests",
                         "mountPath": "/manifests",
                       },
+                      {
+                        "name": "temp",
+                        "mountPath": "/tmp",
+                      },
                     ]
                   }
                 ],
                 "volumes": [
+                  {
+                    "name": "temp",
+                    "emptyDir": {}
+                  },
                   {
                     "name": "manifests",
                     "downwardAPI": {

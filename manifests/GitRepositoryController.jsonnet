@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local kube = import './kube.libsonnet';
   local metacontroller = import './metacontroller.libsonnet';
   metacontroller.DecoratorController(namespace=namespace,

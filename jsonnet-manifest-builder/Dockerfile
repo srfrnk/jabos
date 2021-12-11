@@ -13,4 +13,4 @@ RUN wget https://github.com/google/go-jsonnet/releases/download/v0.17.0/go-jsonn
 
 COPY ./build.sh /
 
-USER user
+USER 1000

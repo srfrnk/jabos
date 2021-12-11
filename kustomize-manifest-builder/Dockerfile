@@ -11,4 +11,4 @@ COPY --from=kustomize /app/kustomize /usr/bin/kustomize
 
 COPY ./build.sh /
 
-USER user
+USER 1000

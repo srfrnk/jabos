@@ -12,4 +12,4 @@ RUN wget https://get.helm.sh/helm-v3.7.2-linux-amd64.tar.gz -O - | tar -xz && \
 
 COPY ./build.sh /
 
-USER user
+USER 1000

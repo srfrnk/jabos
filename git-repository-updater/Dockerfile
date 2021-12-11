@@ -7,8 +7,6 @@ USER root
 
 RUN apk add --update bc git openssh-client
 
-RUN mkdir /gitTemp && chown user /gitTemp
-
 RUN mkdir /home/user/.ssh &&\
   printf "Host *\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
   touch /home/user/.ssh/known_hosts &&\
@@ -16,6 +14,6 @@ RUN mkdir /home/user/.ssh &&\
 
 COPY ./get_latest_commit.sh /
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/get_latest_commit.sh"]

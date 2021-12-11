@@ -32,12 +32,11 @@ curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/gitRepositoryUpdaterStart" \
 source /kubectl-setup.sh
 
 if [ -n "${SSH_KEY}" ]; then
-  eval "$(ssh-agent -s)" >&2
-  echo "${SSH_PASSPHRASE}" | setsid ssh-add <(printf -- "${SSH_KEY}") >&2
+  eval "$(ssh-agent -s)"
+  echo "${SSH_PASSPHRASE}" | setsid ssh-add <(printf -- "${SSH_KEY}")
 fi
 
 git clone --bare --single-branch --depth 1 --branch ${BRANCH} ${URL} /gitTemp
-
 cd  /gitTemp
 LATEST_COMMIT=$(git log -n 1 --pretty=format:"%H" | head -n 1)
 

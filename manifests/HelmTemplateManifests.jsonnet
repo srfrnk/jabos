@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local manifests = (import './manifests.libsonnet');
   manifests.CRD(
     description='`HelmTemplateManifest` objects define a folder with a [helm](https://helm.sh/) chart to deploy with `helm template`.',

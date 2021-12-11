@@ -170,7 +170,7 @@ jobs:
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
             --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             --tla-str 'namespace=${{env.NAMESPACE}}' \
-            --tla-str 'debug=false' \
+            --tla-str 'isProduction=true' \
             > ./build/jabos-manifests.yaml
           cp ./build/jabos-manifests.yaml ./build/input/jabos-manifests.yaml
 

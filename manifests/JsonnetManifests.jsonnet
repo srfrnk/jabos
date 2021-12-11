@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local manifests = (import './manifests.libsonnet');
   manifests.CRD(
     description='`JsonnetManifest` objects define a folder with [jsonnet](https://jsonnet.org/) based manifests to deploy.',
