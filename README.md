@@ -1,8 +1,8 @@
 # jabos
 
 ![build](https://github.com/srfrnk/jabos/actions/workflows/push.yml/badge.svg?branch=main)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/srfrnk/jabos?label=latest%20release&style=plastic)
-[![License: GPL v3](https://img.shields.io/badge/License-MTA-blue.svg)](https://github.com/cam-barts/ObeyTheTestingGoat/blob/master/LICENSE)
+![GitHub release](https://img.shields.io/github/v/release/srfrnk/jabos?label=latest%20release&style=plastic)
+![License](https://img.shields.io/badge/License-MTA-blue.svg)
 
 Jabos attempts to be a fully automated K8s GitOps framework.
 
