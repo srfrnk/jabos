@@ -1,6 +1,9 @@
 # jabos
 
-**Just Another Boring Ops System**
+![build](https://github.com/srfrnk/jabos/actions/workflows/push.yml/badge.svg?branch=main)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/srfrnk/jabos?label=latest%20release&style=plastic)
+[![License: GPL v3](https://img.shields.io/badge/License-MTA-blue.svg)](https://github.com/cam-barts/ObeyTheTestingGoat/blob/master/LICENSE)
+
 Jabos attempts to be a fully automated K8s GitOps framework.
 
 **This is WIP** - any comments, requests or issues would be welcome! please use <a href="https://github.com/srfrnk/jabos/issues" target="_blank">this link</a>
