@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from 'express';
 import asyncHandler from 'express-async-handler'
-import prometheusMiddleware from 'express-prometheus-middleware';
+// import prometheusMiddleware from 'express-prometheus-middleware';
 
 import gitRepositories from './gitRepositories';
 import dockerImages from './dockerImages';
@@ -19,14 +19,14 @@ app.listen(settings.port(), () => {
   console.log(`Server running on port ${settings.port()}.`);
 });
 
-app.use(prometheusMiddleware({
-  metricsPath: '/metrics',
-  collectDefaultMetrics: true,
-  requestDurationBuckets: [0.1, 0.5, 1, 1.5],
-  requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
-  responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
-  prefix: settings.prometheusMetricPrefix(),
-}));
+// app.use(prometheusMiddleware({
+//   metricsPath: '/metrics',
+//   collectDefaultMetrics: true,
+//   requestDurationBuckets: [0.1, 0.5, 1, 1.5],
+//   requestLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+//   responseLengthBuckets: [512, 1024, 5120, 10240, 51200, 102400],
+//   prefix: settings.prometheusMetricPrefix(),
+// }));
 
 app.get('/', asyncHandler(async (request: Request, response: Response, next: NextFunction) => {
   response.status(200).json({ status: 'ok' });

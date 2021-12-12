@@ -142,7 +142,7 @@ All metrics are exported into `Prometheus` using the `ServiceMonitor` API by `ku
 To otherwise configure `Prometheus` to collect the metrics you need to point it to 'OPERATOR_POD_IP:3000/metrics'.
 
 All metrics exported are prefixed with `jabos_operator_`.
-Numerous metrics are exported most of them describe `nodsjs` and `expresjs` operations.
+Numerous metrics are exported most of them describe `nodsjs` and `expresjs` operations. [**Removed due to security audit fails**](#34)
 
 Important metrics for the operation of Jabos are:
 
@@ -219,4 +219,4 @@ Important metrics for the operation of Jabos are:
 - Jabos uses <a href="https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack" target="_blank">kube-prometheus-stack</a> for local monitoring and alerting.
 - Jabos uses <a href="https://www.gnu.org/software/parallel/" target="_blank">GNU Parallel</a> for local port-forwarding to multiple services
 - Jabos uses <a href="https://github.com/expressjs/express" target="_blank">expressjs</a> as the web server to run the operator
-- Jabos uses <a href="https://github.com/joao-fontenele/express-prometheus-middleware" target="_blank">express-prometheus-middleware</a> to export basic metrics to prometheus
+- [**Removed due to security audit fails**](#34) - Jabos uses <a href="https://github.com/joao-fontenele/express-prometheus-middleware" target="_blank">express-prometheus-middleware</a> to export basic metrics to prometheus
