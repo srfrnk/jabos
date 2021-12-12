@@ -38,149 +38,114 @@ jobs:
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
 
-      - name: kubectl
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kubectl
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
         with:
+          go-version: "1.13"
+
+      - name: kubectl
+        uses: ./.github/workflows/actions/image
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+        with:
+          name: kubectl
           context: kubectl
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
+
+      - name: base-manifest-builder
+        uses: ./.github/workflows/actions/image
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+        with:
+          name: base-manifest-builder
+          context: base-manifest-builder
 
       - name: operator
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}operator
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: operator
           context: operator
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: git-repository-updater
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}git-repository-updater
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: git-repository-updater
           context: git-repository-updater
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: docker-image-builder-init
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}docker-image-builder-init
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: docker-image-builder-init
           context: docker-image-builder-init
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: post-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}post-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: post-builder
           context: post-builder
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: pre-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}pre-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: pre-builder
           context: pre-builder
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}},${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: manifest-deployer
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-deployer
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: manifest-deployer
           context: manifest-deployer
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: manifest-cleaner
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}manifest-cleaner
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: manifest-cleaner
           context: manifest-cleaner
-          build-args: |
-            IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}
-            IMAGE_VERSION=:${{env.VERSION}}.${{env.BUILD_NUMBER}}
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: jsonnet-manifest-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}jsonnet-manifest-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: jsonnet-manifest-builder
           context: jsonnet-manifest-builder
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: plain-manifest-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}plain-manifest-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: plain-manifest-builder
           context: plain-manifest-builder
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: helm-template-manifest-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}helm-template-manifest-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: helm-template-manifest-builder
           context: helm-template-manifest-builder
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: kustomize-manifest-builder
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        uses: ./.github/workflows/actions/image
         env:
-          IMAGE_NAME: ${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}kustomize-manifest-builder
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
         with:
+          name: kustomize-manifest-builder
           context: kustomize-manifest-builder
-          push: true
-          tags: ${{env.IMAGE_NAME}}:${{env.VERSION}}.${{env.BUILD_NUMBER}} , ${{env.IMAGE_NAME}}:${{env.VERSION}} , ${{env.IMAGE_NAME}}:latest
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
 
       - name: Move cache
         run: |
@@ -188,6 +153,7 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   manifests:
+    needs: images
     runs-on: ubuntu-latest
     env:
       BUILD_NUMBER: ${{github.run_number}}
@@ -204,9 +170,24 @@ jobs:
             --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
             --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             --tla-str 'namespace=${{env.NAMESPACE}}' \
-            --tla-str 'debug=false' \
+            --tla-str 'isProduction=true' \
             > ./build/jabos-manifests.yaml
           cp ./build/jabos-manifests.yaml ./build/input/jabos-manifests.yaml
+
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+
+      - run: snyk iac test --sarif-file-output=snyk.sarif ./build/jabos-manifests.yaml || true
+        shell: bash
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
+          category: manifests
 
       - uses: srfrnk/setup-yq@v1.0.2
 

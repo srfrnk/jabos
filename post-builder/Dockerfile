@@ -5,9 +5,9 @@ FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION}
 
 USER root
 
-RUN apt-get install -yy bc
+RUN apk add --update bc
 
-USER user
+USER 1000
 
 COPY ./post-build.sh /
 

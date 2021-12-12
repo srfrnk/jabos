@@ -1,7 +1,6 @@
-FROM ubuntu
+FROM alpine
 
-RUN apt-get update -y &&\
-  apt-get install -yy curl wget
+RUN apk add --update curl wget bash
 
 RUN \
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
@@ -10,13 +9,13 @@ RUN \
 RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
 
-RUN useradd -ms /bin/bash user
+RUN adduser -s /bin/bash -S user -u 1000
 
 COPY ./kubectl-setup.sh /
 COPY ./kube-config.yaml /home/user/.kube/config
 
 RUN chown -R user /home/user
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/setup.sh"]

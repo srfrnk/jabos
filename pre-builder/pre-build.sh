@@ -23,8 +23,8 @@ curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/${METRIC_NAME}Start" \
 date +%s.%N > /timer/start
 
 if [ -n "${SSH_KEY}" ]; then
-  eval "$(ssh-agent -s)" >&2
-  echo "${SSH_PASSPHRASE}" | setsid -w ssh-add <(printf -- "${SSH_KEY}") >&2
+  eval "$(ssh-agent -s)"
+  echo "${SSH_PASSPHRASE}" | setsid ssh-add <(printf -- "${SSH_KEY}")
 fi
 
 git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp

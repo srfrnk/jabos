@@ -1,9 +1,8 @@
-FROM ubuntu
+FROM alpine
 
-RUN apt-get update -y &&\
-  apt-get install -yy curl git
+RUN apk add --update curl git bash openssh-client
 
-RUN useradd -ms /bin/bash user
+RUN adduser -s /bin/bash -S user -u 1000
 
 RUN mkdir /home/user/.ssh &&\
   printf "Host *\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
@@ -12,6 +11,6 @@ RUN mkdir /home/user/.ssh &&\
 
 COPY ./pre-build.sh /
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/pre-build.sh"]

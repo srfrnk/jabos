@@ -5,9 +5,7 @@ FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION} as kubectl
 
 USER root
 
-RUN apt-get install -yy bc git
-
-RUN mkdir /gitTemp && chown user /gitTemp
+RUN apk add --update bc git openssh-client
 
 RUN mkdir /home/user/.ssh &&\
   printf "Host *\n\tStrictHostKeyChecking no\n" >> /home/user/.ssh/config &&\
@@ -16,6 +14,6 @@ RUN mkdir /home/user/.ssh &&\
 
 COPY ./get_latest_commit.sh /
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/get_latest_commit.sh"]

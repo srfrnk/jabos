@@ -1,22 +1,15 @@
-FROM ubuntu
+ARG IMAGE_PREFIX
+ARG IMAGE_VERSION
 
-RUN apt-get update -y &&\
-  apt-get install -yy curl wget gnupg2 apt-transport-https
+FROM ${IMAGE_PREFIX}base-manifest-builder${IMAGE_VERSION} as base-manifest-builder
 
-RUN useradd -ms /bin/bash user
+USER root
 
-RUN mkdir /build && chown user /build
-
-RUN curl https://baltocdn.com/helm/signing.asc | apt-key add - &&\
-  echo "deb https://baltocdn.com/helm/stable/debian/ all main" | tee /etc/apt/sources.list.d/helm-stable-debian.list &&\
-  apt-get update -y &&\
-  apt-get install helm
-
-RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-  chmod +x /usr/bin/yq
+RUN wget https://get.helm.sh/helm-v3.7.2-linux-amd64.tar.gz -O - | tar -xz && \
+  mv linux-amd64/helm /usr/bin/helm && \
+  chmod +x /usr/bin/helm && \
+  rm -rf linux-amd64
 
 COPY ./build.sh /
 
-USER user
-
-ENTRYPOINT ["/build.sh"]
+USER 1000

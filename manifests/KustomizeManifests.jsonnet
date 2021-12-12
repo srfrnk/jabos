@@ -1,4 +1,4 @@
-function(imagePrefix, buildNumber, namespace, debug) (
+function(imagePrefix, buildNumber, namespace, isProduction) (
   local manifests = (import './manifests.libsonnet');
   manifests.CRD(
     description='`KustomizeManifest` objects define a folder with [Kustomize](https://kustomize.io/) based manifests to deploy.',

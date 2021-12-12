@@ -1,15 +1,14 @@
-FROM ubuntu
+FROM alpine
 
-RUN apt-get update -y &&\
-  apt-get install -yy curl wget
+RUN apk add --update curl wget git bash
 
 RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
   chmod +x /usr/bin/yq
 
-RUN useradd -ms /bin/bash user
+RUN adduser -s /bin/bash -S user -u 1000
 
 COPY ./init.sh /
 
-USER user
+USER 1000
 
 ENTRYPOINT ["/init.sh"]

@@ -19,6 +19,32 @@ export default function (options: {
   metricLabels: {},
   labels: {}
 }) {
+  options.containers.forEach(container => {
+    container.imagePullPolicy = settings.imagePullPolicy();
+
+    container.securityContext = {
+      ...container.securityContext,
+      "readOnlyRootFilesystem": true,
+      "allowPrivilegeEscalation": false,
+      "runAsNonRoot": true,
+      "capabilities": {
+        "drop": ['ALL'],
+      },
+    };
+
+    container.volumeMounts = [
+      ...container.volumeMounts,
+      {
+        "name": "temp",
+        "mountPath": "/tmp",
+      },
+      {
+        "name": "build",
+        "mountPath": "/build",
+      }
+    ];
+  });
+
   return {
     "apiVersion": "batch/v1",
     "kind": "Job",
@@ -43,6 +69,9 @@ export default function (options: {
         "spec": {
           "serviceAccountName": options.serviceAccountName,
           "restartPolicy": "OnFailure",
+          "securityContext": {
+            "runAsNonRoot": true,
+          },
           "initContainers": [
             {
               "image": `${settings.imagePrefix()}pre-builder:${settings.buildNumber()}`,
@@ -67,7 +96,15 @@ export default function (options: {
                   }
                 }
               ])],
-              "imagePullPolicy": "IfNotPresent",
+              "imagePullPolicy": settings.imagePullPolicy(),
+              "securityContext": {
+                "readOnlyRootFilesystem": true,
+                "allowPrivilegeEscalation": false,
+                "runAsNonRoot": true,
+                "capabilities": {
+                  "drop": ['ALL'],
+                },
+              },
               "name": "pre-builder",
               "resources": {
                 "limits": {
@@ -83,6 +120,10 @@ export default function (options: {
                 {
                   "name": "git-temp",
                   "mountPath": "/gitTemp",
+                },
+                {
+                  "name": "temp",
+                  "mountPath": "/tmp",
                 },
                 {
                   "name": "timer",
@@ -102,9 +143,21 @@ export default function (options: {
                   "name": "timer",
                   "mountPath": "/timer",
                   "readOnly": true
+                },
+                {
+                  "name": "temp",
+                  "mountPath": "/tmp"
                 }
               ],
-              "imagePullPolicy": "IfNotPresent",
+              "imagePullPolicy": settings.imagePullPolicy(),
+              "securityContext": {
+                "readOnlyRootFilesystem": true,
+                "allowPrivilegeEscalation": false,
+                "runAsNonRoot": true,
+                "capabilities": {
+                  "drop": ['ALL'],
+                },
+              },
               "name": "post-builder",
               "resources": {
                 "limits": {
@@ -122,6 +175,14 @@ export default function (options: {
             ...(options.volumes || []),
             {
               "name": "git-temp",
+              "emptyDir": {}
+            },
+            {
+              "name": "temp",
+              "emptyDir": {}
+            },
+            {
+              "name": "build",
               "emptyDir": {}
             },
             {

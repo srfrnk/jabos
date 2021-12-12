@@ -92,13 +92,24 @@ export default {
               "spec": {
                 "serviceAccountName": `builder-${name}`,
                 "restartPolicy": "OnFailure",
+                "securityContext": {
+                  "runAsNonRoot": true,
+                },
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
                     "args": [repo.url, repo.branch, namespace, name],
                     "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
-                    "imagePullPolicy": "IfNotPresent",
                     "name": "git-repository-updater",
+                    "imagePullPolicy": settings.imagePullPolicy(),
+                    "securityContext": {
+                      "readOnlyRootFilesystem": true,
+                      "allowPrivilegeEscalation": false,
+                      "runAsNonRoot": true,
+                      "capabilities": {
+                        "drop": ['ALL'],
+                      },
+                    },
                     "resources": {
                       "limits": {
                         "cpu": "500m",
@@ -109,8 +120,28 @@ export default {
                         "memory": "100Mi"
                       }
                     },
+                    "volumeMounts": [
+                      {
+                        "name": "git-temp",
+                        "mountPath": "/gitTemp",
+                      },
+                      {
+                        "name": "temp",
+                        "mountPath": "/tmp",
+                      }
+                    ]
                   }
                 ],
+                volumes: [
+                  {
+                    "name": "git-temp",
+                    "emptyDir": {}
+                  },
+                  {
+                    "name": "temp",
+                    "emptyDir": {}
+                  },
+                ]
               }
             }
           }
