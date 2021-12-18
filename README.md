@@ -66,7 +66,7 @@ Video version:
 1. <a href="https://youtu.be/PqMUliEHx60" target="_blank">Configure CRDs</a>
 1. <a href="https://youtu.be/OlB6qybsqng" target="_blank">Push changes and trigger builds</a>
 
-## Jsonnet example
+### Jsonnet example
 
 Create a file `example.jsonnet`:
 
@@ -106,40 +106,40 @@ function(latestCommitId) {
 }
 ```
 
-## Git Repository Authentication
+### Git Repository Authentication
 
-### GitHub
+#### GitHub
 
-#### Using SSH Keys
+##### Using SSH Keys
 
 1. <a href="https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account" target="_blank">Create an SSH key and add it to GitHub</a> - **Optionally skip the "adding it to the ssh-agent" section.**
 1. Create a secret with the passphrase and key created in the previous step. (i.e. `kubectl create secret generic -n example-env first-repo-private --from-file=git_ssh_passphrase=./build/passphrase --from-file=git_ssh_key=./build/key`)
 1. Add an `ssh` property to each applicable `GitRepository` object to point to the secret.
 
-## Image Registry Authentication
+### Image Registry Authentication
 
-### Docker Hub
+#### Docker Hub
 
 1. Obtain your Docker Hub username.
 1. Obtain your Docker Hub password or <a href="https://docs.docker.com/docker-hub/access-tokens/" target="_blank">access token</a>.
 1. Create secret with the credentials. (i.e. `kubectl create secret generic -n example-env docker-hub --from-file=docker_hub_username=./build/docker_hub_username --from-file=docker_hub_password=./build/docker_hub_password`)
 1. Add a `dockerHub` property to any applicable `DockerImage` object to point to the secret.
 
-### GCP (GCR and Artifact Registry)
+#### GCP (GCR and Artifact Registry)
 
 1. Obtain a Service Account with the required permissions.
 1. Obtain the Service Account JSON key.
 1. Create secret with the JSON key. (i.e. `kubectl create secret generic -n example-env gcp --from-file=gcp_service_account.json=./build/gcp_service_account.json`)
 1. Add a `gcp` property to any applicable `DockerImage` object to point to the secret.
 
-### AWS (ECR)
+#### AWS (ECR)
 
 1. Obtain an <a href="https://aws.amazon.com/premiumsupport/knowledge-center/create-access-key/" target="_blank">Access Key</a> with the required permissions.
 1. Obtain the `Access key ID` and `Secret Access Key`.
 1. Create secret with these credentials. (i.e. `kubectl create secret generic -n example-env aws --from-file=aws_access_key_id=./build/aws_access_key_id --from-file=aws_secret_access_key=./build/aws_secret_access_key`)
 1. Add a `aws` property to any applicable `DockerImage` object to point to the secret.
 
-### Metrics
+#### Metrics
 
 All metrics are exported into `Prometheus` using the `ServiceMonitor` API by `kube-prometheus-stack`.
 To otherwise configure `Prometheus` to collect the metrics you need to point it to 'OPERATOR_POD_IP:3000/metrics'.
@@ -186,6 +186,31 @@ Important metrics for the operation of Jabos are:
 # HELP jabos_operator_jsonnet_manifests_builder_duration JsonnetManifestsBuilder duration
 # TYPE jabos_operator_jsonnet_manifests_builder_duration gauge
 ```
+
+## Security
+
+`Jabos` images and manifest are being scanned by [`CodeQL`](https://codeql.github.com/) and [`Snyk`](https://snyk.io/) as part of the release process using GitHub Actions.
+
+`Jabos` makes no attempt at protecting applications, networks, disks from malicious access. It is the responsibility of the user to put in place such measures.
+
+`Jabos` should always be contained inside a dedicated namespace to reduce risk to other systems.
+
+**Special attention** must be given to the `Jabos` docker image builder pods which use `Kaniko`. At this time it is required for `Kaniko` to be executed with `root` user and with a writable file system. This known limitation is a low risk as these pods have a very short life span... however it does pose a risk especially when the code pulled from a `Git` repository may contain vulnerabilities.
+
+**It is advisable to always scan all code which is pulled by `Jabos` from `Git`!**
+
+**It is advisable to use `NetworkPolicy` and other methods to ensure any egress from docker image builder pods is limited to what is required by your images to build!**
+
+### Security Overview
+
+The scan results can be found [here](https://github.com/srfrnk/jabos/security)
+
+As of version 1.x there are no known vulnerabilities.
+
+### Reporting a Vulnerability
+
+Create an issue [here](https://github.com/srfrnk/jabos/issues).
+Please add a `security` label for quicker response.
 
 ## Development
 
