@@ -1,0 +1,19 @@
+apiVersion: events.k8s.io/v1
+kind: Event
+metadata:
+  name: my-event
+  namespace: example-env-stg
+eventTime: "2021-12-30T09:37:20.886561Z"
+reportingController: my-controller
+reportingInstance: first-image
+action: my action
+reason: my reason
+type: Warning
+note: my note
+regarding:
+  apiVersion: jabos.io/v1
+  kind: DockerImage
+  name: first-image
+  namespace: example-env-stg
+  resourceVersion: "2268"
+  uid: 94bcd7fc-554b-45b6-921d-1ffea88f5741
