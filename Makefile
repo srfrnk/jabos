@@ -8,6 +8,7 @@ setup: FORCE
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
 	- kubectl create --save-config namespace example-env
+	- kubectl create --save-config namespace example-env-stg
 	- kubectl create --save-config namespace monitoring
 	- kubectl create --save-config namespace grafana-dashboard-operator
 	kubectl apply -k https://github.com/metacontroller/metacontroller/manifests/production
