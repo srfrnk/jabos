@@ -191,6 +191,10 @@ Important metrics for the operation of Jabos are:
 
 Diagrams for supported and future planned use-cases [are here](https://miro.com/app/board/uXjVOY5CIn0=)
 
+### Reuse Images
+
+You might want to avoid rebuilding images after they have been built and tested in the QA env.
+
 ## Security
 
 `Jabos` images and manifest are being scanned by [`CodeQL`](https://codeql.github.com/) and [`Snyk`](https://snyk.io/) as part of the release process using GitHub Actions.
