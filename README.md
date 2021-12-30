@@ -187,6 +187,10 @@ Important metrics for the operation of Jabos are:
 # TYPE jabos_operator_jsonnet_manifests_builder_duration gauge
 ```
 
+## Use Cases
+
+Diagrams for supported and future planned use-cases [are here](https://miro.com/app/board/uXjVOY5CIn0=)
+
 ## Security
 
 `Jabos` images and manifest are being scanned by [`CodeQL`](https://codeql.github.com/) and [`Snyk`](https://snyk.io/) as part of the release process using GitHub Actions.
