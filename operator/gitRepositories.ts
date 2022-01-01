@@ -8,6 +8,7 @@ export default {
     if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
+    var uid: string = request.body.object.metadata.uid;
     var namespace: string = request.body.object.metadata.namespace;
     var repo: any = request.body.object.spec;
 
@@ -35,6 +36,11 @@ export default {
               "apiGroups": ["jabos.io"],
               "resources": ["docker-images", "jsonnet-manifests", "git-repositories"],
               "verbs": ["get", "list", "watch", "patch"],
+            },
+            {
+              "apiGroups": ["events.k8s.io"],
+              "resources": ["events"],
+              "verbs": ["get", "list", "watch", "create", "update", "patch", "delete"],
             }
           ],
         },
@@ -98,7 +104,7 @@ export default {
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
-                    "args": [repo.url, repo.branch, namespace, name],
+                    "args": [repo.url, repo.branch, namespace, name, uid],
                     "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
                     "name": "git-repository-updater",
                     "imagePullPolicy": settings.imagePullPolicy(),
