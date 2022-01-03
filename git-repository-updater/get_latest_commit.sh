@@ -9,6 +9,7 @@ BRANCH=$2
 NAMESPACE=$3
 NAME=$4
 OBJECT_UID=$5
+CURRENT_COMMIT=$6
 
 function exit {
   sleep 10 # Just to allow fluentd gathering logs before termination
@@ -47,11 +48,12 @@ ERROR_MESSAGE=$(git clone --bare --single-branch --depth 1 --branch ${BRANCH} ${
 cd  /gitTemp
 LATEST_COMMIT=$(git log -n 1 --pretty=format:"%H" | head -n 1)
 
-LATEST_COMMIT_UPDATE="false"
-[[ $(kc annotate --overwrite -n ${NAMESPACE} git-repositories.jabos.io ${NAME} "latestCommit=${LATEST_COMMIT}") =~ " unchanged" ]] || LATEST_COMMIT_UPDATE="true"
+kc annotate --overwrite -n ${NAMESPACE} git-repositories.jabos.io ${NAME} "latestCommit=${LATEST_COMMIT}"
+kcurl PATCH "/apis/jabos.io/v1/namespaces/${NAMESPACE}/git-repositories/${NAME}/status" "application/merge-patch+json" "{\"status\":{\"latestCommit\":\"${LATEST_COMMIT}\"}}" >/dev/null
 
 END=$(date +%s)
 DURATION=$(echo "$END - $START" | bc)
+LATEST_COMMIT_UPDATE=$([[ "${LATEST_COMMIT}" == "${CURRENT_COMMIT}" ]] && printf "false" || printf "true")
 
 curl -s -X POST "${JABOS_OPERATOR_URL}setMetric/gitRepositoryUpdaterDuration?value=${DURATION}" \
   -d '{"namespace":"'"${NAMESPACE}"'","git_repository":"'"${NAME}"'","latest_commit_update":"'"${LATEST_COMMIT_UPDATE}"'"}' -H "Content-Type: application/json" >/dev/null

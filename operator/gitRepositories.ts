@@ -11,6 +11,7 @@ export default {
     var uid: string = request.body.object.metadata.uid;
     var namespace: string = request.body.object.metadata.namespace;
     var repo: any = request.body.object.spec;
+    var lastCommit: string = (request.body.object.status || {}).lastCommit;
 
     var jobName = `git-repository-updater-${name}-${Math.floor(Math.random() * 10e6)}i`;
 
@@ -104,7 +105,7 @@ export default {
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
-                    "args": [repo.url, repo.branch, namespace, name, uid],
+                    "args": [repo.url, repo.branch, namespace, name, uid, lastCommit],
                     "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
                     "name": "git-repository-updater",
                     "imagePullPolicy": settings.imagePullPolicy(),

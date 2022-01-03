@@ -6,7 +6,7 @@ import { getRepo } from './misc';
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     var repo = getRepo(request);
-    var latestCommit: string = repo.metadata.annotations.latestCommit;
+    var latestCommit = (repo.status || {}).latestCommit;
 
     var dockerImages = Object.values(request.body.related["DockerImage.jabos.io/v1"] || {});
     var args = [latestCommit, ...dockerImages.map((image: any) => image.spec.imageName)];
@@ -18,7 +18,7 @@ export default {
     await genericManifests.customize('kustomize', request, response, [{
       "apiVersion": "jabos.io/v1",
       "resource": "docker-images",
-      "namespace": request.body.parent.metadata.namespace,
+      // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
       "names": request.body.parent.spec.dockerImages
     }]);
   },
