@@ -8,7 +8,14 @@ export default {
     var repo = getRepo(request);
     var latestCommit = (repo.status || {}).latestCommit;
 
-    var dockerImages = Object.values(request.body.related["DockerImage.jabos.io/v1"] || {});
+    var namespace = request.body.object.metadata.namespace;
+    // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
+    var dockerImages = Object.values(request.body.related["DockerImage.jabos.io/v1"] || {}).filter((r: any) => r.metadata.namespace === namespace);
+
+    if (dockerImages.length !== spec.dockerImages.length) {
+      // Have to reject the sync to maintain idempotent response - due to: https://github.com/metacontroller/metacontroller/issues/414
+      throw new Error(`No DockerImages from same namespace.`);
+    }
 
     var spec: any = request.body.object.spec;
 

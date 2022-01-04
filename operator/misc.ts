@@ -44,10 +44,14 @@ export function getRepo(request: Request): Repo {
   if (!!related) {
     var reposMap = related['GitRepository.jabos.io/v1'];
     if (!!reposMap) {
-      // Have to filter to do the following bug: https://github.com/metacontroller/metacontroller/issues/414
+      // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
       var repos = Object.values(reposMap).filter((r: any) => r.metadata.namespace === namespace);
       if (repos.length > 0) {
         repo = repos[0] as Repo;
+      }
+      else {
+        // Have to reject the sync to maintain idempotent response - due to: https://github.com/metacontroller/metacontroller/issues/414
+        throw new Error(`No GitRepository from same namespace.`);
       }
     }
   }
