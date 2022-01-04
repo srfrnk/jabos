@@ -9,7 +9,18 @@ export default {
     var latestCommit = (repo.status || {}).latestCommit;
 
     var dockerImages = Object.values(request.body.related["DockerImage.jabos.io/v1"] || {});
-    var args = [latestCommit, ...dockerImages.map((image: any) => image.spec.imageName)];
+
+    var spec: any = request.body.object.spec;
+
+    var replacementPrefix = spec.replacementPrefix;
+    var replacementSuffix = spec.replacementSuffix;
+    var replacements = spec.replacements;
+
+    var args = [latestCommit,
+      Object.entries(
+        replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
+        ).join(';'),
+      ...dockerImages.map((image: any) => image.spec.imageName)];
 
     await genericManifests.sync('kustomize', 'kustomize', 'kustomize', args, request, response);
   },

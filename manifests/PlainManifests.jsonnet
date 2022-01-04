@@ -23,6 +23,12 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
         default: 'LATEST_COMMIT_HASH',
         description: 'The string to replace with the commit hash for the build. Will be prefixed by `replacementPrefix` and suffixed by `replacementSuffix`. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**',
       },
+      replacements: {
+        type: 'object',
+        additionalProperties: true,
+        default: {},
+        description: 'Key-Values of replacements to make when building.',
+      },
     }
   )
 )

@@ -17,6 +17,22 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
           description: 'Name `DockerImage` object. **Must be in the same namespace**',
         },
       },
+      replacementPrefix: {
+        type: 'string',
+        default: '\\$\\{',
+        description: 'The string to prefix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**',
+      },
+      replacementSuffix: {
+        type: 'string',
+        default: '\\}',
+        description: 'The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**',
+      },
+      replacements: {
+        type: 'object',
+        additionalProperties: true,
+        default: {},
+        description: 'Key-Values of replacements to make when building.',
+      },
     }
   )
 )

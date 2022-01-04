@@ -9,7 +9,10 @@ export default {
     var spec: any = request.body.object.spec;
     var latestCommit = (repo.status || {}).latestCommit;
 
-    var args = [`--tla-str "${spec.commitTLAKey}=${latestCommit}"`];
+    var args = [
+      `--tla-str "${spec.commitTLAKey}=${latestCommit}"`,
+      ...Object.entries(spec.tlas).map(tla => `--tla-str "${tla[0]}=${tla[1]}"`)
+    ];
 
     await genericManifests.sync('jsonnet', 'jsonnet', 'jsonnet', args, request, response);
   },
