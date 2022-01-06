@@ -317,7 +317,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.134</div>
+                <div class="app-desc">Version: 1.0.136</div>
             </p>
           </div>
         </div>
@@ -987,6 +987,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/GitRepository_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/GitRepository_status"
     }
   },
   "description" : "`GitRepository` objects define a git codebase and how to pull from it.",
@@ -1032,6 +1035,56 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   },
   "description" : "Credentials for `SSH` access"
 };
+    defs["GitRepository_status"] = {
+  "type" : "object",
+  "properties" : {
+    "conditions" : {
+      "type" : "array",
+      "description" : "List of conditions",
+      "items" : {
+        "$ref" : "#/components/schemas/GitRepository_status_conditions"
+      },
+      "default" : [ ]
+    },
+    "latestCommit" : {
+      "type" : "string",
+      "description" : "Latest Git Commit ID"
+    }
+  },
+  "description" : "Status of object"
+};
+    defs["GitRepository_status_conditions"] = {
+  "required" : [ "status", "type" ],
+  "type" : "object",
+  "properties" : {
+    "lastHeartbeatTime" : {
+      "type" : "string",
+      "description" : "Last time we got an update on a given condition"
+    },
+    "lastTransitionTime" : {
+      "type" : "string",
+      "description" : "Last time the condition transit from one status to another"
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Human-readable message indicating details about last transition"
+    },
+    "reason" : {
+      "type" : "string",
+      "description" : "One-word CamelCase reason for the condition's last transition"
+    },
+    "status" : {
+      "type" : "string",
+      "description" : "Status of the condition, one of **True**, **False**, **Unknown**",
+      "enum" : [ "True", "False", "Unknown" ]
+    },
+    "type" : {
+      "type" : "string",
+      "description" : "Type of condition"
+    }
+  },
+  "description" : "Condition"
+};
     defs["HelmTemplateManifest"] = {
   "title" : "HelmTemplateManifest",
   "required" : [ "spec" ],
@@ -1074,6 +1127,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     "targetNamespace" : {
       "type" : "string",
       "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    },
+    "values" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values to inject when building.",
+      "default" : { }
     }
   }
 };
@@ -1119,6 +1178,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     "targetNamespace" : {
       "type" : "string",
       "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    },
+    "tlas" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of [Top-Level Arguments (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to injecting when building.",
+      "default" : { }
     }
   }
 };
@@ -1164,6 +1229,22 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "type" : "string",
       "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
       "default" : "."
+    },
+    "replacementPrefix" : {
+      "type" : "string",
+      "description" : "The string to prefix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\$\\\\{"
+    },
+    "replacementSuffix" : {
+      "type" : "string",
+      "description" : "The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\}"
+    },
+    "replacements" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of replacements to make when building.",
+      "default" : { }
     },
     "targetNamespace" : {
       "type" : "string",
@@ -1219,6 +1300,12 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "type" : "string",
       "description" : "The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
       "default" : "\\\\}"
+    },
+    "replacements" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of replacements to make when building.",
+      "default" : { }
     },
     "targetNamespace" : {
       "type" : "string",
