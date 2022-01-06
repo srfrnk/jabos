@@ -17,7 +17,11 @@ setup: FORCE
 		--set prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false \
 		--set prometheus.prometheusSpec.ruleSelectorNilUsesHelmValues=false \
 		--set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false \
-		--set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false
+		--set prometheus.prometheusSpec.probeSelectorNilUsesHelmValues=false \
+		--set kube-state-metrics.podSecurityPolicy.enabled=false \
+		--set prometheus-node-exporter.rbac.pspEnabled=false \
+		--set grafana.rbac.pspEnabled=false \
+		--set global.rbac.pspEnabled=false
 	kubectl apply -n grafana-dashboard-operator -f https://github.com/srfrnk/grafana-dashboard-operator/releases/latest/download/grafana-dashboard-operator-manifests.yaml
 	- kubectl delete secret -n grafana-dashboard-operator grafana-api
 	TOKEN="null"; \

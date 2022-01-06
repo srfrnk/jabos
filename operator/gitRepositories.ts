@@ -13,15 +13,9 @@ export default {
     var repo: any = request.body.object.spec;
     var lastCommit: string = (request.body.object.status || {}).lastCommit;
 
-    var jobName = `git-repository-updater-${name}-${Math.floor(Math.random() * 10e6)}i`;
-
-    var jobs = Object.keys(request.body.attachments['Job.batch/v1']);
-    if (jobs.length > 0) {
-      var job = request.body.attachments['Job.batch/v1'][jobs[0]];
-      if (job.status.succeeded !== 1) {
-        jobName = job.metadata.name;
-      }
-    }
+    var jobName = `git-repository-updater-${name}`;
+    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']);
+    var attachJob = jobs.length === 0 || jobs[0].status.succeeded !== 1;
 
     var res = {
       "attachments": [
@@ -35,13 +29,18 @@ export default {
           "rules": [
             {
               "apiGroups": ["jabos.io"],
-              "resources": ["docker-images", "jsonnet-manifests", "git-repositories"],
+              "resources": ["docker-images", "jsonnet-manifests"],
               "verbs": ["get", "list", "watch", "patch"],
+            },
+            {
+              "apiGroups": ["jabos.io"],
+              "resources": ["docker-images/status", "jsonnet-manifests/status", "git-repositories/status"],
+              "verbs": ["patch"],
             },
             {
               "apiGroups": ["events.k8s.io"],
               "resources": ["events"],
-              "verbs": ["get", "list", "watch", "create", "update", "patch", "delete"],
+              "verbs": ["create", "update", "patch"],
             }
           ],
         },
@@ -73,7 +72,7 @@ export default {
             "namespace": namespace,
           },
         },
-        {
+        ...(attachJob ? [{
           "apiVersion": "batch/v1",
           "kind": "Job",
           "metadata": {
@@ -152,7 +151,7 @@ export default {
               }
             }
           }
-        }
+        }] : [])
       ],
     };
 

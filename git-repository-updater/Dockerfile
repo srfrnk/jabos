@@ -23,6 +23,7 @@ RUN chmod 664 /events.libsonnet
 
 COPY ./get_latest_commit.sh /
 COPY ./error-event.jsonnet /
+COPY ./status.jsonnet /
 
 USER 1000
 
