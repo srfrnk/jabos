@@ -5,7 +5,7 @@ import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
-import { getRepo, k8sName } from './misc';
+import { getRepo } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
@@ -17,7 +17,7 @@ export default {
     var spec: any = request.body.object.spec;
     var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
     var repo = getRepo(request);
-    var latestCommit: string = repo.metadata.annotations.latestCommit;
+    var latestCommit = (repo.status || {}).latestCommit;
 
     var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
 
@@ -35,54 +35,54 @@ export default {
       }),
     ];
 
+    const builderJob = manifestBuilderJob({
+      imagePrefix: settings.imagePrefix(),
+      buildNumber: settings.buildNumber(),
+      commit: latestCommit,
+      repoUrl: repo.spec.url,
+      repoBranch: repo.spec.branch,
+      repoSsh: repo.spec.ssh,
+      name,
+      namespace,
+      gitRepository: spec.gitRepository,
+      targetNamespace: spec.targetNamespace,
+      type: `${type}-manifests`,
+      metricName: `${metricName}ManifestsBuilder`,
+      metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
+      containers: [
+        {
+          "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
+          "args": [spec.path, ...args],
+          "env": [],
+          "volumeMounts": [
+            {
+              "name": "git-temp",
+              "mountPath": "/gitTemp",
+              "readOnly": true
+            }
+          ],
+          "name": `${type}-manifest-builder`,
+          "resources": {
+            "limits": {
+              "cpu": "500m",
+              "memory": "500Mi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "100Mi"
+            }
+          },
+        }
+      ]
+    });
+
     var res = {
       "annotations": !latestCommit ? {} : {
         "latestCommit": latestCommit,
       },
       "attachments": [
         ...attachments,
-        ...(triggerJob ? [
-          manifestBuilderJob({
-            imagePrefix: settings.imagePrefix(),
-            buildNumber: settings.buildNumber(),
-            commit: latestCommit,
-            repoUrl: repo.spec.url,
-            repoBranch: repo.spec.branch,
-            repoSsh: repo.spec.ssh,
-            name,
-            namespace,
-            gitRepository: spec.gitRepository,
-            targetNamespace: spec.targetNamespace,
-            type: `${type}-manifests`,
-            metricName: `${metricName}ManifestsBuilder`,
-            metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
-            containers: [
-              {
-                "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
-                "args": [spec.path, ...args],
-                "env": [],
-                "volumeMounts": [
-                  {
-                    "name": "git-temp",
-                    "mountPath": "/gitTemp",
-                    "readOnly": true
-                  }
-                ],
-                "name": `${type}-manifest-builder`,
-                "resources": {
-                  "limits": {
-                    "cpu": "500m",
-                    "memory": "500Mi"
-                  },
-                  "requests": {
-                    "cpu": "100m",
-                    "memory": "100Mi"
-                  }
-                },
-              }
-            ]
-          })
-        ] : [])
+        ...(triggerJob ? [builderJob] : [])
       ]
     };
 
@@ -102,7 +102,7 @@ export default {
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          "namespace": request.body.parent.metadata.namespace,
+          // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
           "names": [
             request.body.parent.spec.gitRepository
           ]

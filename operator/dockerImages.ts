@@ -16,7 +16,7 @@ export default {
     var spec: any = request.body.object.spec;
     var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
     var repo = getRepo(request);
-    var latestCommit: string = repo.metadata.annotations.latestCommit;
+    var latestCommit = (repo.status || {}).latestCommit;
 
     var jobName = k8sName(`image-${name}`, latestCommit);
     var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
@@ -159,7 +159,7 @@ export default {
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          "namespace": request.body.parent.metadata.namespace,
+          // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
           "names": [
             request.body.parent.spec.gitRepository
           ]

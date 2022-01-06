@@ -7,12 +7,17 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     var repo = getRepo(request);
     var spec: any = request.body.object.spec;
-    var latestCommit: string = repo.metadata.annotations.latestCommit;
+    var latestCommit = (repo.status || {}).latestCommit;
 
     var replacementPrefix = spec.replacementPrefix;
     var replacementSuffix = spec.replacementSuffix;
     var commitReplacementString = spec.commitReplacementString;
-    var args = [`${replacementPrefix}${commitReplacementString}${replacementSuffix}`, latestCommit];
+    var replacements = spec.replacements;
+    replacements[commitReplacementString] = latestCommit;
+
+    var args = [Object.entries(
+      replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
+      ).join(';')];
 
     await genericManifests.sync('plain', 'plain', 'plain', args, request, response);
   },

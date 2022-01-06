@@ -13,6 +13,12 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
         default: 'LATEST_COMMIT_HASH',
         description: 'The key of the value to to set with the commit hash for the build. **Will be used as a Helm command line `--set-string` argument. Must be escaped accordingly.**',
       },
+      values: {
+        type: 'object',
+        additionalProperties: true,
+        default: {},
+        description: 'Key-Values to inject when building.',
+      },
     }
   )
 )

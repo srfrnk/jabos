@@ -12,9 +12,9 @@ trap exit EXIT
 echo "Args: $@"
 
 SRC_PATH=$1
-COMMIT_KEY=$2
-COMMIT_VALUE=$3
+shift
+VALUES="$@"
 
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
-helm template --set-string "${COMMIT_KEY}=${COMMIT_VALUE}" ${ROOT_PATH} > /manifests/manifests.yaml
+eval helm template ${VALUES} ${ROOT_PATH} > /manifests/manifests.yaml

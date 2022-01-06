@@ -12,7 +12,8 @@ trap exit EXIT
 echo "Args: $@"
 
 SRC_PATH=$1
-JSONNET_ARGS=$2
+shift
+JSONNET_ARGS="$@"
 
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 

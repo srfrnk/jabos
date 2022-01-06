@@ -7,10 +7,13 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     var repo = getRepo(request);
     var spec: any = request.body.object.spec;
-    var latestCommit: string = repo.metadata.annotations.latestCommit;
+    var latestCommit = (repo.status || {}).latestCommit;
 
     var commitValueKey = spec.commitValueKey;
-    var args = [commitValueKey, latestCommit];
+    var values = spec.values;
+    values[commitValueKey] = latestCommit;
+
+    var args = Object.entries(values).map(value => `--set-string "${value[0]}=${value[1]}"`);
 
     await genericManifests.sync('helmTemplate', 'helm-template', 'helm_template', args, request, response);
   },
