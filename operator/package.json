@@ -9,7 +9,7 @@
   "author": "srfrnk@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.2",
     "express-async-handler": "^1.2.0",
     "prom-client": "^14.0.1"
   },
