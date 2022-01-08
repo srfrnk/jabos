@@ -317,7 +317,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.138</div>
+                <div class="app-desc">Version: 1.0.141</div>
             </p>
           </div>
         </div>
@@ -884,6 +884,11 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "aws" : {
       "$ref" : "#/components/schemas/DockerImage_spec_aws"
+    },
+    "build" : {
+      "type" : "boolean",
+      "description" : "\"true\" to use automatically build and push any new commit.",
+      "default" : true
     },
     "contextPath" : {
       "type" : "string",
