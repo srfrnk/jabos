@@ -38,6 +38,11 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                            type: 'string',
                            description: 'The full image name excluding the tag part. Usually this will be prefixed with the registry address (e.g. `registry.kube-system:80/example-image`)',
                          },
+                         build: {
+                           type: 'boolean',
+                           default: true,
+                           description: '"true" to use automatically build and push any new commit.',
+                         },
                          insecureRegistry: {
                            type: 'boolean',
                            default: true,
