@@ -9,10 +9,11 @@ function exit {
 
 trap exit EXIT
 
-IMAGE=$1
-DOCKER_CONFIG=$(printf "%b" "$2" | base64 -d)
+HOST=$1
+REUSE_IMAGE=$2
+DOCKER_CONFIG=$(printf "%b" "$3" | base64 -d)
 
-echo "Args: $1 ${DOCKER_CONFIG}"
+echo "Args: ${HOST} ${REUSE_IMAGE} ${DOCKER_CONFIG}"
 
 printf "%b" "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
 
@@ -23,12 +24,14 @@ fi
 
 if [ -f "/secrets/gcp_service_account.json" ]; then
   AUTH=$(printf "%s" "_json_key:$(cat /secrets/gcp_service_account.json)" | base64 -w 0)
-  HOST=$(printf "%b" "${IMAGE}" | cut -d/ -f1)
-  echo "HOST: ${HOST}"
   yq e -i -o=json -I=0 ".auths[\"${HOST}\"].auth=\"${AUTH}\"" /kaniko/.docker/config.json
 fi
 
 if [ -f "/secrets/aws_access_key_id" ]; then
   yq e -i -o=json -I=0 ".credsStore=\"ecr-login\"" /kaniko/.docker/config.json
   printf "%b" "[default]\naws_access_key_id=$(cat /secrets/aws_access_key_id)\naws_secret_access_key=$(cat /secrets/aws_secret_access_key)" > /kaniko/.aws/credentials
+fi
+
+if [[ "BUILD_IMAGE" != "${REUSE_IMAGE}" ]]; then
+  echo "FROM ${REUSE_IMAGE}" > /reuse/Dockerfile
 fi

@@ -191,6 +191,11 @@ Important metrics for the operation of Jabos are:
 
 Diagrams for supported and future planned use-cases [are here](https://miro.com/app/board/uXjVOY5CIn0=)
 
+### Image Reuse
+
+Build images in DEV/QA only and reuse when commit is promoted to other environments.
+To mark a `DockerImage` for reuse of an image built in another environnement add `build: false` to the spec.
+
 ## Security
 
 `Jabos` images and manifest are being scanned by [`CodeQL`](https://codeql.github.com/) and [`Snyk`](https://snyk.io/) as part of the release process using GitHub Actions.

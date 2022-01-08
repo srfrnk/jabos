@@ -14,12 +14,12 @@ export default function (options: {
   repoBranch: string,
   repoSsh: { secret: string, passphrase: string, key: string },
   containers: any[],
-  volumes: any[],
+  volumes?: any[],
   metricName: string,
   metricLabels: {},
   labels: {}
-}) {
-  options.containers.forEach(container => {
+}): any {
+  (options.containers || []).forEach(container => {
     container.imagePullPolicy = settings.imagePullPolicy();
 
     container.securityContext = {
@@ -33,7 +33,7 @@ export default function (options: {
     };
 
     container.volumeMounts = [
-      ...container.volumeMounts,
+      ...(container.volumeMounts || []),
       {
         "name": "temp",
         "mountPath": "/tmp",
