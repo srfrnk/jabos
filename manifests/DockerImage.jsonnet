@@ -114,6 +114,18 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                          },
                        },
                      },
+                     status: {
+                       properties: {
+                         latestCommit: {
+                           type: 'string',
+                           description: 'Latest Git Commit ID',
+                         },
+                         builtCommit: {
+                           type: 'string',
+                           description: 'Latest Built Git Commit ID',
+                         },
+                       },
+                     },
                    },
                  },
                },
