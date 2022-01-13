@@ -9,16 +9,8 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-URL=$1
-BRANCH=$2
-COMMIT=$3
-METRIC_NAME=$4
-METRIC_LABLES=$5
-
 curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/${METRIC_NAME}Start" \
-  -d ''"${METRIC_LABLES}"'' -H "Content-Type: application/json" >/dev/null
+  -d ''"${METRIC_LABELS}"'' -H "Content-Type: application/json" >/dev/null
 
 date +%s.%N > /timer/start
 

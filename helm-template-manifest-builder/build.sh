@@ -9,12 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-SRC_PATH=$1
-shift
-VALUES="$@"
-
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
 eval helm template ${VALUES} ${ROOT_PATH} > /manifests/manifests.yaml

@@ -84,8 +84,8 @@ function buildJob(jobName: string, latestCommit: string, repo: Repo, name: strin
     repoUrl: repo.spec.url,
     repoBranch: repo.spec.branch,
     repoSsh: repo.spec.ssh,
-    name,
-    namespace,
+    name: name,
+    namespace: namespace,
     serviceAccountName: `builder-${spec.gitRepository}`,
     type: "docker-images",
     metricName: 'dockerImageBuilder',
@@ -125,8 +125,8 @@ function reuseJob(jobName: string, latestCommit: string, repo: Repo, name: strin
     repoUrl: repo.spec.url,
     repoBranch: repo.spec.branch,
     repoSsh: repo.spec.ssh,
-    name,
-    namespace,
+    name: name,
+    namespace: namespace,
     serviceAccountName: `builder-${spec.gitRepository}`,
     type: "docker-images",
     metricName: 'dockerImageBuilder',
@@ -265,8 +265,21 @@ function reuseContainer(spec: any, latestCommit: string,): any {
 function imageBuilderInitContainer(spec: any, imageRepositoryHost: string, reuseImage?: string): any {
   return {
     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-    "args": [imageRepositoryHost, reuseImage || 'BUILD_IMAGE', Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64')],
-    "env": dockerHubSecretEnv(spec.dockerHub),
+    "args": [/* imageRepositoryHost, reuseImage || 'BUILD_IMAGE', Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64') */],
+    "env": [
+      {
+        "name": "HOST",
+        "value": imageRepositoryHost
+      },
+      {
+        "name": "REUSE_IMAGE",
+        "value": reuseImage || 'BUILD_IMAGE'
+      },
+      {
+        "name": "DOCKER_CONFIG",
+        "value": JSON.stringify(spec.dockerConfig)
+      },
+      ...dockerHubSecretEnv(spec.dockerHub)],
     "name": "docker-image-builder-init",
     "resources": {
       "limits": {

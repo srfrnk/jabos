@@ -9,12 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-SRC_PATH=$1
-shift
-JSONNET_ARGS="$@"
-
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
 for file in $(find ${ROOT_PATH} -name '*.jsonnet'); do

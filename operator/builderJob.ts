@@ -75,27 +75,56 @@ export default function (options: {
           "initContainers": [
             {
               "image": `${settings.imagePrefix()}pre-builder:${settings.buildNumber()}`,
-              "args": [options.repoUrl, options.repoBranch, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": [...jabosOperatorUrlEnv(), ...(!options.repoSsh ? [] : [
+              "args": [],
+              "env": [
                 {
-                  "name": "SSH_PASSPHRASE",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": options.repoSsh.secret,
-                      "key": options.repoSsh.passphrase
-                    }
-                  }
+                  "name": "URL",
+                  "value": options.repoUrl
                 },
                 {
-                  "name": "SSH_KEY",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": options.repoSsh.secret,
-                      "key": options.repoSsh.key
+                  "name": "BRANCH",
+                  "value": options.repoBranch
+                },
+                {
+                  "name": "COMMIT",
+                  "value": options.commit
+                },
+                {
+                  "name": "METRIC_NAME",
+                  "value": options.metricName
+                },
+                {
+                  "name": "METRIC_LABELS",
+                  "value": JSON.stringify(options.metricLabels)
+                },
+                {
+                  "name": "NAMESPACE",
+                  "value": options.namespace
+                },
+                {
+                  "name": "NAME",
+                  "value": options.name
+                },
+                ...jabosOperatorUrlEnv(), ...(!options.repoSsh ? [] : [
+                  {
+                    "name": "SSH_PASSPHRASE",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": options.repoSsh.secret,
+                        "key": options.repoSsh.passphrase
+                      }
+                    }
+                  },
+                  {
+                    "name": "SSH_KEY",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": options.repoSsh.secret,
+                        "key": options.repoSsh.key
+                      }
                     }
                   }
-                }
-              ])],
+                ])],
               "imagePullPolicy": settings.imagePullPolicy(),
               "securityContext": {
                 "readOnlyRootFilesystem": true,
@@ -136,8 +165,33 @@ export default function (options: {
           "containers": [
             {
               "image": `${options.imagePrefix}post-builder:${options.buildNumber}`,
-              "args": [options.type, options.name, options.namespace, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": jabosOperatorUrlEnv(),
+              "args": [],
+              "env": [
+                {
+                  "name": "TYPE",
+                  "value": options.type
+                },
+                {
+                  "name": "NAME",
+                  "value": options.name
+                },
+                {
+                  "name": "COMMIT",
+                  "value": options.commit
+                },
+                {
+                  "name": "METRIC_NAME",
+                  "value": options.metricName
+                },
+                {
+                  "name": "METRIC_LABELS",
+                  "value": JSON.stringify(options.metricLabels)
+                },
+                {
+                  "name": "NAMESPACE",
+                  "value": options.namespace
+                },
+                ...jabosOperatorUrlEnv()],
               "volumeMounts": [
                 {
                   "name": "timer",

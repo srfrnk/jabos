@@ -9,11 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-SRC_PATH=$1
-REPLACEMENT_STRINGS=$2
-
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
 for file in $(find ${ROOT_PATH} -name '*.yaml' -o -name '*.yml' -o -name '*.json'); do

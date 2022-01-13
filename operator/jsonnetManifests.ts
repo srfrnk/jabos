@@ -12,9 +12,9 @@ export default {
     var args = [
       `--tla-str "${spec.commitTLAKey}=${latestCommit}"`,
       ...Object.entries(spec.tlas).map(tla => `--tla-str "${tla[0]}=${tla[1]}"`)
-    ];
+    ].join(' ');
 
-    await genericManifests.sync('jsonnet', 'jsonnet', 'jsonnet', args, request, response);
+    await genericManifests.sync('jsonnet', 'jsonnet', 'jsonnet', { 'JSONNET_ARGS': args }, request, response);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {

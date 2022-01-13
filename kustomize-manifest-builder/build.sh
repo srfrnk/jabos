@@ -9,14 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-SRC_PATH=$1
-COMMIT=$2
-REPLACEMENT_STRINGS=$3
-shift 3
-IMAGES=$@
-
 ROOT_PATH="/gitTemp/${SRC_PATH}"
 
 cp -R ${ROOT_PATH} /tmp/kustomize
@@ -26,8 +18,6 @@ for file in $(find /tmp/kustomize -name '*.yaml' -o -name '*.yml' -o -name '*.js
   sed -i "${REPLACEMENT_STRINGS}" ${file}
 done
 
-for image in ${IMAGES}; do
-  yq e -i ".images |= . + [{\"name\":\"${image}\",\"newTag\":\"${COMMIT}\"}]" /tmp/kustomize/kustomization.yaml
-done
+yq e -i ".images |= . + ${IMAGES}" /tmp/kustomize/kustomization.yaml
 
 kustomize build /tmp/kustomize > /manifests/manifests.yaml

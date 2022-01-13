@@ -2,15 +2,6 @@
 
 set -Ee
 
-echo "Args: $@"
-
-URL=$1
-BRANCH=$2
-NAMESPACE=$3
-NAME=$4
-OBJECT_UID=$5
-CURRENT_COMMIT=$6
-
 function exit {
   sleep 10 # Just to allow fluentd gathering logs before termination
 }

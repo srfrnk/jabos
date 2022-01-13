@@ -47,9 +47,27 @@ export default function (options: {
     containers: [
       ...options.containers,
       {
-        "env": [],
         "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
-        "args": [options.targetNamespace, options.type, options.name],
+        "args": [],
+        "env": [
+          {
+            "name": "NAMESPACE",
+            "value": options.namespace
+          },
+          {
+            "name": "TARGET_NAMESPACE",
+            "value": options.targetNamespace
+          },
+          {
+            "name": "TYPE",
+            "value": options.type
+          },
+          {
+            "name": "NAME",
+            "value": options.name
+          },
+
+        ],
         "name": "manifest-deployer",
         "volumeMounts": [
           {

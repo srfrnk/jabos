@@ -15,11 +15,11 @@ export default {
     var replacements = spec.replacements;
     replacements[commitReplacementString] = latestCommit;
 
-    var args = [Object.entries(
-      replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
-      ).join(';')];
-
-    await genericManifests.sync('plain', 'plain', 'plain', args, request, response);
+    await genericManifests.sync('plain', 'plain', 'plain', {
+      'REPLACEMENT_STRINGS': Object.entries(replacements)
+        .map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`)
+        .join(';')
+    }, request, response);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {

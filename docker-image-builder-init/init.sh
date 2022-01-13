@@ -9,11 +9,7 @@ function exit {
 
 trap exit EXIT
 
-HOST=$1
-REUSE_IMAGE=$2
-DOCKER_CONFIG=$(printf "%b" "$3" | base64 -d)
-
-echo "Args: ${HOST} ${REUSE_IMAGE} ${DOCKER_CONFIG}"
+# DOCKER_CONFIG=$(printf "%b" "$6" | base64 -d)
 
 printf "%b" "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
 

@@ -104,8 +104,33 @@ export default {
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
-                    "args": [repo.url, repo.branch, namespace, name, uid, lastCommit],
-                    "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
+                    "args": [],
+                    "env": [
+                      {
+                        "name": "URL",
+                        "value": repo.url
+                      },
+                      {
+                        "name": "BRANCH",
+                        "value": repo.branch
+                      },
+                      {
+                        "name": "NAMESPACE",
+                        "value": namespace
+                      },
+                      {
+                        "name": "NAME",
+                        "value": name
+                      },
+                      {
+                        "name": "OBJECT_UID",
+                        "value": uid
+                      },
+                      {
+                        "name": "CURRENT_COMMIT",
+                        "value": lastCommit
+                      },
+                      ...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
                     "name": "git-repository-updater",
                     "imagePullPolicy": settings.imagePullPolicy(),
                     "securityContext": {

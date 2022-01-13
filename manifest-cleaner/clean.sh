@@ -9,10 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-NAMESPACE=$1
-
 source /kubectl-setup.sh
 
 cat /manifests/manifests.tar.gz.b64 | base64 -d | tar -xzO | tee /tmp/manifests.yaml >/dev/null

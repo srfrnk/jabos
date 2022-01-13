@@ -9,7 +9,7 @@ import { getRepo } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
-  async sync(metricName: string, type: string, metricLabel: string, args: string[], request: Request, response: Response) {
+  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
     if (settings.debug()) console.log(`${metricName}Manifests sync req`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
@@ -52,8 +52,17 @@ export default {
       containers: [
         {
           "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
-          "args": [spec.path, ...args],
-          "env": [],
+          "args": [],
+          "env": [
+            {
+              "name": "SRC_PATH",
+              "value": spec.path
+            },
+            ...(Object.entries(env).map(entry => ({
+              "name": entry[0],
+              "value": entry[1]
+            })))
+          ],
           "volumeMounts": [
             {
               "name": "git-temp",
@@ -210,8 +219,13 @@ export default {
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}manifest-cleaner:${settings.buildNumber()}`,
-                    "args": [namespace],
-                    "env": jabosOperatorUrlEnv(),
+                    "args": [],
+                    "env": [
+                      {
+                        "name": "NAMESPACE",
+                        "value": namespace
+                      },
+                      ...jabosOperatorUrlEnv()],
                     "imagePullPolicy": settings.imagePullPolicy(),
                     "securityContext": {
                       "readOnlyRootFilesystem": true,

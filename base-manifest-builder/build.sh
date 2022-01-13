@@ -8,5 +8,3 @@ function exit {
 }
 
 trap exit EXIT
-
-echo "Args: $@"

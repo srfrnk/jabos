@@ -9,15 +9,6 @@ function exit {
 
 trap exit EXIT
 
-echo "Args: $@"
-
-TYPE=$1
-NAME=$2
-NAMESPACE=$3
-COMMIT=$4
-METRIC_NAME=$5
-METRIC_LABLES=$6
-
 source /kubectl-setup.sh
 
 kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} \
@@ -29,10 +20,10 @@ START=$(cat /timer/start)
 END=$(date +%s.%N)
 DURATION=$(echo "$END - $START" | bc)
 
-END_METRIC_LABLES=$(echo ''"${METRIC_LABLES}"'' | yq e -o=json -I=0 ".success=\"true\"" -)
+END_METRIC_LABELS=$(echo ''"${METRIC_LABELS}"'' | yq e -o=json -I=0 ".success=\"true\"" -)
 
 curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/${METRIC_NAME}End" \
-  -d ''"${END_METRIC_LABLES}"'' -H "Content-Type: application/json" >/dev/null
+  -d ''"${END_METRIC_LABELS}"'' -H "Content-Type: application/json" >/dev/null
 
 curl -s -X POST "${JABOS_OPERATOR_URL}setMetric/${METRIC_NAME}Duration?value=${DURATION}" \
-  -d ''"${METRIC_LABLES}"'' -H "Content-Type: application/json" >/dev/null
+  -d ''"${METRIC_LABELS}"'' -H "Content-Type: application/json" >/dev/null
