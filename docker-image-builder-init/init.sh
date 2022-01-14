@@ -9,8 +9,6 @@ function exit {
 
 trap exit EXIT
 
-# DOCKER_CONFIG=$(printf "%b" "$6" | base64 -d)
-
 printf "%b" "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
 
 if [ -n "${DOCKER_HUB_USERNAME}" ]; then
