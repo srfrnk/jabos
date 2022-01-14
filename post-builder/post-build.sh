@@ -11,10 +11,8 @@ trap exit EXIT
 
 source /kubectl-setup.sh
 
-kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} \
-  apply view-last-applied -n ${NAMESPACE} ${TYPE}.jabos.io ${NAME} > /tmp/current.yaml
-yq e -P ".metadata.annotations.builtCommit=\"${COMMIT}\"" /tmp/current.yaml > /tmp/updated.yaml
-kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} apply -f /tmp/updated.yaml
+kcurl PATCH "/apis/jabos.io/v1/namespaces/${NAMESPACE}/${TYPE}/${NAME}/status" "application/merge-patch+json" \
+  "$(jsonnet -A "builtCommit=${COMMIT}" /status.jsonnet)" >/dev/null
 
 START=$(cat /timer/start)
 END=$(date +%s.%N)

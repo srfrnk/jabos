@@ -61,7 +61,7 @@ export function debugId(request) {
 }
 
 export function needBuild(object: any, repo: Repo): boolean {
-  var builtCommit: string = (object.metadata.annotations || {}).builtCommit || '';
+  var builtCommit: string = (object.status || {}).builtCommit || '';
   var latestCommit: string = repo.status.latestCommit;
   return !!latestCommit && latestCommit !== builtCommit;
 }

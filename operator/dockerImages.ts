@@ -247,7 +247,7 @@ function imageBuilderInitContainer(spec: any, namespace: string, name: string, u
   var [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
   return {
     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-    "args": [/* imageRepositoryHost, reuseImage || 'BUILD_IMAGE', namespace, name, uid, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64') */],
+    "args": [],
     "env": [
       {
         "name": "HOST",
