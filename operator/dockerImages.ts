@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
-import { Repo, getRepo, k8sName } from './misc';
+import { Repo, getRepo, k8sName, debugId, needBuild } from './misc';
 import { addMetric } from './metrics';
 import dockerHubSecretEnv from './dockerHubSecretEnv';
 import gcpSecretSources from './gcpSecretSources';
@@ -9,40 +9,29 @@ import awsSecretSources from './awsSecretSources';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("dockerImages sync req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`dockerImages sync req (${debugId(request)})`, JSON.stringify(request.body));
 
-    var name: string = request.body.object.metadata.name;
-    var namespace: string = request.body.object.metadata.namespace;
-    var spec: any = request.body.object.spec;
-    var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
+    const object = request.body.object;
     var repo = getRepo(request);
-    var latestCommit = (repo.status || {}).latestCommit;
-
-    var jobName = k8sName(`image-${name}`, latestCommit);
-    var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
-
-    var [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
+    var triggerJob = needBuild(object, repo);
 
     var res = {
-      "annotations": !latestCommit ? {} : {
-        "latestCommit": latestCommit
-      },
-      "attachments": triggerJob ? [allowInsecureExecutionForKaniko(spec.build ?
-        buildJob(jobName, latestCommit, repo, name, namespace, spec, imageRepositoryHost) :
-        reuseJob(jobName, latestCommit, repo, name, namespace, spec, imageRepositoryHost)
+      "attachments": triggerJob ? [allowInsecureExecutionForKaniko(object.spec.build ?
+        buildJob(object, repo) :
+        reuseJob(object, repo)
       )] : [],
     };
 
     if (triggerJob) {
-      addMetric('dockerImageBuildTrigger', { 'namespace': namespace, 'docker_image': name, 'commit': latestCommit });
+      addMetric('dockerImageBuildTrigger', { 'namespace': object.metadata.namespace, 'docker_image': object.metadata.name, 'commit': repo.status.latestCommit });
     }
 
-    if (settings.debug()) console.log("dockerImages sync res", JSON.stringify(res));
+    if (settings.debug()) console.log(`dockerImages sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("dockerImages customize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`dockerImages customize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "relatedResources": [
@@ -57,12 +46,12 @@ export default {
       ]
     };
 
-    if (settings.debug()) console.log("dockerImages customize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`dockerImages customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("dockerImages finalize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`dockerImages finalize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "annotations": {},
@@ -70,30 +59,26 @@ export default {
       "finalized": true,
     }
 
-    if (settings.debug()) console.log("dockerImages finalize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`dockerImages finalize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }
 
-function buildJob(jobName: string, latestCommit: string, repo: Repo, name: string, namespace: string, spec: any, imageRepositoryHost: string) {
+function buildJob(object: any, repo: Repo) {
   return builderJob({
-    jobName,
+    object,
+    repo,
+    jobNamePrefix: "image",
     imagePrefix: settings.imagePrefix(),
     buildNumber: settings.buildNumber(),
-    commit: latestCommit,
-    repoUrl: repo.spec.url,
-    repoBranch: repo.spec.branch,
-    repoSsh: repo.spec.ssh,
-    name: name,
-    namespace: namespace,
-    serviceAccountName: `builder-${spec.gitRepository}`,
+    serviceAccountName: `builder-${object.spec.gitRepository}`,
     type: "docker-images",
     metricName: 'dockerImageBuilder',
-    metricLabels: { "namespace": namespace, "docker_image": name },
+    metricLabels: { "namespace": object.metadata.namespace, "docker_image": object.metadata.name },
     labels: { type: 'docker-image-builder' },
     containers: [
-      imageBuilderInitContainer(spec, imageRepositoryHost),
-      kanikoContainer(spec, latestCommit)
+      imageBuilderInitContainer(object.spec, object.namespace, object.name, object.uid),
+      kanikoContainer(object.spec, repo.status.latestCommit)
     ],
     volumes: [
       {
@@ -103,10 +88,10 @@ function buildJob(jobName: string, latestCommit: string, repo: Repo, name: strin
       {
         "name": "kaniko-secrets",
         "projected": {
-          "sources": [...gcpSecretSources(spec.gcp), ...awsSecretSources(spec.aws)]
+          "sources": [...gcpSecretSources(object.spec.gcp), ...awsSecretSources(object.spec.aws)]
         }
       },
-      ...(!spec.aws ? [] : [
+      ...(!object.spec.aws ? [] : [
         {
           "name": "aws",
           "emptyDir": {}
@@ -116,25 +101,21 @@ function buildJob(jobName: string, latestCommit: string, repo: Repo, name: strin
   });
 }
 
-function reuseJob(jobName: string, latestCommit: string, repo: Repo, name: string, namespace: string, spec: any, imageRepositoryHost: string) {
+function reuseJob(object: any, repo: Repo) {
   return builderJob({
-    jobName,
+    object,
+    jobNamePrefix: "image",
     imagePrefix: settings.imagePrefix(),
     buildNumber: settings.buildNumber(),
-    commit: latestCommit,
-    repoUrl: repo.spec.url,
-    repoBranch: repo.spec.branch,
-    repoSsh: repo.spec.ssh,
-    name: name,
-    namespace: namespace,
-    serviceAccountName: `builder-${spec.gitRepository}`,
+    repo,
+    serviceAccountName: `builder-${object.spec.gitRepository}`,
     type: "docker-images",
     metricName: 'dockerImageBuilder',
-    metricLabels: { "namespace": namespace, "docker_image": name },
+    metricLabels: { "namespace": object.metadata.namespace, "docker_image": object.metadata.name },
     labels: { type: 'docker-image-reuser' },
     containers: [
-      imageBuilderInitContainer(spec, imageRepositoryHost, `${spec.imageName}:${latestCommit}`),
-      reuseContainer(spec, latestCommit),
+      imageBuilderInitContainer(object.spec, object.metadata.namespace, object.metadata.name, object.metadata.uid, `${object.spec.imageName}:${repo.status.latestCommit}`),
+      reuseContainer(object.spec, repo.status.latestCommit),
     ],
     volumes: [
       {
@@ -148,10 +129,10 @@ function reuseJob(jobName: string, latestCommit: string, repo: Repo, name: strin
       {
         "name": "kaniko-secrets",
         "projected": {
-          "sources": [...gcpSecretSources(spec.gcp), ...awsSecretSources(spec.aws)]
+          "sources": [...gcpSecretSources(object.spec.gcp), ...awsSecretSources(object.spec.aws)]
         }
       },
-      ...(!spec.aws ? [] : [
+      ...(!object.spec.aws ? [] : [
         {
           "name": "aws",
           "emptyDir": {}
@@ -262,10 +243,11 @@ function reuseContainer(spec: any, latestCommit: string,): any {
   }
 }
 
-function imageBuilderInitContainer(spec: any, imageRepositoryHost: string, reuseImage?: string): any {
+function imageBuilderInitContainer(spec: any, namespace: string, name: string, uid: string, reuseImage?: string): any {
+  var [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
   return {
     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
-    "args": [/* imageRepositoryHost, reuseImage || 'BUILD_IMAGE', Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64') */],
+    "args": [/* imageRepositoryHost, reuseImage || 'BUILD_IMAGE', namespace, name, uid, Buffer.from(JSON.stringify(spec.dockerConfig), 'utf-8').toString('base64') */],
     "env": [
       {
         "name": "HOST",
@@ -274,6 +256,18 @@ function imageBuilderInitContainer(spec: any, imageRepositoryHost: string, reuse
       {
         "name": "REUSE_IMAGE",
         "value": reuseImage || 'BUILD_IMAGE'
+      },
+      {
+        "name": "NAMESPACE",
+        "value": namespace
+      },
+      {
+        "name": "NAME",
+        "value": name
+      },
+      {
+        "name": "OBJECT_UID",
+        "value": uid
       },
       {
         "name": "DOCKER_CONFIG",

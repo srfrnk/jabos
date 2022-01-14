@@ -1,25 +1,17 @@
 import builderJob from './builderJob';
+import { Repo } from './misc';
 import settings from './settings';
-import { k8sName } from './misc';
-import { type } from 'os';
 
 export default function (options: {
+  object: any,
+  repo: Repo,
   imagePrefix: string,
   buildNumber: string,
   type: string,
-  name: string,
-  namespace: string,
-  targetNamespace: string,
-  gitRepository: string,
-  commit: string,
-  repoUrl: string,
-  repoBranch: string,
-  repoSsh: { secret: string, passphrase: string, key: string },
   containers: any[],
   metricName: string,
   metricLabels: {}
 }) {
-  var jobName = k8sName(`manifest-${options.name}`, options.commit);
   options.containers.forEach(container => {
     container.volumeMounts = [
       ...(container.volumeMounts || []),
@@ -29,17 +21,16 @@ export default function (options: {
       }
     ];
   });
+
+  var targetNamespace = options.object.spec.targetNamespace;
+
   return builderJob({
-    jobName,
+    object: options.object,
+    repo: options.repo,
+    jobNamePrefix: 'manifest',
     imagePrefix: settings.imagePrefix(),
     buildNumber: settings.buildNumber(),
-    commit: options.commit,
-    repoUrl: options.repoUrl,
-    repoBranch: options.repoBranch,
-    repoSsh: options.repoSsh,
-    name: options.name,
-    namespace: options.namespace,
-    serviceAccountName: `builder-${options.gitRepository}`,
+    serviceAccountName: `builder-${options.object.spec.gitRepository}`,
     type: options.type,
     metricName: options.metricName,
     metricLabels: options.metricLabels,
@@ -48,15 +39,15 @@ export default function (options: {
       ...options.containers,
       {
         "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
-        "args": [],
+        "args": [targetNamespace, options.type, options.object.metadata.name],
         "env": [
           {
             "name": "NAMESPACE",
-            "value": options.namespace
+            "value": options.object.metadata.namespace
           },
           {
             "name": "TARGET_NAMESPACE",
-            "value": options.targetNamespace
+            "value": targetNamespace
           },
           {
             "name": "TYPE",
@@ -64,7 +55,7 @@ export default function (options: {
           },
           {
             "name": "NAME",
-            "value": options.name
+            "value": options.object.metadata.name
           },
 
         ],

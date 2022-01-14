@@ -1,26 +1,43 @@
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { k8sName, Repo } from './misc';
 import settings from './settings';
 
 export default function (options: {
-  jobName: string,
+  object: any,
+  jobNamePrefix: string,
   imagePrefix: string,
   buildNumber: string,
   type: string,
-  name: string,
   serviceAccountName: string,
-  namespace: string,
-  commit: string,
-  repoUrl: string,
-  repoBranch: string,
-  repoSsh: { secret: string, passphrase: string, key: string },
+  repo: Repo,
   containers: any[],
   volumes?: any[],
   metricName: string,
   metricLabels: {},
   labels: {}
 }): any {
+  var latestCommit = options.repo.status.latestCommit;
+  var jobName = k8sName(`${options.jobNamePrefix}-${options.object.metadata.name}`, latestCommit);
+  var repoSsh = options.repo.spec.ssh;
+
   (options.containers || []).forEach(container => {
     container.imagePullPolicy = settings.imagePullPolicy();
+
+    container.env = [
+      ...(container.env || []),
+      {
+        "name": "NAMESPACE",
+        "value": options.object.metadata.namespace
+      },
+      {
+        "name": "NAME",
+        "value": options.object.metadata.name
+      },
+      {
+        "name": "OBJECT_UID",
+        "value": options.object.metadata.uid
+      }
+    ];
 
     container.securityContext = {
       ...container.securityContext,
@@ -49,7 +66,7 @@ export default function (options: {
     "apiVersion": "batch/v1",
     "kind": "Job",
     "metadata": {
-      "name": options.jobName,
+      "name": jobName,
       "labels": options.labels
     },
     "spec": {
@@ -61,9 +78,9 @@ export default function (options: {
       "parallelism": 1,
       "template": {
         "metadata": {
-          "name": options.jobName,
+          "name": jobName,
           "labels": {
-            "builder": options.jobName
+            "builder": jobName
           }
         },
         "spec": {
@@ -79,15 +96,15 @@ export default function (options: {
               "env": [
                 {
                   "name": "URL",
-                  "value": options.repoUrl
+                  "value": options.repo.spec.url
                 },
                 {
                   "name": "BRANCH",
-                  "value": options.repoBranch
+                  "value": options.repo.spec.branch
                 },
                 {
                   "name": "COMMIT",
-                  "value": options.commit
+                  "value": latestCommit
                 },
                 {
                   "name": "METRIC_NAME",
@@ -99,19 +116,23 @@ export default function (options: {
                 },
                 {
                   "name": "NAMESPACE",
-                  "value": options.namespace
+                  "value": options.object.metadata.namespace
                 },
                 {
                   "name": "NAME",
-                  "value": options.name
+                  "value": options.object.metadata.name
                 },
-                ...jabosOperatorUrlEnv(), ...(!options.repoSsh ? [] : [
+                {
+                  "name": "OBJECT_UID",
+                  "value": options.object.metadata.uid
+                },
+                ...jabosOperatorUrlEnv(), ...(!repoSsh ? [] : [
                   {
                     "name": "SSH_PASSPHRASE",
                     "valueFrom": {
                       "secretKeyRef": {
-                        "name": options.repoSsh.secret,
-                        "key": options.repoSsh.passphrase
+                        "name": repoSsh.secret,
+                        "key": repoSsh.passphrase
                       }
                     }
                   },
@@ -119,8 +140,8 @@ export default function (options: {
                     "name": "SSH_KEY",
                     "valueFrom": {
                       "secretKeyRef": {
-                        "name": options.repoSsh.secret,
-                        "key": options.repoSsh.key
+                        "name": repoSsh.secret,
+                        "key": repoSsh.key
                       }
                     }
                   }
@@ -173,11 +194,11 @@ export default function (options: {
                 },
                 {
                   "name": "NAME",
-                  "value": options.name
+                  "value": options.object.metadata.name
                 },
                 {
                   "name": "COMMIT",
-                  "value": options.commit
+                  "value": latestCommit
                 },
                 {
                   "name": "METRIC_NAME",
@@ -189,7 +210,11 @@ export default function (options: {
                 },
                 {
                   "name": "NAMESPACE",
-                  "value": options.namespace
+                  "value": options.object.metadata.namespace
+                },
+                {
+                  "name": "OBJECT_UID",
+                  "value": options.object.metadata.uid
                 },
                 ...jabosOperatorUrlEnv()],
               "volumeMounts": [

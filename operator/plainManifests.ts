@@ -7,7 +7,7 @@ export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     var repo = getRepo(request);
     var spec: any = request.body.object.spec;
-    var latestCommit = (repo.status || {}).latestCommit;
+    var latestCommit = repo.status.latestCommit;
 
     var replacementPrefix = spec.replacementPrefix;
     var replacementSuffix = spec.replacementSuffix;

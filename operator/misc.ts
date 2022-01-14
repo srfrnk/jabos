@@ -23,21 +23,7 @@ export type Repo = {
 };
 
 export function getRepo(request: Request): Repo {
-  var repo = {
-    metadata: {
-      annotations: {
-        latestCommit: ''
-      }
-    },
-    spec: {
-      url: '',
-      branch: '',
-      ssh: null
-    },
-    status: {
-      latestCommit: null
-    }
-  };
+  var repo: Repo = {} as Repo;
 
   var namespace = request.body.object.metadata.namespace;
   var related = request.body.related;
@@ -55,5 +41,27 @@ export function getRepo(request: Request): Repo {
       }
     }
   }
+
+  repo.metadata = repo.metadata || { annotations: { latestCommit: '' } };
+  repo.metadata.annotations = repo.metadata.annotations || { latestCommit: '' };
+  repo.spec = repo.spec || { url: '', branch: '', ssh: null };
+  repo.status = repo.status || { latestCommit: '' };
+
   return repo;
+}
+
+export function debugId(request) {
+  try {
+    const object = request.body.parent || request.body.object;
+    return `${object.metadata.namespace}:${object.metadata.name}`;
+  }
+  catch {
+    return '(NO_OBJECT)';
+  }
+}
+
+export function needBuild(object: any, repo: Repo): boolean {
+  var builtCommit: string = (object.metadata.annotations || {}).builtCommit || '';
+  var latestCommit: string = repo.status.latestCommit;
+  return !!latestCommit && latestCommit !== builtCommit;
 }

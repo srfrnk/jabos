@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import gitRepositorySshSecretEnv from './gitRepositorySshSecretEnv';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { debugId } from './misc';
 import settings from './settings';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request)})`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
     var uid: string = request.body.object.metadata.uid;
@@ -27,11 +28,6 @@ export default {
             "namespace": namespace,
           },
           "rules": [
-            {
-              "apiGroups": ["jabos.io"],
-              "resources": ["docker-images", "jsonnet-manifests"],
-              "verbs": ["get", "list", "watch", "patch"],
-            },
             {
               "apiGroups": ["jabos.io"],
               "resources": ["docker-images/status", "jsonnet-manifests/status", "git-repositories/status"],
@@ -180,23 +176,23 @@ export default {
       ],
     };
 
-    if (settings.debug()) console.log("gitRepositories sync res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories customize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "relatedResources": []
     };
 
-    if (settings.debug()) console.log("gitRepositories customize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories finalize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "annotations": {},
@@ -204,7 +200,7 @@ export default {
       "finalized": true,
     }
 
-    if (settings.debug()) console.log("gitRepositories finalize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories finalize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }

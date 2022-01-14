@@ -6,7 +6,7 @@ import { getRepo } from './misc';
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
     var repo = getRepo(request);
-    var latestCommit = (repo.status || {}).latestCommit;
+    var latestCommit = repo.status.latestCommit;
     var spec: any = request.body.object.spec;
     var namespace = request.body.object.metadata.namespace;
 

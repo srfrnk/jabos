@@ -5,21 +5,21 @@ import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
-import { getRepo } from './misc';
+import { debugId, getRepo, needBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
   async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests sync req`, JSON.stringify(request.body));
+    if (settings.debug()) console.log(`${metricName}Manifests sync req (${debugId(request)})`, JSON.stringify(request.body));
 
-    var name: string = request.body.object.metadata.name;
-    var namespace: string = request.body.object.metadata.namespace;
-    var spec: any = request.body.object.spec;
-    var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
+    const object = request.body.object;
+    var name: string = object.metadata.name;
+    var namespace: string = object.metadata.namespace;
+    var spec: any = object.spec;
     var repo = getRepo(request);
-    var latestCommit = (repo.status || {}).latestCommit;
+    var latestCommit = repo.status.latestCommit;
 
-    var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
+    var triggerJob = needBuild(object, repo);
 
     var attachments = [
       manifestBuilderRole({
@@ -36,16 +36,10 @@ export default {
     ];
 
     const builderJob = manifestBuilderJob({
+      object,
+      repo,
       imagePrefix: settings.imagePrefix(),
       buildNumber: settings.buildNumber(),
-      commit: latestCommit,
-      repoUrl: repo.spec.url,
-      repoBranch: repo.spec.branch,
-      repoSsh: repo.spec.ssh,
-      name,
-      namespace,
-      gitRepository: spec.gitRepository,
-      targetNamespace: spec.targetNamespace,
       type: `${type}-manifests`,
       metricName: `${metricName}ManifestsBuilder`,
       metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
@@ -99,12 +93,12 @@ export default {
       addMetric(`${metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
     }
 
-    if (settings.debug()) console.log(`${metricName}Manifests sync res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(metricName: string, request: Request, response: Response, relatedResources: any[] = []) {
-    if (settings.debug()) console.log(`${metricName}Manifests customize req`, JSON.stringify(request.body));
+    if (settings.debug()) console.log(`${metricName}Manifests customize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "relatedResources": [
@@ -120,12 +114,12 @@ export default {
       ]
     };
 
-    if (settings.debug()) console.log(`${metricName}Manifests customize res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async finalize(metricName: string, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests finalize req`, JSON.stringify(request.body));
+    if (settings.debug()) console.log(`${metricName}Manifests finalize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
@@ -285,7 +279,7 @@ export default {
       "finalized": finalized,
     }
 
-    if (settings.debug()) console.log(`${metricName}Manifests finalize res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests finalize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }
