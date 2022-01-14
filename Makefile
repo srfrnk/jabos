@@ -69,7 +69,10 @@ manifests: FORCE build_number
 		--tla-str 'isProduction=false' \
 		> build/manifests.yaml
 
-build: FORCE images manifests
+compile:
+	cd operator && npx tsc
+
+build: FORCE compile images manifests
 	kubectl apply -n jabos -f build/manifests.yaml
 
 deploy-examples: FORCE
