@@ -5,11 +5,6 @@ export function k8sName(prefix: string, commit: string): string {
 }
 
 export type Repo = {
-  metadata: {
-    annotations: {
-      latestCommit: string
-    }
-  },
   spec: {
     url: string, branch: string, ssh: {
       secret: string,
@@ -42,8 +37,6 @@ export function getRepo(request: Request): Repo {
     }
   }
 
-  repo.metadata = repo.metadata || { annotations: { latestCommit: '' } };
-  repo.metadata.annotations = repo.metadata.annotations || { latestCommit: '' };
   repo.spec = repo.spec || { url: '', branch: '', ssh: null };
   repo.status = repo.status || { latestCommit: '' };
 

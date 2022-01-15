@@ -5,6 +5,8 @@ import { getRepo } from './misc';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('kustomize', 'sync', request);
+
     var repo = getRepo(request);
     var latestCommit = repo.status.latestCommit;
     var spec: any = request.body.object.spec;
@@ -31,6 +33,8 @@ export default {
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('kustomize', 'customize', request);
+
     await genericManifests.customize('kustomize', request, response, [{
       "apiVersion": "jabos.io/v1",
       "resource": "docker-images",
@@ -40,6 +44,8 @@ export default {
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('kustomize', 'finalize', request);
+
     await genericManifests.finalize('kustomize', request, response);
   }
 }

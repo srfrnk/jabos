@@ -5,6 +5,8 @@ import { getRepo } from './misc';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('helmTemplate', 'sync', request);
+
     var repo = getRepo(request);
     var spec: any = request.body.object.spec;
     var latestCommit = repo.status.latestCommit;
@@ -19,10 +21,14 @@ export default {
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('helmTemplate', 'customize', request);
+
     await genericManifests.customize('helmTemplate', request, response);
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('helmTemplate', 'finalize', request);
+
     await genericManifests.finalize('helmTemplate', request, response);
   }
 }

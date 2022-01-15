@@ -9,9 +9,11 @@ import { debugId, getRepo, needBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
-  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests sync req (${debugId(request)})`, JSON.stringify(request.body));
+  debugRequest(typeName: string, typeFunc: string, request: Request): void {
+    if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request.body));
+  },
 
+  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
     const object = request.body.object;
     var name: string = object.metadata.name;
     var namespace: string = object.metadata.namespace;
@@ -80,9 +82,6 @@ export default {
     });
 
     var res = {
-      "annotations": !latestCommit ? {} : {
-        "latestCommit": latestCommit,
-      },
       "attachments": [
         ...attachments,
         ...(triggerJob ? [builderJob] : [])
@@ -98,8 +97,6 @@ export default {
   },
 
   async customize(metricName: string, request: Request, response: Response, relatedResources: any[] = []) {
-    if (settings.debug()) console.log(`${metricName}Manifests customize req (${debugId(request)})`, JSON.stringify(request.body));
-
     var res = {
       "relatedResources": [
         {
@@ -119,8 +116,6 @@ export default {
   },
 
   async finalize(metricName: string, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests finalize req (${debugId(request)})`, JSON.stringify(request.body));
-
     var name: string = request.body.object.metadata.name;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
