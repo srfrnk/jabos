@@ -38,7 +38,7 @@ export default {
     await genericManifests.customize('kustomize', request, response, [{
       "apiVersion": "jabos.io/v1",
       "resource": "docker-images",
-      // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
+      "namespace": request.body.parent.metadata.namespace,
       "names": request.body.parent.spec.dockerImages
     }]);
   },

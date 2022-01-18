@@ -1,11 +1,11 @@
-function(builtCommit=null) (
+function(builtCommit) (
   {
     status: {
-      [if builtCommit == null then null else 'builtCommit']: builtCommit,
+      builtCommit: builtCommit,
       conditions: [
         {
           type: 'Synced',
-          status: if builtCommit == null then 'False' else 'True',
+          status: 'True',
         },
       ],
     },

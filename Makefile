@@ -70,7 +70,7 @@ manifests: FORCE build_number
 		> build/manifests.yaml
 
 compile:
-	cd operator && npx tsc
+	cd operator && npx tsc --noEmit
 
 build: FORCE compile images manifests
 	kubectl apply -n jabos -f build/manifests.yaml

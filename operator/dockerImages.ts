@@ -20,6 +20,14 @@ export default {
         buildJob(object, repo) :
         reuseJob(object, repo)
       )] : [],
+      "status": (triggerJob ? {
+        "conditions": [
+          {
+            "type": "Synced",
+            "status": "False",
+          },
+        ],
+      } : null)
     };
 
     if (triggerJob) {
@@ -38,7 +46,7 @@ export default {
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
+          "namespace": request.body.parent.metadata.namespace,
           "names": [
             request.body.parent.spec.gitRepository
           ]
