@@ -36,7 +36,7 @@ export default {
             {
               "apiGroups": ["events.k8s.io"],
               "resources": ["events"],
-              "verbs": ["create", "update", "patch"],
+              "verbs": ["get", "list", "watch", "create", "update", "patch"],
             }
           ],
         },
