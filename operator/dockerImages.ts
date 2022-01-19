@@ -152,7 +152,7 @@ function reuseJob(object: any, repo: Repo) {
 
 function kanikoContainer(spec: any, latestCommit: string): any {
   return {
-    "image": "gcr.io/kaniko-project/executor:latest",
+    "image": `${settings.imagePrefix()}kaniko:${settings.buildNumber()}`,
     "args": [
       `--context=dir:///gitTemp/${spec.contextPath}`,
       `--dockerfile=${spec.dockerFile}`,
@@ -200,7 +200,7 @@ function kanikoContainer(spec: any, latestCommit: string): any {
 
 function reuseContainer(spec: any, latestCommit: string,): any {
   return {
-    "image": "gcr.io/kaniko-project/executor:latest",
+    "image": `${settings.imagePrefix()}kaniko:${settings.buildNumber()}`,
     "args": [
       `--context=dir:///reuse`,
       `--dockerfile=Dockerfile`,
@@ -264,18 +264,6 @@ function imageBuilderInitContainer(spec: any, namespace: string, name: string, u
       {
         "name": "REUSE_IMAGE",
         "value": reuseImage || 'BUILD_IMAGE'
-      },
-      {
-        "name": "NAMESPACE",
-        "value": namespace
-      },
-      {
-        "name": "NAME",
-        "value": name
-      },
-      {
-        "name": "OBJECT_UID",
-        "value": uid
       },
       {
         "name": "DOCKER_CONFIG",

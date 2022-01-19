@@ -59,6 +59,14 @@ jobs:
           name: base-manifest-builder
           context: base-manifest-builder
 
+      - name: kaniko
+        uses: ./.github/workflows/actions/image
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+        with:
+          name: kaniko
+          context: kaniko
+
       - name: operator
         uses: ./.github/workflows/actions/image
         env:
