@@ -15,8 +15,6 @@ export default {
     var lastCommit: string = (request.body.object.status || {}).lastCommit;
 
     var jobName = `git-repository-updater-${name}`;
-    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']);
-    var attachJob = jobs.length === 0 || jobs[0].status.succeeded !== 1;
 
     var res = {
       "attachments": [
@@ -68,7 +66,7 @@ export default {
             "namespace": namespace,
           },
         },
-        ...(attachJob ? [{
+        {
           "apiVersion": "batch/v1",
           "kind": "Job",
           "metadata": {
@@ -93,7 +91,7 @@ export default {
               },
               "spec": {
                 "serviceAccountName": `builder-${name}`,
-                "restartPolicy": "OnFailure",
+                "restartPolicy": "Never",
                 "securityContext": {
                   "runAsNonRoot": true,
                 },
@@ -101,6 +99,8 @@ export default {
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
                     "args": [],
+                    "stdin": true,
+                    "tty": true,
                     "env": [
                       {
                         "name": "URL",
@@ -172,7 +172,7 @@ export default {
               }
             }
           }
-        }] : [])
+        }
       ],
     };
 
