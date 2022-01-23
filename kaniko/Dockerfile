@@ -1,10 +1,32 @@
+FROM alpine as tools
+
+RUN apk add curl
+
+RUN wget https://github.com/google/go-jsonnet/releases/download/v0.17.0/go-jsonnet_0.17.0_Linux_x86_64.tar.gz -O /jsonnet.tar.gz &&\
+  tar -xzf /jsonnet.tar.gz &&\
+  chmod +x /jsonnet
+
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
+  chmod +x /kubectl
+
+RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /yq &&\
+  chmod +x /yq
+
+ADD https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/events.libsonnet /events.libsonnet
+RUN chmod 664 /events.libsonnet
+
+FROM busybox as busybox
+
 FROM gcr.io/kaniko-project/executor:latest
 
-# ADD https://github.com/docker-library/busybox/raw/50b2c75ecc4c23c4ec47f3a4a0a2fd82002a1a33/stable/uclibc/busybox.tar.xz /bb
+COPY --from=busybox / /bb
+COPY --from=tools /jsonnet /bb/tools/
+COPY --from=tools /kubectl /bb/tools/
+COPY --from=tools /yq /bb/tools/
+COPY --from=tools /events.libsonnet /bb/tools/
 
-# COPY kaniko-runner.sh /kaniko-runner.sh
-# COPY run_in_container.sh /src/run_in_container.sh
-# COPY target.Dockerfile /src/Dockerfile
+COPY kaniko-runner.sh /bb/tools/
+COPY kube-config.yaml /root/.kube/config
+COPY error-event.jsonnet /bb/tools/
 
-# ENTRYPOINT ["/bb/bin/sh","-c"]
-# CMD ["/kaniko-runner.sh"]
+ENTRYPOINT ["/bb/tools/kaniko-runner.sh"]

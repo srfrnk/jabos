@@ -1,12 +1,25 @@
 #! /bb/bin/sh
 
-echo "Starting"
+set -o pipefail
+ERROR_MESSAGE=$(/kaniko/executor $@ 2>&1 | /bb/bin/tee /dev/tty)
 
---build-arg http_proxy=${http_proxy} --build-arg https_proxy=${https_proxy} --build-arg no_proxy=${no_proxy}
+if [ $? -ne 0 ]; then
+  ERROR_MESSAGE=$(/bb/bin/echo ${ERROR_MESSAGE: -1024} | /bb/bin/tr -d '\n')
 
-/kaniko/executor --context=dir:///src --dockerfile=Dockerfile --destination=registry.kube-system:80/target \
-  --insecure --skip-tls-verify --skip-tls-verify-pull --insecure-pull \
-  --registry-mirror http://docker-registry-mirror.default:32000
-/bb/bin/sleep 10
+  export APISERVER=https://kubernetes.default.svc
+  SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
+  export TOKEN=$(/bb/bin/cat ${SERVICEACCOUNT}/token)
+  export CACERT=${SERVICEACCOUNT}/ca.crt
 
-echo "Existing"
+  /bb/tools/jsonnet -A "name=${NAME}" -A "namespace=${NAMESPACE}" -A "uid=${OBJECT_UID}" -A "errorMessage=${ERROR_MESSAGE}" -A "eventTime=$(/bb/bin/date -u +%Y-%m-%dT%H:%M:%S.000000Z)" \
+    /bb/tools/error-event.jsonnet | /bb/tools/yq e -P "sort_keys(..)" - | /bb/tools/kubectl --server=${APISERVER} --token=${TOKEN} --certificate-authority=${CACERT} apply -n ${NAMESPACE} -f - >/dev/null
+
+  /bb/bin/echo ${ERROR_MESSAGE} > /dev/termination-log
+
+  /bb/bin/echo "Exiting"
+  /bb/bin/sleep 10 # Just to allow fluentd gathering logs before termination
+  exit 1
+else
+  /bb/bin/echo "Exiting"
+  /bb/bin/sleep 10 # Just to allow fluentd gathering logs before termination
+fi

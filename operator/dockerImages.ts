@@ -164,6 +164,8 @@ function kanikoContainer(spec: any, latestCommit: string): any {
         '--insecure-pull'
       ] : [])
     ],
+    "stdin": true,
+    "tty": true,
     "env": [],
     "name": "kaniko",
     "resources": {
@@ -212,6 +214,8 @@ function reuseContainer(spec: any, latestCommit: string,): any {
         '--no-push'
       ] : [])
     ],
+    "stdin": true,
+    "tty": true,
     "env": [],
     "name": "kaniko",
     "resources": {

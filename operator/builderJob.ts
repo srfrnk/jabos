@@ -85,7 +85,7 @@ export default function (options: {
         },
         "spec": {
           "serviceAccountName": options.serviceAccountName,
-          "restartPolicy": "OnFailure",
+          "restartPolicy": "Never",
           "securityContext": {
             "runAsNonRoot": true,
           },

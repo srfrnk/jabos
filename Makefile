@@ -51,7 +51,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./pre-builder -t pre-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build ./base-manifest-builder -t base-manifest-builder:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./kaniko -t kaniko:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kaniko -t kaniko:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./git-repository-updater -t git-repository-updater:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./post-builder -t post-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-deployer -t manifest-deployer:${BUILD_NUMBER}
@@ -69,6 +69,9 @@ manifests: FORCE build_number
 		--tla-str 'namespace=jabos' \
 		--tla-str 'isProduction=false' \
 		> build/manifests.yaml
+
+snyk-scan: FORCE manifests build_number
+	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/build:/project snyk/snyk-cli:docker iac test /project/manifests.yaml
 
 compile:
 	cd operator && npx tsc --noEmit
