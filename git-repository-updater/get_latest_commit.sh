@@ -21,7 +21,7 @@ if [ $? -ne 0 ]; then
   curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/gitRepositoryUpdaterEnd" \
     -d '{"namespace":"'"${NAMESPACE}"'","git_repository":"'"${NAME}"'","success":"false","latest_commit_update":"false"}' -H "Content-Type: application/json" >/dev/null
 
-  ERROR_MESSAGE=$(echo ${ERROR_MESSAGE} | tr -d '\n')
+  ERROR_MESSAGE=$(echo "${ERROR_MESSAGE}" | tr '\n' ' ' | tail -c 1024)
 
   jsonnet -A "name=${NAME}" -A "namespace=${NAMESPACE}" -A "uid=${OBJECT_UID}" -A "errorMessage=${ERROR_MESSAGE}" -A "eventTime=$(date -u +%Y-%m-%dT%H:%M:%S.000000Z)" \
     /error-event.jsonnet | yq e -P "sort_keys(..)" - | kc apply -n ${NAMESPACE} -f - >/dev/null
@@ -30,6 +30,10 @@ if [ $? -ne 0 ]; then
     "$(jsonnet /status.jsonnet)" >/dev/null
 
   echo ${ERROR_MESSAGE} > /dev/termination-log
+
+  echo "Exiting"
+  sleep 10 # Just to allow fluentd gathering logs before termination
+  exit 1
 else
   cd /gitTemp
   LATEST_COMMIT=$(git log -n 1 --pretty=format:"%H" | head -n 1)
@@ -46,7 +50,7 @@ else
 
   curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/gitRepositoryUpdaterEnd" \
     -d '{"namespace":"'"${NAMESPACE}"'","git_repository":"'"${NAME}"'","success":"true","latest_commit_update":"'"${LATEST_COMMIT_UPDATE}"'"}' -H "Content-Type: application/json" >/dev/null
-fi
 
-echo "Exiting"
-sleep 10 # Just to allow fluentd gathering logs before termination
+  echo "Exiting"
+  sleep 10 # Just to allow fluentd gathering logs before termination
+fi

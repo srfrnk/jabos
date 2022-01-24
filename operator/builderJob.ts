@@ -36,7 +36,7 @@ export default function (options: {
       {
         "name": "OBJECT_UID",
         "value": options.object.metadata.uid
-      }
+      },
     ];
 
     container.securityContext = {

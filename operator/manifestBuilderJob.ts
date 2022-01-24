@@ -10,7 +10,9 @@ export default function (options: {
   type: string,
   containers: any[],
   metricName: string,
-  metricLabels: {}
+  metricLabels: {},
+  kind: string,
+  controller: string
 }) {
   options.containers.forEach(container => {
     container.volumeMounts = [
@@ -40,6 +42,8 @@ export default function (options: {
       {
         "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
         "args": [targetNamespace, options.type, options.object.metadata.name],
+        "stdin": true,
+        "tty": true,
         "env": [
           {
             "name": "NAMESPACE",
@@ -57,7 +61,14 @@ export default function (options: {
             "name": "NAME",
             "value": options.object.metadata.name
           },
-
+          {
+            "name": "KIND",
+            "value": options.kind
+          },
+          {
+            "name": "CONTROLLER",
+            "value": options.controller
+          },
         ],
         "name": "manifest-deployer",
         "volumeMounts": [

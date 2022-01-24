@@ -13,7 +13,7 @@ RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
   chmod +x /yq
 
 ADD https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/events.libsonnet /events.libsonnet
-RUN chmod 664 /events.libsonnet
+RUN chmod o+r /events.libsonnet
 
 FROM busybox as busybox
 

@@ -4,7 +4,7 @@ set -o pipefail
 ERROR_MESSAGE=$(/kaniko/executor $@ 2>&1 | /bb/bin/tee /dev/tty)
 
 if [ $? -ne 0 ]; then
-  ERROR_MESSAGE=$(/bb/bin/echo ${ERROR_MESSAGE: -1024} | /bb/bin/tr -d '\n')
+  ERROR_MESSAGE=$(/bb/bin/echo "${ERROR_MESSAGE}" | /bb/bin/tr '\n' ' ' | /bb/bin/tail -c 1024)
 
   export APISERVER=https://kubernetes.default.svc
   SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount

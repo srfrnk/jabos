@@ -20,6 +20,8 @@ export default {
     var spec: any = object.spec;
     var repo = getRepo(request);
     var latestCommit = repo.status.latestCommit;
+    var kind: string = request.body.object.kind;
+    var controller: string = request.body.controller.metadata.name;
 
     var triggerJob = needBuild(object, repo);
 
@@ -43,16 +45,28 @@ export default {
       imagePrefix: settings.imagePrefix(),
       buildNumber: settings.buildNumber(),
       type: `${type}-manifests`,
+      kind,
+      controller,
       metricName: `${metricName}ManifestsBuilder`,
       metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
       containers: [
         {
           "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
           "args": [],
+          "stdin": true,
+          "tty": true,
           "env": [
             {
               "name": "SRC_PATH",
               "value": spec.path
+            },
+            {
+              "name": "KIND",
+              "value": kind
+            },
+            {
+              "name": "CONTROLLER",
+              "value": controller
             },
             ...(Object.entries(env).map(entry => ({
               "name": entry[0],
@@ -125,9 +139,12 @@ export default {
 
   async finalize(metricName: string, request: Request, response: Response) {
     var name: string = request.body.object.metadata.name;
+    var uid: string = request.body.object.metadata.uid;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
     var manifests: string = request.body.object.metadata.annotations.deployedManifest;
+    var kind: string = request.body.object.kind;
+    var controller: string = request.body.controller.metadata.name;
 
     var jobName = `manifest-clean-${name}`;
 
@@ -209,7 +226,7 @@ export default {
               },
               "spec": {
                 "serviceAccountName": `cleaner-${name}`,
-                "restartPolicy": "OnFailure",
+                "restartPolicy": "Never",
                 "securityContext": {
                   "runAsNonRoot": true,
                 },
@@ -217,10 +234,28 @@ export default {
                   {
                     "image": `${settings.imagePrefix()}manifest-cleaner:${settings.buildNumber()}`,
                     "args": [],
+                    "stdin": true,
+                    "tty": true,
                     "env": [
                       {
                         "name": "NAMESPACE",
                         "value": namespace
+                      },
+                      {
+                        "name": "NAME",
+                        "value": name
+                      },
+                      {
+                        "name": "OBJECT_UID",
+                        "value": uid
+                      },
+                      {
+                        "name": "KIND",
+                        "value": kind
+                      },
+                      {
+                        "name": "CONTROLLER",
+                        "value": controller
                       },
                       ...jabosOperatorUrlEnv()],
                     "imagePullPolicy": settings.imagePullPolicy(),

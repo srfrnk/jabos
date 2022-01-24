@@ -1,14 +1,5 @@
 #! /bin/bash
 
-set -Ee
-
-function exit {
-  echo "Exiting"
-  sleep 10 # Just to allow fluentd gathering logs before termination
-}
-
-trap exit EXIT
-
 source /kubectl-setup.sh
 
 kcurl PATCH "/apis/jabos.io/v1/namespaces/${NAMESPACE}/${TYPE}/${NAME}/status" "application/merge-patch+json" \
@@ -25,3 +16,6 @@ curl -s -X POST "${JABOS_OPERATOR_URL}addMetric/${METRIC_NAME}End" \
 
 curl -s -X POST "${JABOS_OPERATOR_URL}setMetric/${METRIC_NAME}Duration?value=${DURATION}" \
   -d ''"${METRIC_LABELS}"'' -H "Content-Type: application/json" >/dev/null
+
+echo "Exiting"
+sleep 10 # Just to allow fluentd gathering logs before termination
