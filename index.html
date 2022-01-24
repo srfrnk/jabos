@@ -317,7 +317,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.141</div>
+                <div class="app-desc">Version: 1.0.144</div>
             </p>
           </div>
         </div>
@@ -870,6 +870,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/DockerImage_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
     }
   },
   "description" : "`DockerImage` objects define images, how to build and push them.",
@@ -985,6 +988,60 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   },
   "description" : "`GCP` credentials to use"
 };
+    defs["DockerImage_status"] = {
+  "type" : "object",
+  "properties" : {
+    "builtCommit" : {
+      "type" : "string",
+      "description" : "The latest `git` commit id build"
+    },
+    "conditions" : {
+      "type" : "array",
+      "description" : "List of conditions",
+      "items" : {
+        "$ref" : "#/components/schemas/DockerImage_status_conditions"
+      },
+      "default" : [ ]
+    },
+    "latestCommit" : {
+      "type" : "string",
+      "description" : "The latest `git` commit id found"
+    }
+  },
+  "description" : "Will contains a condition of type \"`Synced`\". If it becomes \"`False`\" an `Event` will describe the error."
+};
+    defs["DockerImage_status_conditions"] = {
+  "required" : [ "status", "type" ],
+  "type" : "object",
+  "properties" : {
+    "lastHeartbeatTime" : {
+      "type" : "string",
+      "description" : "Last time we got an update on a given condition"
+    },
+    "lastTransitionTime" : {
+      "type" : "string",
+      "description" : "Last time the condition transit from one status to another"
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Human-readable message indicating details about last transition"
+    },
+    "reason" : {
+      "type" : "string",
+      "description" : "One-word CamelCase reason for the condition's last transition"
+    },
+    "status" : {
+      "type" : "string",
+      "description" : "Status of the condition, one of **True**, **False**, **Unknown**",
+      "enum" : [ "True", "False", "Unknown" ]
+    },
+    "type" : {
+      "type" : "string",
+      "description" : "Type of condition"
+    }
+  },
+  "description" : "Condition"
+};
     defs["GitRepository"] = {
   "title" : "GitRepository",
   "required" : [ "spec" ],
@@ -1047,48 +1104,16 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
       "type" : "array",
       "description" : "List of conditions",
       "items" : {
-        "$ref" : "#/components/schemas/GitRepository_status_conditions"
+        "$ref" : "#/components/schemas/DockerImage_status_conditions"
       },
       "default" : [ ]
     },
     "latestCommit" : {
       "type" : "string",
-      "description" : "Latest Git Commit ID"
+      "description" : "The latest `git` commit id found"
     }
   },
-  "description" : "Status of object"
-};
-    defs["GitRepository_status_conditions"] = {
-  "required" : [ "status", "type" ],
-  "type" : "object",
-  "properties" : {
-    "lastHeartbeatTime" : {
-      "type" : "string",
-      "description" : "Last time we got an update on a given condition"
-    },
-    "lastTransitionTime" : {
-      "type" : "string",
-      "description" : "Last time the condition transit from one status to another"
-    },
-    "message" : {
-      "type" : "string",
-      "description" : "Human-readable message indicating details about last transition"
-    },
-    "reason" : {
-      "type" : "string",
-      "description" : "One-word CamelCase reason for the condition's last transition"
-    },
-    "status" : {
-      "type" : "string",
-      "description" : "Status of the condition, one of **True**, **False**, **Unknown**",
-      "enum" : [ "True", "False", "Unknown" ]
-    },
-    "type" : {
-      "type" : "string",
-      "description" : "Type of condition"
-    }
-  },
-  "description" : "Condition"
+  "description" : "Will contains a condition of type \"`Syncing`\". If it becomes \"`False`\" an `Event` will describe the error."
 };
     defs["HelmTemplateManifest"] = {
   "title" : "HelmTemplateManifest",
@@ -1097,6 +1122,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/HelmTemplateManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
     }
   },
   "description" : "`HelmTemplateManifest` objects define a folder with a [helm](https://helm.sh/) chart to deploy with `helm template`.",
@@ -1148,6 +1176,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/JsonnetManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
     }
   },
   "description" : "`JsonnetManifest` objects define a folder with [jsonnet](https://jsonnet.org/) based manifests to deploy.",
@@ -1199,6 +1230,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/KustomizeManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
     }
   },
   "description" : "`KustomizeManifest` objects define a folder with [Kustomize](https://kustomize.io/) based manifests to deploy.",
@@ -1264,6 +1298,9 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "properties" : {
     "spec" : {
       "$ref" : "#/components/schemas/PlainManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
     }
   },
   "description" : "`PlainManifest` objects define a folder with plain manifests to deploy (YAML/YML/JSON).",
