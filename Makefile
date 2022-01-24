@@ -62,6 +62,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
+	- rm -rf build
 	- mkdir build
 	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
 		--tla-str 'imagePrefix=' \

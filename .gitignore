@@ -1,5 +1,2 @@
 build
 a-dashboard-operator/manifests/kube.libsonnet
-snyk_report.html
-snyk-error.log
-snyk-result.json

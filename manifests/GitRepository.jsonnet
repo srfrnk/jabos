@@ -51,10 +51,11 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                        },
                      },
                      status: {
+                       description: 'Will contains a condition of type "`Syncing`". If it becomes "`False`" an `Event` will describe the error.',
                        properties: {
                          latestCommit: {
                            type: 'string',
-                           description: 'Latest Git Commit ID',
+                           description: 'The latest `git` commit id found',
                          },
                        },
                      },
