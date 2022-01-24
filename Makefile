@@ -46,11 +46,12 @@ build_number: FORCE
 	$(eval BUILD_NUMBER=$(shell od -An -N10 -i /dev/urandom | tr -d ' -' ))
 
 images: FORCE build_number
-	eval $$(minikube docker-env) && docker build ./kubectl -t kubectl:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./operator -t operator:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./pre-builder -t pre-builder:${BUILD_NUMBER}
-	eval $$(minikube docker-env) && docker build ./base-manifest-builder -t base-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kubectl -t kubectl:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./operator -t operator:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./pre-builder -t pre-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./base-manifest-builder -t base-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kaniko -t kaniko:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./git-repository-updater -t git-repository-updater:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./post-builder -t post-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./manifest-deployer -t manifest-deployer:${BUILD_NUMBER}
@@ -61,6 +62,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
+	- rm -rf build
 	- mkdir build
 	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
 		--tla-str 'imagePrefix=' \
@@ -69,7 +71,13 @@ manifests: FORCE build_number
 		--tla-str 'isProduction=false' \
 		> build/manifests.yaml
 
-build: FORCE images manifests
+snyk-scan: FORCE manifests build_number
+	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/build:/project snyk/snyk-cli:docker iac test /project/manifests.yaml
+
+compile:
+	cd operator && npx tsc --noEmit
+
+build: FORCE compile images manifests
 	kubectl apply -n jabos -f build/manifests.yaml
 
 deploy-examples: FORCE
@@ -78,11 +86,13 @@ deploy-examples: FORCE
 	make -C ../jabos-examples-gitlab set-secret
 
 	kubectl apply -f ../jabos-examples/simple-build.yaml
+	kubectl apply -f ../jabos-examples/failed-builds.yaml
 	kubectl apply -f ../jabos-examples-private/simple-build.yaml
 	kubectl apply -f ../jabos-examples-gitlab/simple-build.yaml
 
 un-deploy-examples: FORCE
 	- kubectl delete -f ../jabos-examples/simple-build.yaml
+	- kubectl delete -f ../jabos-examples/failed-builds.yaml
 	- kubectl delete -f ../jabos-examples-private/simple-build.yaml
 	- kubectl delete -f ../jabos-examples-gitlab/simple-build.yaml
 

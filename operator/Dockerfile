@@ -8,4 +8,6 @@ COPY . /app
 
 USER 1000
 
+RUN npx tsc --noEmit
+
 ENTRYPOINT ["./start.sh"]

@@ -5,9 +5,11 @@ import { getRepo } from './misc';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('plain', 'sync', request);
+
     var repo = getRepo(request);
     var spec: any = request.body.object.spec;
-    var latestCommit = (repo.status || {}).latestCommit;
+    var latestCommit = repo.status.latestCommit;
 
     var replacementPrefix = spec.replacementPrefix;
     var replacementSuffix = spec.replacementSuffix;
@@ -15,18 +17,22 @@ export default {
     var replacements = spec.replacements;
     replacements[commitReplacementString] = latestCommit;
 
-    var args = [Object.entries(
-      replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
-      ).join(';')];
-
-    await genericManifests.sync('plain', 'plain', 'plain', args, request, response);
+    await genericManifests.sync('plain', 'plain', 'plain', {
+      'REPLACEMENT_STRINGS': Object.entries(replacements)
+        .map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`)
+        .join(';')
+    }, request, response);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('plain', 'customize', request);
+
     await genericManifests.customize('plain', request, response);
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
+    genericManifests.debugRequest('plain', 'finalize', request);
+
     await genericManifests.finalize('plain', request, response);
   }
 }

@@ -42,6 +42,19 @@
                            },
                          } + specProperties,
                        },
+                       status: {
+                         description: 'Will contains a condition of type "`Synced`". If it becomes "`False`" an `Event` will describe the error.',
+                         properties: {
+                           latestCommit: {
+                             type: 'string',
+                             description: 'The latest `git` commit id found',
+                           },
+                           builtCommit: {
+                             type: 'string',
+                             description: 'The latest `git` commit id build',
+                           },
+                         },
+                       },
                      },
                    },
                  },

@@ -1,13 +1,5 @@
 #! /bin/bash
 
-set -Ee
-
-function exit {
-  sleep 10 # Just to allow fluentd gathering logs before termination
-}
-
-trap exit EXIT
-
 export APISERVER=https://kubernetes.default.svc
 SERVICEACCOUNT=/var/run/secrets/kubernetes.io/serviceaccount
 export TOKEN=$(cat ${SERVICEACCOUNT}/token)

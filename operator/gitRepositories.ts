@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
 import gitRepositorySshSecretEnv from './gitRepositorySshSecretEnv';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { debugId } from './misc';
 import settings from './settings';
 
 export default {
   async sync(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories sync req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request)})`, JSON.stringify(request.body));
 
     var name: string = request.body.object.metadata.name;
     var uid: string = request.body.object.metadata.uid;
@@ -14,8 +15,6 @@ export default {
     var lastCommit: string = (request.body.object.status || {}).lastCommit;
 
     var jobName = `git-repository-updater-${name}`;
-    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']);
-    var attachJob = jobs.length === 0 || jobs[0].status.succeeded !== 1;
 
     var res = {
       "attachments": [
@@ -29,18 +28,13 @@ export default {
           "rules": [
             {
               "apiGroups": ["jabos.io"],
-              "resources": ["docker-images", "jsonnet-manifests"],
-              "verbs": ["get", "list", "watch", "patch"],
-            },
-            {
-              "apiGroups": ["jabos.io"],
               "resources": ["docker-images/status", "jsonnet-manifests/status", "git-repositories/status"],
               "verbs": ["patch"],
             },
             {
               "apiGroups": ["events.k8s.io"],
               "resources": ["events"],
-              "verbs": ["create", "update", "patch"],
+              "verbs": ["get", "list", "watch", "create", "update", "patch"],
             }
           ],
         },
@@ -72,7 +66,7 @@ export default {
             "namespace": namespace,
           },
         },
-        ...(attachJob ? [{
+        {
           "apiVersion": "batch/v1",
           "kind": "Job",
           "metadata": {
@@ -97,15 +91,42 @@ export default {
               },
               "spec": {
                 "serviceAccountName": `builder-${name}`,
-                "restartPolicy": "OnFailure",
+                "restartPolicy": "Never",
                 "securityContext": {
                   "runAsNonRoot": true,
                 },
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
-                    "args": [repo.url, repo.branch, namespace, name, uid, lastCommit],
-                    "env": [...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
+                    "args": [],
+                    "stdin": true,
+                    "tty": true,
+                    "env": [
+                      {
+                        "name": "URL",
+                        "value": repo.url
+                      },
+                      {
+                        "name": "BRANCH",
+                        "value": repo.branch
+                      },
+                      {
+                        "name": "NAMESPACE",
+                        "value": namespace
+                      },
+                      {
+                        "name": "NAME",
+                        "value": name
+                      },
+                      {
+                        "name": "OBJECT_UID",
+                        "value": uid
+                      },
+                      {
+                        "name": "CURRENT_COMMIT",
+                        "value": lastCommit
+                      },
+                      ...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
                     "name": "git-repository-updater",
                     "imagePullPolicy": settings.imagePullPolicy(),
                     "securityContext": {
@@ -151,27 +172,27 @@ export default {
               }
             }
           }
-        }] : [])
+        }
       ],
     };
 
-    if (settings.debug()) console.log("gitRepositories sync res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories customize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "relatedResources": []
     };
 
-    if (settings.debug()) console.log("gitRepositories customize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async finalize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log("gitRepositories finalize req", JSON.stringify(request.body));
+    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request)})`, JSON.stringify(request.body));
 
     var res = {
       "annotations": {},
@@ -179,7 +200,7 @@ export default {
       "finalized": true,
     }
 
-    if (settings.debug()) console.log("gitRepositories finalize res", JSON.stringify(res));
+    if (settings.debug()) console.log(`gitRepositories finalize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }

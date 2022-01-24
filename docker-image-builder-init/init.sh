@@ -1,20 +1,5 @@
 #! /bin/bash
 
-set -Ee
-
-function exit {
-  echo "Exiting"
-  sleep 10 # Just to allow fluentd gathering logs before termination
-}
-
-trap exit EXIT
-
-HOST=$1
-REUSE_IMAGE=$2
-DOCKER_CONFIG=$(printf "%b" "$3" | base64 -d)
-
-echo "Args: ${HOST} ${REUSE_IMAGE} ${DOCKER_CONFIG}"
-
 printf "%b" "${DOCKER_CONFIG}" > /kaniko/.docker/config.json
 
 if [ -n "${DOCKER_HUB_USERNAME}" ]; then
@@ -35,3 +20,6 @@ fi
 if [[ "BUILD_IMAGE" != "${REUSE_IMAGE}" ]]; then
   echo "FROM ${REUSE_IMAGE}" > /reuse/Dockerfile
 fi
+
+echo "Exiting"
+sleep 10 # Just to allow fluentd gathering logs before termination

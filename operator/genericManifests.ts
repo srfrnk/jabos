@@ -5,21 +5,25 @@ import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
-import { getRepo } from './misc';
+import { debugId, getRepo, needBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
-  async sync(metricName: string, type: string, metricLabel: string, args: string[], request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests sync req`, JSON.stringify(request.body));
+  debugRequest(typeName: string, typeFunc: string, request: Request): void {
+    if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request.body));
+  },
 
-    var name: string = request.body.object.metadata.name;
-    var namespace: string = request.body.object.metadata.namespace;
-    var spec: any = request.body.object.spec;
-    var builtCommit: string = (request.body.object.metadata.annotations || {}).builtCommit || '';
+  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
+    const object = request.body.object;
+    var name: string = object.metadata.name;
+    var namespace: string = object.metadata.namespace;
+    var spec: any = object.spec;
     var repo = getRepo(request);
-    var latestCommit = (repo.status || {}).latestCommit;
+    var latestCommit = repo.status.latestCommit;
+    var kind: string = request.body.object.kind;
+    var controller: string = request.body.controller.metadata.name;
 
-    var triggerJob = (!!latestCommit && latestCommit !== builtCommit);
+    var triggerJob = needBuild(object, repo);
 
     var attachments = [
       manifestBuilderRole({
@@ -36,24 +40,39 @@ export default {
     ];
 
     const builderJob = manifestBuilderJob({
+      object,
+      repo,
       imagePrefix: settings.imagePrefix(),
       buildNumber: settings.buildNumber(),
-      commit: latestCommit,
-      repoUrl: repo.spec.url,
-      repoBranch: repo.spec.branch,
-      repoSsh: repo.spec.ssh,
-      name,
-      namespace,
-      gitRepository: spec.gitRepository,
-      targetNamespace: spec.targetNamespace,
       type: `${type}-manifests`,
+      kind,
+      controller,
       metricName: `${metricName}ManifestsBuilder`,
       metricLabels: { "namespace": namespace, [`${metricLabel}_manifests`]: name },
       containers: [
         {
           "image": `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
-          "args": [spec.path, ...args],
-          "env": [],
+          "args": [],
+          "stdin": true,
+          "tty": true,
+          "env": [
+            {
+              "name": "SRC_PATH",
+              "value": spec.path
+            },
+            {
+              "name": "KIND",
+              "value": kind
+            },
+            {
+              "name": "CONTROLLER",
+              "value": controller
+            },
+            ...(Object.entries(env).map(entry => ({
+              "name": entry[0],
+              "value": entry[1]
+            })))
+          ],
           "volumeMounts": [
             {
               "name": "git-temp",
@@ -77,32 +96,35 @@ export default {
     });
 
     var res = {
-      "annotations": !latestCommit ? {} : {
-        "latestCommit": latestCommit,
-      },
       "attachments": [
         ...attachments,
         ...(triggerJob ? [builderJob] : [])
-      ]
+      ],
+      "status": (triggerJob ? {
+        "conditions": [
+          {
+            "type": "Synced",
+            "status": "False",
+          },
+        ],
+      } : null)
     };
 
     if (triggerJob) {
       addMetric(`${metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
     }
 
-    if (settings.debug()) console.log(`${metricName}Manifests sync res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async customize(metricName: string, request: Request, response: Response, relatedResources: any[] = []) {
-    if (settings.debug()) console.log(`${metricName}Manifests customize req`, JSON.stringify(request.body));
-
     var res = {
       "relatedResources": [
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          // "namespace": request.body.parent.metadata.namespace, // Removed due to https://github.com/metacontroller/metacontroller/issues/414
+          "namespace": request.body.parent.metadata.namespace,
           "names": [
             request.body.parent.spec.gitRepository
           ]
@@ -111,17 +133,18 @@ export default {
       ]
     };
 
-    if (settings.debug()) console.log(`${metricName}Manifests customize res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
   async finalize(metricName: string, request: Request, response: Response) {
-    if (settings.debug()) console.log(`${metricName}Manifests finalize req`, JSON.stringify(request.body));
-
     var name: string = request.body.object.metadata.name;
+    var uid: string = request.body.object.metadata.uid;
     var namespace: string = request.body.object.metadata.namespace;
     var spec: any = request.body.object.spec;
     var manifests: string = request.body.object.metadata.annotations.deployedManifest;
+    var kind: string = request.body.object.kind;
+    var controller: string = request.body.controller.metadata.name;
 
     var jobName = `manifest-clean-${name}`;
 
@@ -203,15 +226,38 @@ export default {
               },
               "spec": {
                 "serviceAccountName": `cleaner-${name}`,
-                "restartPolicy": "OnFailure",
+                "restartPolicy": "Never",
                 "securityContext": {
                   "runAsNonRoot": true,
                 },
                 "containers": [
                   {
                     "image": `${settings.imagePrefix()}manifest-cleaner:${settings.buildNumber()}`,
-                    "args": [namespace],
-                    "env": jabosOperatorUrlEnv(),
+                    "args": [],
+                    "stdin": true,
+                    "tty": true,
+                    "env": [
+                      {
+                        "name": "NAMESPACE",
+                        "value": namespace
+                      },
+                      {
+                        "name": "NAME",
+                        "value": name
+                      },
+                      {
+                        "name": "OBJECT_UID",
+                        "value": uid
+                      },
+                      {
+                        "name": "KIND",
+                        "value": kind
+                      },
+                      {
+                        "name": "CONTROLLER",
+                        "value": controller
+                      },
+                      ...jabosOperatorUrlEnv()],
                     "imagePullPolicy": settings.imagePullPolicy(),
                     "securityContext": {
                       "readOnlyRootFilesystem": true,
@@ -271,7 +317,7 @@ export default {
       "finalized": finalized,
     }
 
-    if (settings.debug()) console.log(`${metricName}Manifests finalize res`, JSON.stringify(res));
+    if (settings.debug()) console.log(`${metricName}Manifests finalize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   }
 }

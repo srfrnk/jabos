@@ -1,26 +1,43 @@
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { k8sName, Repo } from './misc';
 import settings from './settings';
 
 export default function (options: {
-  jobName: string,
+  object: any,
+  jobNamePrefix: string,
   imagePrefix: string,
   buildNumber: string,
   type: string,
-  name: string,
   serviceAccountName: string,
-  namespace: string,
-  commit: string,
-  repoUrl: string,
-  repoBranch: string,
-  repoSsh: { secret: string, passphrase: string, key: string },
+  repo: Repo,
   containers: any[],
   volumes?: any[],
   metricName: string,
   metricLabels: {},
   labels: {}
 }): any {
+  var latestCommit = options.repo.status.latestCommit;
+  var jobName = k8sName(`${options.jobNamePrefix}-${options.object.metadata.name}`, latestCommit);
+  var repoSsh = options.repo.spec.ssh;
+
   (options.containers || []).forEach(container => {
     container.imagePullPolicy = settings.imagePullPolicy();
+
+    container.env = [
+      ...(container.env || []),
+      {
+        "name": "NAMESPACE",
+        "value": options.object.metadata.namespace
+      },
+      {
+        "name": "NAME",
+        "value": options.object.metadata.name
+      },
+      {
+        "name": "OBJECT_UID",
+        "value": options.object.metadata.uid
+      },
+    ];
 
     container.securityContext = {
       ...container.securityContext,
@@ -49,7 +66,7 @@ export default function (options: {
     "apiVersion": "batch/v1",
     "kind": "Job",
     "metadata": {
-      "name": options.jobName,
+      "name": jobName,
       "labels": options.labels
     },
     "spec": {
@@ -61,41 +78,74 @@ export default function (options: {
       "parallelism": 1,
       "template": {
         "metadata": {
-          "name": options.jobName,
+          "name": jobName,
           "labels": {
-            "builder": options.jobName
+            "builder": jobName
           }
         },
         "spec": {
           "serviceAccountName": options.serviceAccountName,
-          "restartPolicy": "OnFailure",
+          "restartPolicy": "Never",
           "securityContext": {
             "runAsNonRoot": true,
           },
           "initContainers": [
             {
               "image": `${settings.imagePrefix()}pre-builder:${settings.buildNumber()}`,
-              "args": [options.repoUrl, options.repoBranch, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": [...jabosOperatorUrlEnv(), ...(!options.repoSsh ? [] : [
+              "args": [],
+              "env": [
                 {
-                  "name": "SSH_PASSPHRASE",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": options.repoSsh.secret,
-                      "key": options.repoSsh.passphrase
-                    }
-                  }
+                  "name": "URL",
+                  "value": options.repo.spec.url
                 },
                 {
-                  "name": "SSH_KEY",
-                  "valueFrom": {
-                    "secretKeyRef": {
-                      "name": options.repoSsh.secret,
-                      "key": options.repoSsh.key
+                  "name": "BRANCH",
+                  "value": options.repo.spec.branch
+                },
+                {
+                  "name": "COMMIT",
+                  "value": latestCommit
+                },
+                {
+                  "name": "METRIC_NAME",
+                  "value": options.metricName
+                },
+                {
+                  "name": "METRIC_LABELS",
+                  "value": JSON.stringify(options.metricLabels)
+                },
+                {
+                  "name": "NAMESPACE",
+                  "value": options.object.metadata.namespace
+                },
+                {
+                  "name": "NAME",
+                  "value": options.object.metadata.name
+                },
+                {
+                  "name": "OBJECT_UID",
+                  "value": options.object.metadata.uid
+                },
+                ...jabosOperatorUrlEnv(), ...(!repoSsh ? [] : [
+                  {
+                    "name": "SSH_PASSPHRASE",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": repoSsh.secret,
+                        "key": repoSsh.passphrase
+                      }
+                    }
+                  },
+                  {
+                    "name": "SSH_KEY",
+                    "valueFrom": {
+                      "secretKeyRef": {
+                        "name": repoSsh.secret,
+                        "key": repoSsh.key
+                      }
                     }
                   }
-                }
-              ])],
+                ])],
               "imagePullPolicy": settings.imagePullPolicy(),
               "securityContext": {
                 "readOnlyRootFilesystem": true,
@@ -136,8 +186,37 @@ export default function (options: {
           "containers": [
             {
               "image": `${options.imagePrefix}post-builder:${options.buildNumber}`,
-              "args": [options.type, options.name, options.namespace, options.commit, options.metricName, JSON.stringify(options.metricLabels)],
-              "env": jabosOperatorUrlEnv(),
+              "args": [],
+              "env": [
+                {
+                  "name": "TYPE",
+                  "value": options.type
+                },
+                {
+                  "name": "NAME",
+                  "value": options.object.metadata.name
+                },
+                {
+                  "name": "COMMIT",
+                  "value": latestCommit
+                },
+                {
+                  "name": "METRIC_NAME",
+                  "value": options.metricName
+                },
+                {
+                  "name": "METRIC_LABELS",
+                  "value": JSON.stringify(options.metricLabels)
+                },
+                {
+                  "name": "NAMESPACE",
+                  "value": options.object.metadata.namespace
+                },
+                {
+                  "name": "OBJECT_UID",
+                  "value": options.object.metadata.uid
+                },
+                ...jabosOperatorUrlEnv()],
               "volumeMounts": [
                 {
                   "name": "timer",

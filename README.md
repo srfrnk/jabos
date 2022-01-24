@@ -66,6 +66,20 @@ Video version:
 1. <a href="https://youtu.be/PqMUliEHx60" target="_blank">Configure CRDs</a>
 1. <a href="https://youtu.be/OlB6qybsqng" target="_blank">Push changes and trigger builds</a>
 
+### Resource Status
+
+All resources show current status using `Status Sub-resource` and `Event Resources`.
+These can be viewed as with any K8s resource. i.e. `kubectl describe git-repositories.jabos.io`
+
+`GitRepository` resources have a `Syncing` condition in the status.
+If it becomes `False` an `Event` will describe the error.
+They also have a `Latest Commit`(`latestCommit`) status containing the latest `git` commit id found.
+
+`DockerImage` and `***Manifest` resources have a `Synced` condition in the status.
+If it becomes `False` an `Event` will describe the error.
+They also have a `Latest Commit`(`latestCommit`) status containing the latest `git` commit id found
+and a `Built Commit`(`builtCommit`) status containing the `git` commit id last built.
+
 ### Jsonnet example
 
 Create a file `example.jsonnet`:

@@ -1,15 +1,15 @@
-FROM alpine
+ARG IMAGE_PREFIX
+ARG IMAGE_VERSION
 
-RUN apk add --update curl wget bash coreutils
+FROM ${IMAGE_PREFIX}kubectl${IMAGE_VERSION} as kubectl
 
-RUN adduser -s /bin/bash -S user -u 1000
+USER root
 
 RUN mkdir /build && chown user /build
 
-RUN wget https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq &&\
-  chmod +x /usr/bin/yq
-
 COPY ./build.sh /
+COPY ./exit-error.sh /
+COPY ./error-event.jsonnet /
 
 USER 1000
 
