@@ -317,7 +317,7 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.144</div>
+                <div class="app-desc">Version: 1.0.146</div>
             </p>
           </div>
         </div>
@@ -1048,7 +1048,47 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   "type" : "object",
   "properties" : {
     "spec" : {
-      "$ref" : "#/components/schemas/GitRepository_spec"
+      "required" : [ "url" ],
+      "type" : "object",
+      "properties" : {
+        "branch" : {
+          "type" : "string",
+          "description" : "The name of the branch to watch and pull from."
+        },
+        "promotedCommit" : {
+          "type" : "string",
+          "description" : "The `git` commit id to sync to."
+        },
+        "ssh" : {
+          "type" : "object",
+          "properties" : {
+            "key" : {
+              "type" : "string",
+              "description" : "Name of the key inside the secret to use for `SSH` key.",
+              "default" : "git_ssh_key"
+            },
+            "passphrase" : {
+              "type" : "string",
+              "description" : "Name of the key inside the secret to use for `SSH` passphrase.",
+              "default" : "git_ssh_passphrase"
+            },
+            "secret" : {
+              "type" : "string",
+              "description" : "Name of secret to use. **Must be in the same namespace**"
+            }
+          },
+          "description" : "Credentials for `SSH` access"
+        },
+        "url" : {
+          "type" : "string",
+          "description" : "The URL to use to access the git repository."
+        }
+      },
+      "oneOf" : [ {
+        "required" : [ "branch" ]
+      }, {
+        "required" : [ "promotedCommit" ]
+      } ]
     },
     "status" : {
       "$ref" : "#/components/schemas/GitRepository_status"
@@ -1059,43 +1099,6 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
     "name" : "jabos.io",
     "namespace" : "v1"
   }
-};
-    defs["GitRepository_spec"] = {
-  "required" : [ "branch", "url" ],
-  "type" : "object",
-  "properties" : {
-    "branch" : {
-      "type" : "string",
-      "description" : "The name of the branch to watch and pull from."
-    },
-    "ssh" : {
-      "$ref" : "#/components/schemas/GitRepository_spec_ssh"
-    },
-    "url" : {
-      "type" : "string",
-      "description" : "The URL to use to access the git repository."
-    }
-  }
-};
-    defs["GitRepository_spec_ssh"] = {
-  "type" : "object",
-  "properties" : {
-    "key" : {
-      "type" : "string",
-      "description" : "Name of the key inside the secret to use for `SSH` key.",
-      "default" : "git_ssh_key"
-    },
-    "passphrase" : {
-      "type" : "string",
-      "description" : "Name of the key inside the secret to use for `SSH` passphrase.",
-      "default" : "git_ssh_passphrase"
-    },
-    "secret" : {
-      "type" : "string",
-      "description" : "Name of secret to use. **Must be in the same namespace**"
-    }
-  },
-  "description" : "Credentials for `SSH` access"
 };
     defs["GitRepository_status"] = {
   "type" : "object",
