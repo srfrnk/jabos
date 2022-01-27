@@ -18,7 +18,7 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                    properties: {
                      spec: {
                        type: 'object',
-                       required: ['url', 'branch'],
+                       required: ['url'],
                        properties: {
                          url: {
                            type: 'string',
@@ -27,6 +27,10 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                          branch: {
                            type: 'string',
                            description: 'The name of the branch to watch and pull from.',
+                         },
+                         promotedCommit: {
+                           type: 'string',
+                           description: 'The `git` commit id to sync to.',
                          },
                          ssh: {
                            type: 'object',
@@ -49,6 +53,18 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
                            },
                          },
                        },
+                       oneOf: [
+                         {
+                           required: [
+                             'branch',
+                           ],
+                         },
+                         {
+                           required: [
+                             'promotedCommit',
+                           ],
+                         },
+                       ],
                      },
                      status: {
                        description: 'Will contains a condition of type "`Syncing`". If it becomes "`False`" an `Event` will describe the error.',

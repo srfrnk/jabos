@@ -16,165 +16,182 @@ export default {
 
     var jobName = `git-repository-updater-${name}`;
 
-    var res = {
-      "attachments": [
-        {
-          "apiVersion": "rbac.authorization.k8s.io/v1",
+    var attachments = [
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "name": `builder-${name}`,
+          "namespace": namespace,
+        },
+        "rules": [
+          {
+            "apiGroups": ["jabos.io"],
+            "resources": ["docker-images/status", "jsonnet-manifests/status", "git-repositories/status"],
+            "verbs": ["patch"],
+          },
+          {
+            "apiGroups": ["events.k8s.io"],
+            "resources": ["events"],
+            "verbs": ["get", "list", "watch", "create", "update", "patch"],
+          }
+        ],
+      },
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": {
+          "name": `builder-${name}`,
+          "namespace": namespace,
+        },
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
           "kind": "Role",
-          "metadata": {
-            "name": `builder-${name}`,
-            "namespace": namespace,
-          },
-          "rules": [
-            {
-              "apiGroups": ["jabos.io"],
-              "resources": ["docker-images/status", "jsonnet-manifests/status", "git-repositories/status"],
-              "verbs": ["patch"],
-            },
-            {
-              "apiGroups": ["events.k8s.io"],
-              "resources": ["events"],
-              "verbs": ["get", "list", "watch", "create", "update", "patch"],
-            }
-          ],
+          "name": `builder-${name}`,
         },
-        {
-          "apiVersion": "rbac.authorization.k8s.io/v1",
-          "kind": "RoleBinding",
-          "metadata": {
-            "name": `builder-${name}`,
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
             "namespace": namespace,
-          },
-          "roleRef": {
-            "apiGroup": "rbac.authorization.k8s.io",
-            "kind": "Role",
             "name": `builder-${name}`,
-          },
-          "subjects": [
-            {
-              "kind": "ServiceAccount",
-              "namespace": namespace,
-              "name": `builder-${name}`,
-            }
-          ],
+          }
+        ],
+      },
+      {
+        "apiVersion": 'v1',
+        "kind": 'ServiceAccount',
+        "metadata": {
+          "name": `builder-${name}`,
+          "namespace": namespace,
         },
-        {
-          "apiVersion": 'v1',
-          "kind": 'ServiceAccount',
-          "metadata": {
-            "name": `builder-${name}`,
-            "namespace": namespace,
-          },
-        },
-        {
-          "apiVersion": "batch/v1",
-          "kind": "Job",
-          "metadata": {
-            "name": jobName,
-            "labels": {
-              "type": "git-repository-updater"
-            },
-          },
-          "spec": {
-            "completions": 1,
-            "completionMode": "NonIndexed",
-            "backoffLimit": 100,
-            "activeDeadlineSeconds": parseInt(settings.jobActiveDeadlineSeconds()),
-            "ttlSecondsAfterFinished": 30,
-            "parallelism": 1,
-            "template": {
-              "metadata": {
-                "name": jobName,
-                "labels": {
-                  "job": jobName
-                }
+      }
+    ];
+
+    var res: any = !repo.promotedCommit ?
+      {
+        "attachments": [
+          ...attachments,
+          {
+            "apiVersion": "batch/v1",
+            "kind": "Job",
+            "metadata": {
+              "name": jobName,
+              "labels": {
+                "type": "git-repository-updater"
               },
-              "spec": {
-                "serviceAccountName": `builder-${name}`,
-                "restartPolicy": "Never",
-                "securityContext": {
-                  "runAsNonRoot": true,
-                },
-                "containers": [
-                  {
-                    "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
-                    "args": [],
-                    "stdin": true,
-                    "tty": true,
-                    "env": [
-                      {
-                        "name": "URL",
-                        "value": repo.url
-                      },
-                      {
-                        "name": "BRANCH",
-                        "value": repo.branch
-                      },
-                      {
-                        "name": "NAMESPACE",
-                        "value": namespace
-                      },
-                      {
-                        "name": "NAME",
-                        "value": name
-                      },
-                      {
-                        "name": "OBJECT_UID",
-                        "value": uid
-                      },
-                      {
-                        "name": "CURRENT_COMMIT",
-                        "value": lastCommit
-                      },
-                      ...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
-                    "name": "git-repository-updater",
-                    "imagePullPolicy": settings.imagePullPolicy(),
-                    "securityContext": {
-                      "readOnlyRootFilesystem": true,
-                      "allowPrivilegeEscalation": false,
-                      "runAsNonRoot": true,
-                      "capabilities": {
-                        "drop": ['ALL'],
-                      },
-                    },
-                    "resources": {
-                      "limits": {
-                        "cpu": "500m",
-                        "memory": "500Mi"
-                      },
-                      "requests": {
-                        "cpu": "100m",
-                        "memory": "100Mi"
-                      }
-                    },
-                    "volumeMounts": [
-                      {
-                        "name": "git-temp",
-                        "mountPath": "/gitTemp",
-                      },
-                      {
-                        "name": "temp",
-                        "mountPath": "/tmp",
-                      }
-                    ]
+            },
+            "spec": {
+              "completions": 1,
+              "completionMode": "NonIndexed",
+              "backoffLimit": 100,
+              "activeDeadlineSeconds": parseInt(settings.jobActiveDeadlineSeconds()),
+              "ttlSecondsAfterFinished": 30,
+              "parallelism": 1,
+              "template": {
+                "metadata": {
+                  "name": jobName,
+                  "labels": {
+                    "job": jobName
                   }
-                ],
-                volumes: [
-                  {
-                    "name": "git-temp",
-                    "emptyDir": {}
+                },
+                "spec": {
+                  "serviceAccountName": `builder-${name}`,
+                  "restartPolicy": "Never",
+                  "securityContext": {
+                    "runAsNonRoot": true,
                   },
-                  {
-                    "name": "temp",
-                    "emptyDir": {}
-                  },
-                ]
+                  "containers": [
+                    {
+                      "image": `${settings.imagePrefix()}git-repository-updater:${settings.buildNumber()}`,
+                      "args": [],
+                      "stdin": true,
+                      "tty": true,
+                      "env": [
+                        {
+                          "name": "URL",
+                          "value": repo.url
+                        },
+                        {
+                          "name": "BRANCH",
+                          "value": repo.branch
+                        },
+                        {
+                          "name": "NAMESPACE",
+                          "value": namespace
+                        },
+                        {
+                          "name": "NAME",
+                          "value": name
+                        },
+                        {
+                          "name": "OBJECT_UID",
+                          "value": uid
+                        },
+                        {
+                          "name": "CURRENT_COMMIT",
+                          "value": lastCommit
+                        },
+                        ...jabosOperatorUrlEnv(), ...gitRepositorySshSecretEnv(repo.ssh)],
+                      "name": "git-repository-updater",
+                      "imagePullPolicy": settings.imagePullPolicy(),
+                      "securityContext": {
+                        "readOnlyRootFilesystem": true,
+                        "allowPrivilegeEscalation": false,
+                        "runAsNonRoot": true,
+                        "capabilities": {
+                          "drop": ['ALL'],
+                        },
+                      },
+                      "resources": {
+                        "limits": {
+                          "cpu": "500m",
+                          "memory": "500Mi"
+                        },
+                        "requests": {
+                          "cpu": "100m",
+                          "memory": "100Mi"
+                        }
+                      },
+                      "volumeMounts": [
+                        {
+                          "name": "git-temp",
+                          "mountPath": "/gitTemp",
+                        },
+                        {
+                          "name": "temp",
+                          "mountPath": "/tmp",
+                        }
+                      ]
+                    }
+                  ],
+                  volumes: [
+                    {
+                      "name": "git-temp",
+                      "emptyDir": {}
+                    },
+                    {
+                      "name": "temp",
+                      "emptyDir": {}
+                    },
+                  ]
+                }
               }
             }
           }
+        ]
+      } :
+      {
+        "attachments": attachments,
+        "status": {
+          "latestCommit": repo.promotedCommit,
+          "conditions": [
+            {
+              "type": "Syncing",
+              "status": "True",
+            },
+          ]
         }
-      ],
-    };
+      };
 
     if (settings.debug()) console.log(`gitRepositories sync res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);

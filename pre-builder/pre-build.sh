@@ -10,9 +10,14 @@ if [ -n "${SSH_KEY}" ]; then
   echo "${SSH_PASSPHRASE}" | setsid ssh-add <(printf -- "${SSH_KEY}")
 fi
 
-git clone --single-branch --branch ${BRANCH} -- ${URL} /gitTemp
+if [ -n "${BRANCH}" ]; then
+  BRANCH_ARG="--branch ${BRANCH}"
+fi
+
+git clone --single-branch ${BRANCH_ARG} -- ${URL} /gitTemp
 cd /gitTemp
 git checkout ${COMMIT}
+
 
 echo "Exiting"
 sleep 10 # Just to allow fluentd gathering logs before termination
