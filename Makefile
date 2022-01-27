@@ -102,3 +102,22 @@ service-port-forward: FORCE
 build-docs: FORCE manifests
 	docker run --mount "type=bind,src=$$PWD,dst=/data" \
 		ghcr.io/srfrnk/crd-api-doc-gen:latest /data/build /data/build/api-docs /data/api-info.yaml
+
+status-check-examples:
+	@echo "GitRepository:"
+	@kubectl get --all-namespaces git-repositories.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Syncing')].status}{'\n'}{end}"
+	@echo ""
+	@echo "DockerImage:"
+	@kubectl get --all-namespaces docker-images.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	@echo ""
+	@echo "JsonnetManifest:"
+	@kubectl get --all-namespaces jsonnet-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	@echo ""
+	@echo "HelmTemplateManifest:"
+	@kubectl get --all-namespaces helm-template-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	@echo ""
+	@echo "KustomizeManifest:"
+	@kubectl get --all-namespaces kustomize-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	@echo ""
+	@echo "PlainManifest:"
+	@kubectl get --all-namespaces plain-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
