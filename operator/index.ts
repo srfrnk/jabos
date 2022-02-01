@@ -13,7 +13,7 @@ import kustomizeManifests from './kustomizeManifests';
 
 const app = express();
 
-app.use(express.json());
+app.use(express.json({ limit: settings.expressJsonRequestPayloadLimit() }));
 
 app.listen(settings.port(), () => {
   console.log(`Server running on port ${settings.port()}.`);

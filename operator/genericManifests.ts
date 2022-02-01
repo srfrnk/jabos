@@ -5,7 +5,7 @@ import manifestBuilderJob from './manifestBuilderJob';
 import manifestBuilderRole from './manifestBuilderRole';
 import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
-import { debugId, getRepo, needBuild } from './misc';
+import { debugId, getExistingJob, getRepo, needNewBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 
 export default {
@@ -23,9 +23,9 @@ export default {
     var kind: string = request.body.object.kind;
     var controller: string = request.body.controller.metadata.name;
 
-    var triggerJob = needBuild(object, repo);
+    var triggerJob = needNewBuild(request);
 
-    var attachments = [
+    var roleAttachments = [
       manifestBuilderRole({
         name,
         namespace,
@@ -95,20 +95,27 @@ export default {
       ]
     });
 
-    var res = {
-      "attachments": [
-        ...attachments,
-        ...(triggerJob ? [builderJob] : [])
-      ],
-      "status": (triggerJob ? {
-        "conditions": [
-          {
-            "type": "Synced",
-            "status": "False",
-          },
+    var res = triggerJob ?
+      {
+        "attachments": [
+          ...roleAttachments,
+          builderJob
         ],
-      } : null)
-    };
+        "status": {
+          "conditions": [
+            {
+              "type": "Synced",
+              "status": "False",
+            },
+          ],
+        }
+      } :
+      {
+        "attachments": [
+          ...roleAttachments,
+          ...getExistingJob(request)
+        ]
+      };
 
     if (triggerJob) {
       addMetric(`${metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
@@ -210,9 +217,9 @@ export default {
           "spec": {
             "completions": 1,
             "completionMode": "NonIndexed",
-            "backoffLimit": 100,
+            "backoffLimit": parseInt(settings.jobBackoffLimit()),
             "activeDeadlineSeconds": parseInt(settings.jobActiveDeadlineSeconds()),
-            "ttlSecondsAfterFinished": 30,
+            "ttlSecondsAfterFinished": parseInt(settings.jobTtlSecondsAfterFinished()),
             "parallelism": 1,
             "template": {
               "metadata": {

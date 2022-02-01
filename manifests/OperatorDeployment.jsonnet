@@ -35,6 +35,18 @@ function(imagePrefix, buildNumber, namespace, isProduction) (
             value: std.toString(globals.jobActiveDeadlineSeconds),
           },
           {
+            name: 'JOB_BACKOFF_LIMIT',
+            value: std.toString(globals.jobBackoffLimit),
+          },
+          {
+            name: 'JOB_TTL_SECONDS_AFTER_FINISHED',
+            value: std.toString(globals.jobTtlSecondsAfterFinished),
+          },
+          {
+            name: 'EXPRESS_JSON_REQUEST_PAYLOAD_LIMIT',
+            value: std.toString(globals.expressJsonRequestPayloadLimit),
+          },
+          {
             name: 'NAMESPACE',
             valueFrom: {
               fieldRef: {

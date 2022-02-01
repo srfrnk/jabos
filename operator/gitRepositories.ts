@@ -83,9 +83,9 @@ export default {
             "spec": {
               "completions": 1,
               "completionMode": "NonIndexed",
-              "backoffLimit": 100,
+              "backoffLimit": parseInt(settings.jobBackoffLimit()),
               "activeDeadlineSeconds": parseInt(settings.jobActiveDeadlineSeconds()),
-              "ttlSecondsAfterFinished": 30,
+              "ttlSecondsAfterFinished": parseInt(settings.jobTtlSecondsAfterFinished()),
               "parallelism": 1,
               "template": {
                 "metadata": {

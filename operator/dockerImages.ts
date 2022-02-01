@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import settings from './settings';
 import builderJob from './builderJob';
-import { Repo, getRepo, k8sName, debugId, needBuild } from './misc';
+import { Repo, getRepo, debugId, needNewBuild, getExistingJob } from './misc';
 import { addMetric } from './metrics';
 import dockerHubSecretEnv from './dockerHubSecretEnv';
 import gcpSecretSources from './gcpSecretSources';
@@ -13,22 +13,26 @@ export default {
 
     const object = request.body.object;
     var repo = getRepo(request);
-    var triggerJob = needBuild(object, repo);
+    var triggerJob = needNewBuild(request);
 
-    var res = {
-      "attachments": triggerJob ? [allowInsecureExecutionForKaniko(object.spec.build ?
-        buildJob(object, repo) :
-        reuseJob(object, repo)
-      )] : [],
-      "status": (triggerJob ? {
-        "conditions": [
-          {
-            "type": "Synced",
-            "status": "False",
-          },
-        ],
-      } : null)
-    };
+    var res = triggerJob ?
+      {
+        "attachments": [allowInsecureExecutionForKaniko(object.spec.build ?
+          buildJob(object, repo) :
+          reuseJob(object, repo)
+        )],
+        "status": {
+          "conditions": [
+            {
+              "type": "Synced",
+              "status": "False",
+            },
+          ],
+        }
+      } :
+      {
+        "attachments": getExistingJob(request)
+      };
 
     if (triggerJob) {
       addMetric('dockerImageBuildTrigger', { 'namespace': object.metadata.namespace, 'docker_image': object.metadata.name, 'commit': repo.status.latestCommit });
