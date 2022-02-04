@@ -4,7 +4,7 @@ setup: SHELL:=/bin/bash
 setup: FORCE
 	minikube addons enable registry
 	minikube addons enable registry-aliases
-	kubectl apply -f manifests/minikube-registry.yaml
+	kubectl apply -f minikube-registry.yaml
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
 	- kubectl create --save-config namespace example-env
