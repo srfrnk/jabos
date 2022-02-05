@@ -21,20 +21,16 @@ export function getRepo(request: Request): Repo {
   var repo: Repo = {} as Repo;
 
   var namespace = request.body.object.metadata.namespace;
-  var related = request.body.related;
-  if (!!related) {
-    var reposMap = related['GitRepository.jabos.io/v1'];
-    if (!!reposMap) {
-      // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
-      var repos = Object.values(reposMap).filter((r: any) => r.metadata.namespace === namespace);
-      if (repos.length > 0) {
-        repo = repos[0] as Repo;
-      }
-      else {
-        // Have to reject the sync to maintain idempotent response - due to: https://github.com/metacontroller/metacontroller/issues/414
-        throw new Error(`No GitRepository from same namespace.`);
-      }
-    }
+  var reposMap = (request.body.related || {})['GitRepository.jabos.io/v1'];
+
+  // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
+  var repos = Object.values(reposMap || {}).filter((r: any) => r?.metadata?.namespace === namespace);
+  if (repos.length > 0) {
+    repo = repos[0] as Repo;
+  }
+  else {
+    // Have to reject the sync to maintain idempotent response - due to: https://github.com/metacontroller/metacontroller/issues/414
+    throw new Error(`No GitRepository from same namespace.`);
   }
 
   repo.spec = repo.spec || { url: '', branch: '', ssh: null };

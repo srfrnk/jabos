@@ -155,7 +155,7 @@ export default {
 
     var jobName = `manifest-clean-${name}`;
 
-    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']).filter((job: any) => !!job.metadata.labels && !!job.metadata.labels.type && job.metadata.labels.type === 'manifest-cleaner');
+    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']).filter((job: any) => job?.metadata?.labels?.type === 'manifest-cleaner');
 
     var finalized = (spec.cleanupPolicy === "Leave") || ((jobs.length > 0) && (jobs[0].status.succeeded === 1));
 
