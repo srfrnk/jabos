@@ -1,4 +1,0 @@
-kube.libsonnet: https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/kube.libsonnet
-metacontroller.libsonnet: https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/metacontroller.libsonnet
-monitoring.libsonnet: https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/monitoring.libsonnet
-grafana-dashboard.libsonnet: https://raw.githubusercontent.com/srfrnk/k8s-jsonnet-libs/main/grafana-dashboard.libsonnet

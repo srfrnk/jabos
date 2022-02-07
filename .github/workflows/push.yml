@@ -170,24 +170,20 @@ jobs:
 
       - name: Package
         run: |-
-          mkdir ./build
-          mkdir ./build/input
           chmod -R 777 ./manifests
-          docker run --mount "type=bind,src=$(pwd)/manifests,dst=/src" \
-            ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
-            --tla-str 'imagePrefix=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
-            --tla-str 'buildNumber=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
-            --tla-str 'namespace=${{env.NAMESPACE}}' \
-            --tla-str 'isProduction=true' \
-            > ./build/jabos-manifests.yaml
-          cp ./build/jabos-manifests.yaml ./build/input/jabos-manifests.yaml
+          docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
+            -e 'IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
+            -e 'BUILD_NUMBER=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
+            -e 'NAMESPACE=${{env.NAMESPACE}}' \
+            -e 'IS_PRODUCTION=true' \
+          node:lts-alpine -c "npm run import && npm run compile && npm run test && npm run synth"
 
       - uses: snyk/actions/setup@master
       - uses: actions/setup-go@v1
         with:
           go-version: "1.13"
 
-      - run: snyk iac test --sarif-file-output=snyk.sarif ./build/jabos-manifests.yaml || true
+      - run: snyk iac test --sarif-file-output=snyk.sarif ./manifests/dist/jabos.k8s.yaml || true
         shell: bash
         env:
           SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
@@ -201,7 +197,7 @@ jobs:
 
       - name: Generate Docs
         run: |-
-          mkdir ./build/output
+          mkdir -p ./build/output
           chmod -R 777 ./build/output
           yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
           docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
@@ -235,7 +231,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./build/jabos-manifests.yaml
+          asset_path: ./manifests/dist/jabos.k8s.yaml
           asset_name: jabos-manifests.yaml
           asset_content_type: text/yaml
 

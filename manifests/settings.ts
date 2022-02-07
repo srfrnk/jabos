@@ -1,0 +1,16 @@
+export default {
+  operatorPort: (): number => { return 3000; },
+  operatorResyncPeriodSeconds: (): number => { return 30; },
+  operatorTimeout: (): string => { return '10s'; },
+  prometheusMetricPrefix: (): string => { return 'jabos_operator_'; },
+  jobActiveDeadlineSeconds: (): number => { return 3600; },
+  jobBackoffLimit: (): number => { return 5; },
+  jobTtlSecondsAfterFinished: (): number => { return 30; },
+  expressJsonRequestPayloadLimit: (): string => { return '1mb'; },
+  crdGroup: (): string => { return 'jabos.io'; },
+  crdVersion: (): string => { return 'v1'; },
+  jabosNamespace: (): string => { return process.env.NAMESPACE || 'jabos'; },
+  imagePrefix: (): string => { return process.env.IMAGE_PREFIX || ''; },
+  buildNumber: (): string => { return process.env.BUILD_NUMBER || ''; },
+  isProduction: (): boolean => { return process.env.IS_PRODUCTION === 'true'; },
+};

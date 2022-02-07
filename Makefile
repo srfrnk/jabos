@@ -62,23 +62,21 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
-	- rm -rf build
-	- mkdir build
-	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
-		--tla-str 'imagePrefix=' \
-		--tla-str 'buildNumber=${BUILD_NUMBER}' \
-		--tla-str 'namespace=jabos' \
-		--tla-str 'isProduction=false' \
-		> build/manifests.yaml
+	docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
+		-e 'IMAGE_PREFIX=' \
+		-e 'BUILD_NUMBER=${BUILD_NUMBER}' \
+		-e 'NAMESPACE=jabos' \
+		-e 'IS_PRODUCTION=false' \
+	node:lts-alpine -c "npm run import && npm run compile && npm run test && npm run synth"
 
 snyk-scan: FORCE manifests build_number
-	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/build:/project snyk/snyk-cli:docker iac test /project/manifests.yaml
+	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/manifests/dist:/project snyk/snyk-cli:docker iac test /project/jabos.k8s.yaml
 
 compile:
 	cd operator && npx tsc --noEmit
 
 build: FORCE compile images manifests
-	kubectl apply -n jabos -f build/manifests.yaml
+	kubectl apply -n jabos -f ./manifests/dist/jabos.k8s.yaml
 
 deploy-examples: FORCE
 	docker pull node:lts-alpine

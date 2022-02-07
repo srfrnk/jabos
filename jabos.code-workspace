@@ -10,18 +10,6 @@
 			"path": "../jabos-examples-private"
 		},
 		{
-			"path": "../efk-stack-helm"
-		},
-		{
-			"path": "../crd-api-doc-gen"
-		},
-		{
-			"path": "../grafana-dashboard-operator"
-		},
-		{
-			"path": "../k8s-jsonnet-manifest-packager"
-		},
-		{
 			"path": "../k8s-jsonnet-libs"
 		},
 		{
