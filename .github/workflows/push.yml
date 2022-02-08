@@ -175,7 +175,7 @@ jobs:
             -e 'BUILD_NUMBER=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             -e 'NAMESPACE=${{env.NAMESPACE}}' \
             -e 'IS_PRODUCTION=true' \
-          node:lts-alpine -c "npm run import && npm run compile && npm run test && npm run synth"
+          node:lts-alpine -c "npm install && npm run import && npm run compile && npm run test && npm run synth"
 
       - uses: snyk/actions/setup@master
       - uses: actions/setup-go@v1
