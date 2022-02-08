@@ -197,6 +197,8 @@ jobs:
       - name: Generate Docs
         run: |-
           mkdir -p ./build/output
+          mkdir -p ./build/input
+          chmod -R 777 ./build/input
           chmod -R 777 ./build/output
           yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
           docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
