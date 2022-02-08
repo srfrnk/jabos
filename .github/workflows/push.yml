@@ -200,6 +200,7 @@ jobs:
           mkdir -p ./build/input
           chmod -R 777 ./build/input
           chmod -R 777 ./build/output
+          cp ./manifests/dist/jabos.k8s.yaml ./build/input/jabos.k8s.yaml
           yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
           docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
             --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
