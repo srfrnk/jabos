@@ -10,9 +10,6 @@
 			"path": "../jabos-examples-private"
 		},
 		{
-			"path": "../k8s-jsonnet-libs"
-		},
-		{
 			"path": "../jabos-examples-gitlab"
 		}
 	],
