@@ -4,7 +4,7 @@ setup: SHELL:=/bin/bash
 setup: FORCE
 	minikube addons enable registry
 	minikube addons enable registry-aliases
-	kubectl apply -f manifests/minikube-registry.yaml
+	kubectl apply -f minikube-registry.yaml
 	- kubectl create --save-config namespace jabos
 	- kubectl create --save-config namespace efk
 	- kubectl create --save-config namespace example-env
@@ -62,25 +62,30 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
-	- rm -rf build
-	- mkdir build
-	docker run --mount "type=bind,src=$$(pwd)/manifests,dst=/src" ghcr.io/srfrnk/k8s-jsonnet-manifest-packager:latest -- /src \
-		--tla-str 'imagePrefix=' \
-		--tla-str 'buildNumber=${BUILD_NUMBER}' \
-		--tla-str 'namespace=jabos' \
-		--tla-str 'isProduction=false' \
-		> build/manifests.yaml
+	docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
+		-e 'IMAGE_PREFIX=' \
+		-e 'BUILD_NUMBER=${BUILD_NUMBER}' \
+		-e 'NAMESPACE=jabos' \
+		-e 'IS_PRODUCTION=false' \
+	node:lts-alpine -c "npm run import && npm run compile && npm run test && npm run synth"
 
 snyk-scan: FORCE manifests build_number
-	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/build:/project snyk/snyk-cli:docker iac test /project/manifests.yaml
+	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/manifests/dist:/project snyk/snyk-cli:docker iac test /project/jabos.k8s.yaml
 
 compile:
 	cd operator && npx tsc --noEmit
 
 build: FORCE compile images manifests
-	kubectl apply -n jabos -f build/manifests.yaml
+	kubectl apply -n jabos -f ./manifests/dist/jabos.k8s.yaml
 
 deploy-examples: FORCE
+	docker pull node:lts-alpine
+	docker tag node:lts-alpine localhost:5555/node:lts-alpine
+	kubectl port-forward -n kube-system svc/registry 5555:80 &
+	until curl localhost:5555; do sleep 1; done
+	docker push localhost:5555/node:lts-alpine
+	- ps aux | grep "kubectl port-forward -n kube-system svc/registry 5555:80" | awk '{print $$2}'| xargs kill
+
 	make -C ../jabos-examples set-secret
 	make -C ../jabos-examples-private set-secret
 	make -C ../jabos-examples-gitlab set-secret
@@ -105,19 +110,19 @@ build-docs: FORCE manifests
 
 status-check-examples:
 	@echo "GitRepository:"
-	@kubectl get --all-namespaces git-repositories.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Syncing')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces git-repositories.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Syncing')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
 	@echo ""
 	@echo "DockerImage:"
-	@kubectl get --all-namespaces docker-images.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces docker-images.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
 	@echo ""
 	@echo "JsonnetManifest:"
-	@kubectl get --all-namespaces jsonnet-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces jsonnet-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
 	@echo ""
 	@echo "HelmTemplateManifest:"
-	@kubectl get --all-namespaces helm-template-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces helm-template-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
 	@echo ""
 	@echo "KustomizeManifest:"
-	@kubectl get --all-namespaces kustomize-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces kustomize-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
 	@echo ""
 	@echo "PlainManifest:"
-	@kubectl get --all-namespaces plain-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}"
+	- @kubectl get --all-namespaces plain-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"

@@ -1,0 +1,7 @@
+language: typescript
+app: ts-node main.ts
+imports:
+  - k8s
+  - https://raw.githubusercontent.com/metacontroller/metacontroller/master/manifests/production/metacontroller-crds-v1.yaml
+  - https://raw.githubusercontent.com/prometheus-community/helm-charts/main/charts/kube-prometheus-stack/crds/crd-servicemonitors.yaml
+  - https://github.com/srfrnk/grafana-dashboard-operator/releases/latest/download/grafana-dashboard-operator-manifests.yaml

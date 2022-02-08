@@ -1,0 +1,35 @@
+{
+  "name": "app",
+  "version": "1.0.0",
+  "main": "main.js",
+  "types": "main.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "import": "cdk8s import",
+    "synth": "cdk8s synth",
+    "compile": "tsc --noEmit",
+    "watch": "npx nodemon -x 'npm run build' -e '*' -i dist -i imports  -w .",
+    "test": "jest",
+    "build": "npm run import && npm run compile && npm run test && npm run synth",
+    "upgrade": "npm i cdk8s@latest cdk8s-cli@latest",
+    "upgrade:next": "npm i cdk8s@next cdk8s-cli@next"
+  },
+  "dependencies": {
+    "cdk8s": "^1.5.7",
+    "cdk8s-plus-22": "^1.0.0-beta.108",
+    "constructs": "^3.3.208",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "@types/lodash": "^4.14.178",
+    "@types/node": "^14.18.10",
+    "cdk8s-cli": "^1.0.92",
+    "jest": "^26.6.3",
+    "nodemon": "^2.0.15",
+    "ts-jest": "^26.5.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  }
+}

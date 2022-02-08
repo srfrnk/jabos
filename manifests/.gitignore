@@ -1,4 +1,5 @@
-kube.libsonnet
-metacontroller.libsonnet
-monitoring.libsonnet
-grafana-dashboard.libsonnet
+*.d.ts
+*.js
+!jest.config.js
+node_modules
+dist/
