@@ -290,6 +290,24 @@ p {
             <li class="">
               <h2>Apis</h2>
             <li>
+                        <li class="">
+                          <a href="#crd-DockerImage">DockerImage</a>
+                        </li>
+                        <li class="">
+                          <a href="#crd-GitRepository">GitRepository</a>
+                        </li>
+                        <li class="">
+                          <a href="#crd-HelmTemplateManifest">HelmTemplateManifest</a>
+                        </li>
+                        <li class="">
+                          <a href="#crd-JsonnetManifest">JsonnetManifest</a>
+                        </li>
+                        <li class="">
+                          <a href="#crd-KustomizeManifest">KustomizeManifest</a>
+                        </li>
+                        <li class="">
+                          <a href="#crd-PlainManifest">PlainManifest</a>
+                        </li>
           </ul>
         </nav>
       </div>
@@ -299,12 +317,24 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.152</div>
+                <div class="app-desc">Version: 1.0.154</div>
             </p>
           </div>
         </div>
         <div class="clearfix"></div>
         <div id="sections">
+                        <section id="crd-DockerImage" class="crd" data="DockerImage">
+                        </section>
+                        <section id="crd-GitRepository" class="crd" data="GitRepository">
+                        </section>
+                        <section id="crd-HelmTemplateManifest" class="crd" data="HelmTemplateManifest">
+                        </section>
+                        <section id="crd-JsonnetManifest" class="crd" data="JsonnetManifest">
+                        </section>
+                        <section id="crd-KustomizeManifest" class="crd" data="KustomizeManifest">
+                        </section>
+                        <section id="crd-PlainManifest" class="crd" data="PlainManifest">
+                        </section>
           </div>
           <script>
             function setRequired(schema) {
@@ -833,6 +863,501 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+    defs["DockerImage"] = {
+  "title" : "DockerImage",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/DockerImage_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`DockerImage` objects define images, how to build and push them.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["DockerImage_spec"] = {
+  "required" : [ "gitRepository", "imageName" ],
+  "type" : "object",
+  "properties" : {
+    "aws" : {
+      "$ref" : "#/components/schemas/DockerImage_spec_aws"
+    },
+    "build" : {
+      "type" : "boolean",
+      "description" : "\"true\" to use automatically build and push any new commit.",
+      "default" : true
+    },
+    "contextPath" : {
+      "type" : "string",
+      "description" : "The path **relative to the git repository root** where the context for the docker build is found.",
+      "default" : "."
+    },
+    "dockerConfig" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Docker config yaml file to use. This allows configuring `Kaniko` access to external registries if required. **Be careful not to include any secret information as this value is logged.**",
+      "default" : { }
+    },
+    "dockerFile" : {
+      "type" : "string",
+      "description" : "The name of the Dockerfile to use for the docker build.",
+      "default" : "Dockerfile"
+    },
+    "dockerHub" : {
+      "$ref" : "#/components/schemas/DockerImage_spec_dockerHub"
+    },
+    "gcp" : {
+      "$ref" : "#/components/schemas/DockerImage_spec_gcp"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the image. **Must be in the same namespace**."
+    },
+    "imageName" : {
+      "type" : "string",
+      "description" : "The full image name excluding the tag part. Usually this will be prefixed with the registry address (e.g. `registry.kube-system:80/example-image`)"
+    },
+    "insecureRegistry" : {
+      "type" : "boolean",
+      "description" : "\"true\" to use insecure registries with docker push.",
+      "default" : true
+    }
+  }
+};
+    defs["DockerImage_spec_aws"] = {
+  "required" : [ "secret" ],
+  "type" : "object",
+  "properties" : {
+    "accessKeyId" : {
+      "type" : "string",
+      "description" : "Name of the key inside the secret to use for the aws_access_key_id.",
+      "default" : "aws_access_key_id"
+    },
+    "secret" : {
+      "type" : "string",
+      "description" : "Name of secret to use. **Must be in the same namespace**"
+    },
+    "secretAccessKey" : {
+      "type" : "string",
+      "description" : "Name of the key inside the secret to use for the aws_secret_access_key.",
+      "default" : "aws_secret_access_key"
+    }
+  },
+  "description" : "`AWS` credentials to use"
+};
+    defs["DockerImage_spec_dockerHub"] = {
+  "required" : [ "secret" ],
+  "type" : "object",
+  "properties" : {
+    "password" : {
+      "type" : "string",
+      "description" : "Name of the key inside the secret to use for password.",
+      "default" : "docker_hub_password"
+    },
+    "secret" : {
+      "type" : "string",
+      "description" : "Name of secret to use. **Must be in the same namespace**"
+    },
+    "username" : {
+      "type" : "string",
+      "description" : "Name of the key inside the secret to use for username.",
+      "default" : "docker_hub_username"
+    }
+  },
+  "description" : "`Docker Hub` credentials to use"
+};
+    defs["DockerImage_spec_gcp"] = {
+  "required" : [ "secret" ],
+  "type" : "object",
+  "properties" : {
+    "secret" : {
+      "type" : "string",
+      "description" : "Name of secret to use. **Must be in the same namespace**"
+    },
+    "serviceAccountKey" : {
+      "type" : "string",
+      "description" : "Name of the key inside the secret to use for the service account json key.",
+      "default" : "gcp_service_account.json"
+    }
+  },
+  "description" : "`GCP` credentials to use"
+};
+    defs["DockerImage_status"] = {
+  "type" : "object",
+  "properties" : {
+    "builtCommit" : {
+      "type" : "string",
+      "description" : "The latest `git` commit id build"
+    },
+    "conditions" : {
+      "type" : "array",
+      "description" : "List of conditions",
+      "items" : {
+        "$ref" : "#/components/schemas/DockerImage_status_conditions"
+      },
+      "default" : [ ]
+    },
+    "latestCommit" : {
+      "type" : "string",
+      "description" : "The latest `git` commit id found"
+    }
+  },
+  "description" : "Will contains a condition of type \"`Synced`\". If it becomes \"`False`\" an `Event` will describe the error."
+};
+    defs["DockerImage_status_conditions"] = {
+  "required" : [ "status", "type" ],
+  "type" : "object",
+  "properties" : {
+    "lastHeartbeatTime" : {
+      "type" : "string",
+      "description" : "Last time we got an update on a given condition"
+    },
+    "lastTransitionTime" : {
+      "type" : "string",
+      "description" : "Last time the condition transit from one status to another"
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Human-readable message indicating details about last transition"
+    },
+    "reason" : {
+      "type" : "string",
+      "description" : "One-word CamelCase reason for the condition's last transition"
+    },
+    "status" : {
+      "type" : "string",
+      "description" : "Status of the condition, one of **True**, **False**, **Unknown**",
+      "enum" : [ "True", "False", "Unknown" ]
+    },
+    "type" : {
+      "type" : "string",
+      "description" : "Type of condition"
+    }
+  },
+  "description" : "Condition"
+};
+    defs["GitRepository"] = {
+  "title" : "GitRepository",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "required" : [ "url" ],
+      "type" : "object",
+      "properties" : {
+        "branch" : {
+          "type" : "string",
+          "description" : "The name of the branch to watch and pull from."
+        },
+        "promotedCommit" : {
+          "type" : "string",
+          "description" : "The `git` commit id to sync to."
+        },
+        "ssh" : {
+          "type" : "object",
+          "properties" : {
+            "key" : {
+              "type" : "string",
+              "description" : "Name of the key inside the secret to use for `SSH` key.",
+              "default" : "git_ssh_key"
+            },
+            "passphrase" : {
+              "type" : "string",
+              "description" : "Name of the key inside the secret to use for `SSH` passphrase.",
+              "default" : "git_ssh_passphrase"
+            },
+            "secret" : {
+              "type" : "string",
+              "description" : "Name of secret to use. **Must be in the same namespace**"
+            }
+          },
+          "description" : "Credentials for `SSH` access"
+        },
+        "url" : {
+          "type" : "string",
+          "description" : "The URL to use to access the git repository."
+        }
+      },
+      "oneOf" : [ {
+        "required" : [ "branch" ]
+      }, {
+        "required" : [ "promotedCommit" ]
+      } ]
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/GitRepository_status"
+    }
+  },
+  "description" : "`GitRepository` objects define a git codebase and how to pull from it.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["GitRepository_status"] = {
+  "type" : "object",
+  "properties" : {
+    "conditions" : {
+      "type" : "array",
+      "description" : "List of conditions",
+      "items" : {
+        "$ref" : "#/components/schemas/DockerImage_status_conditions"
+      },
+      "default" : [ ]
+    },
+    "latestCommit" : {
+      "type" : "string",
+      "description" : "The latest `git` commit id found"
+    }
+  },
+  "description" : "Will contains a condition of type \"`Syncing`\". If it becomes \"`False`\" an `Event` will describe the error."
+};
+    defs["HelmTemplateManifest"] = {
+  "title" : "HelmTemplateManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/HelmTemplateManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`HelmTemplateManifest` objects define a folder with a [helm](https://helm.sh/) chart to deploy with `helm template`.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["HelmTemplateManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "commitValueKey" : {
+      "type" : "string",
+      "description" : "The key of the value to to set with the commit hash for the build. **Will be used as a Helm command line `--set-string` argument. Must be escaped accordingly.**",
+      "default" : "LATEST_COMMIT_HASH"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    },
+    "values" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values to inject when building.",
+      "default" : { }
+    }
+  }
+};
+    defs["JsonnetManifest"] = {
+  "title" : "JsonnetManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/JsonnetManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`JsonnetManifest` objects define a folder with [jsonnet](https://jsonnet.org/) based manifests to deploy.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["JsonnetManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "commitTLAKey" : {
+      "type" : "string",
+      "description" : "The name of a [Top-Level Argument (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below.",
+      "default" : "latestCommitHash"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    },
+    "tlas" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of [Top-Level Arguments (TLA)](https://jsonnet.org/ref/language.html#top-level-arguments-tlas) to injecting when building.",
+      "default" : { }
+    }
+  }
+};
+    defs["KustomizeManifest"] = {
+  "title" : "KustomizeManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/KustomizeManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`KustomizeManifest` objects define a folder with [Kustomize](https://kustomize.io/) based manifests to deploy.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["KustomizeManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "dockerImages" : {
+      "type" : "array",
+      "description" : "List of `DockerImage` objects to update tags built for. **Must be in the same namespace**",
+      "items" : {
+        "type" : "string",
+        "description" : "Name `DockerImage` object. **Must be in the same namespace**"
+      },
+      "default" : [ ]
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "replacementPrefix" : {
+      "type" : "string",
+      "description" : "The string to prefix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\$\\\\{"
+    },
+    "replacementSuffix" : {
+      "type" : "string",
+      "description" : "The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\}"
+    },
+    "replacements" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of replacements to make when building.",
+      "default" : { }
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
+};
+    defs["PlainManifest"] = {
+  "title" : "PlainManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/PlainManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`PlainManifest` objects define a folder with plain manifests to deploy (YAML/YML/JSON).",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["PlainManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "commitReplacementString" : {
+      "type" : "string",
+      "description" : "The string to replace with the commit hash for the build. Will be prefixed by `replacementPrefix` and suffixed by `replacementSuffix`. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "LATEST_COMMIT_HASH"
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "replacementPrefix" : {
+      "type" : "string",
+      "description" : "The string to prefix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\$\\\\{"
+    },
+    "replacementSuffix" : {
+      "type" : "string",
+      "description" : "The string to suffix string replacements with. **This is a [sed](https://www.gnu.org/software/sed/manual/html_node/Regular-Expressions.html) search expression and must be escaped accordingly.**",
+      "default" : "\\\\}"
+    },
+    "replacements" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of replacements to make when building.",
+      "default" : { }
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
+};
     var schemaWrapper = { "components": { "schemas" : defs}};
     defsParser = new $RefParser();
     defsParser.dereference(schemaWrapper).catch(function(err) {
