@@ -170,8 +170,7 @@ jobs:
 
       - name: Package
         run: |-
-          chmod -R 777 ./manifests
-          docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
+          docker run --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
             -e 'IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
             -e 'BUILD_NUMBER=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
             -e 'NAMESPACE=${{env.NAMESPACE}}' \
