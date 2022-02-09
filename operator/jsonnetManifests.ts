@@ -1,17 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
 
 import genericManifests from './genericManifests'
+import { CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
 import { getRepo } from './misc';
 
 export default {
-  async sync(request: Request, response: Response, next: NextFunction) {
+  async sync(syncRequest: Request, response: Response, next: NextFunction) {
+    const request: SyncRequest = syncRequest.body;
     genericManifests.debugRequest('jsonnet', 'sync', request);
 
-    var repo = getRepo(request);
-    var spec: any = request.body.object.spec;
-    var latestCommit = repo.status.latestCommit;
+    const repo = getRepo(request);
+    const spec: any = request.object.spec;
+    const latestCommit = repo.status.latestCommit;
 
-    var args = [
+    const args = [
       `--tla-str "${spec.commitTLAKey}=${latestCommit}"`,
       ...Object.entries(spec.tlas).map(tla => `--tla-str "${tla[0]}=${tla[1]}"`)
     ].join(' ');
@@ -19,13 +21,15 @@ export default {
     await genericManifests.sync('jsonnet', 'jsonnet', 'jsonnet', { 'JSONNET_ARGS': args }, request, response);
   },
 
-  async customize(request: Request, response: Response, next: NextFunction) {
+  async customize(customizeRequest: Request, response: Response, next: NextFunction) {
+    const request: CustomizeRequest = customizeRequest.body;
     genericManifests.debugRequest('jsonnet', 'customize', request);
 
     await genericManifests.customize('jsonnet', request, response);
   },
 
-  async finalize(request: Request, response: Response, next: NextFunction) {
+  async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
+    const request: FinalizeRequest = finalizeRequest.body;
     genericManifests.debugRequest('jsonnet', 'finalize', request);
 
     await genericManifests.finalize('jsonnet', request, response);

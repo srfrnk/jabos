@@ -7,25 +7,26 @@ import manifestBuilderRoleBinding from './manifestBuilderRoleBinding';
 import { addMetric } from './metrics';
 import { debugId, getExistingJob, getRepo, needNewBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { BaseRequest, CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
 
 export default {
-  debugRequest(typeName: string, typeFunc: string, request: Request): void {
-    if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request.body));
+  debugRequest(typeName: string, typeFunc: string, request: BaseRequest): void {
+    if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request));
   },
 
-  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: Request, response: Response) {
-    const object = request.body.object;
-    var name: string = object.metadata.name;
-    var namespace: string = object.metadata.namespace;
-    var spec: any = object.spec;
-    var repo = getRepo(request);
-    var latestCommit = repo.status.latestCommit;
-    var kind: string = request.body.object.kind;
-    var controller: string = request.body.controller.metadata.name;
+  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: SyncRequest, response: Response) {
+    const object = request.object;
+    const name: string = object.metadata.name;
+    const namespace: string = object.metadata.namespace;
+    const spec: any = object.spec;
+    const repo = getRepo(request);
+    const latestCommit = repo.status.latestCommit;
+    const kind: string = request.object.kind;
+    const controller: string = request.controller.metadata.name;
 
-    var triggerJob = needNewBuild(request);
+    const triggerJob = needNewBuild(request);
 
-    var roleAttachments = [
+    const roleAttachments = [
       manifestBuilderRole({
         name,
         namespace,
@@ -95,7 +96,7 @@ export default {
       ]
     });
 
-    var res = triggerJob ?
+    const res = triggerJob ?
       {
         "attachments": [
           ...roleAttachments,
@@ -125,15 +126,15 @@ export default {
     response.status(200).json(res);
   },
 
-  async customize(metricName: string, request: Request, response: Response, relatedResources: any[] = []) {
-    var res = {
+  async customize(metricName: string, request: CustomizeRequest, response: Response, relatedResources: any[] = []) {
+    const res = {
       "relatedResources": [
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          "namespace": request.body.parent.metadata.namespace,
+          "namespace": request.parent.metadata.namespace,
           "names": [
-            request.body.parent.spec.gitRepository
+            request.parent.spec.gitRepository
           ]
         },
         ...relatedResources
@@ -144,22 +145,22 @@ export default {
     response.status(200).json(res);
   },
 
-  async finalize(metricName: string, request: Request, response: Response) {
-    var name: string = request.body.object.metadata.name;
-    var uid: string = request.body.object.metadata.uid;
-    var namespace: string = request.body.object.metadata.namespace;
-    var spec: any = request.body.object.spec;
-    var manifests: string = request.body.object.metadata.annotations.deployedManifest;
-    var kind: string = request.body.object.kind;
-    var controller: string = request.body.controller.metadata.name;
+  async finalize(metricName: string, request: FinalizeRequest, response: Response) {
+    const name: string = request.object.metadata.name;
+    const uid: string = request.object.metadata.uid;
+    const namespace: string = request.object.metadata.namespace;
+    const spec: any = request.object.spec;
+    const manifests: string = request.object.metadata.annotations.deployedManifest;
+    const kind: string = request.object.kind;
+    const controller: string = request.controller.metadata.name;
 
-    var jobName = `manifest-clean-${name}`;
+    const jobName = `manifest-clean-${name}`;
 
-    var jobs: any[] = Object.values(request.body.attachments['Job.batch/v1']).filter((job: any) => job?.metadata?.labels?.type === 'manifest-cleaner');
+    const jobs: any[] = Object.values(request.attachments['Job.batch/v1']).filter((job: any) => job?.metadata?.labels?.type === 'manifest-cleaner');
 
-    var finalized = (spec.cleanupPolicy === "Leave") || ((jobs.length > 0) && (jobs[0].status.succeeded === 1));
+    const finalized = (spec.cleanupPolicy === "Leave") || ((jobs.length > 0) && (jobs[0].status.succeeded === 1));
 
-    var res = {
+    const res = {
       "annotations": {},
       "attachments": finalized ? [] : [
         {

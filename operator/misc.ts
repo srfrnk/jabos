@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { BaseRequest, CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
 
 export function k8sName(prefix: string, commit: string): string {
   return `${prefix.substring(0, 52)}-${commit}`.substring(0, 62);
@@ -17,14 +18,13 @@ export type Repo = {
   }
 };
 
-export function getRepo(request: Request): Repo {
-  var repo: Repo = {} as Repo;
-
-  var namespace = request.body.object.metadata.namespace;
-  var reposMap = (request.body.related || {})['GitRepository.jabos.io/v1'];
+export function getRepo(request: SyncRequest): Repo {
+  const namespace = request.object.metadata.namespace;
+  const reposMap = (request.related || {})['GitRepository.jabos.io/v1'];
+  var repo: Repo;
 
   // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
-  var repos = Object.values(reposMap || {}).filter((r: any) => r?.metadata?.namespace === namespace);
+  const repos = Object.values(reposMap || {}).filter((r: any) => r?.metadata?.namespace === namespace);
   if (repos.length > 0) {
     repo = repos[0] as Repo;
   }
@@ -39,9 +39,9 @@ export function getRepo(request: Request): Repo {
   return repo;
 }
 
-export function getExistingJob(request: Request): any[] {
-  return (Object.values(request.body.attachments['Job.batch/v1']).length > 0 ?
-    [Object.values(request.body.attachments['Job.batch/v1'])[0]] :
+export function getExistingJob(request: SyncRequest): any[] {
+  return (Object.values(request.attachments['Job.batch/v1']).length > 0 ?
+    [Object.values(request.attachments['Job.batch/v1'])[0]] :
     []).filter((job: any) => {
       delete job.status;
       delete job.metadata.annotations;
@@ -49,21 +49,23 @@ export function getExistingJob(request: Request): any[] {
     });
 }
 
-export function debugId(request: Request) {
+export function debugId(request: BaseRequest) {
   try {
-    const object = request.body.parent || request.body.object;
-    return `${object.metadata.namespace}:${object.metadata.name}`;
+    var object = null;
+    if (request instanceof SyncRequest || request instanceof FinalizeRequest) { object = request.object; }
+    else if (request instanceof CustomizeRequest) { object = request.parent; }
+    return `${object.metadata?.namespace}:${object.metadata?.name}`;
   }
   catch {
     return '(NO_OBJECT)';
   }
 }
 
-export function needNewBuild(request: Request): boolean {
-  const object = request.body.object;
+export function needNewBuild(request: SyncRequest): boolean {
+  const object = request.object;
   const repo = getRepo(request);
   const existingJob = getExistingJob(request);
-  var builtCommit: string = (object.status || {}).builtCommit || '';
-  var latestCommit: string = repo.status.latestCommit;
+  const builtCommit: string = (object.status || {}).builtCommit || '';
+  const latestCommit: string = repo.status.latestCommit;
   return existingJob.length == 0 && !!latestCommit && latestCommit !== builtCommit;
 }

@@ -1,20 +1,22 @@
 import { Request, Response, NextFunction } from 'express';
 
 import genericManifests from './genericManifests'
+import { CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
 import { getRepo } from './misc';
 
 export default {
-  async sync(request: Request, response: Response, next: NextFunction) {
+  async sync(syncRequest: Request, response: Response, next: NextFunction) {
+    const request: SyncRequest = syncRequest.body;
     genericManifests.debugRequest('plain', 'sync', request);
 
-    var repo = getRepo(request);
-    var spec: any = request.body.object.spec;
-    var latestCommit = repo.status.latestCommit;
+    const repo = getRepo(request);
+    const spec: any = request.object.spec;
+    const latestCommit = repo.status.latestCommit;
 
-    var replacementPrefix = spec.replacementPrefix;
-    var replacementSuffix = spec.replacementSuffix;
-    var commitReplacementString = spec.commitReplacementString;
-    var replacements = spec.replacements;
+    const replacementPrefix = spec.replacementPrefix;
+    const replacementSuffix = spec.replacementSuffix;
+    const commitReplacementString = spec.commitReplacementString;
+    const replacements = spec.replacements;
     replacements[commitReplacementString] = latestCommit;
 
     await genericManifests.sync('plain', 'plain', 'plain', {
@@ -24,13 +26,15 @@ export default {
     }, request, response);
   },
 
-  async customize(request: Request, response: Response, next: NextFunction) {
+  async customize(customizeRequest: Request, response: Response, next: NextFunction) {
+    const request: CustomizeRequest = customizeRequest.body;
     genericManifests.debugRequest('plain', 'customize', request);
 
     await genericManifests.customize('plain', request, response);
   },
 
-  async finalize(request: Request, response: Response, next: NextFunction) {
+  async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
+    const request: FinalizeRequest = finalizeRequest.body;
     genericManifests.debugRequest('plain', 'finalize', request);
 
     await genericManifests.finalize('plain', request, response);

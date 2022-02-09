@@ -6,16 +6,18 @@ import { addMetric } from './metrics';
 import dockerHubSecretEnv from './dockerHubSecretEnv';
 import gcpSecretSources from './gcpSecretSources';
 import awsSecretSources from './awsSecretSources';
+import { CustomizeRequest, CustomizeResponse, FinalizeRequest, FinalizeResponse, SyncRequest, SyncResponse } from './metaControllerHooks';
 
 export default {
-  async sync(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`dockerImages sync req (${debugId(request)})`, JSON.stringify(request.body));
+  async sync(syncRequest: Request, response: Response, next: NextFunction) {
+    const request: SyncRequest = syncRequest.body;
+    if (settings.debug()) console.log(`dockerImages sync req (${debugId(request)})`, JSON.stringify(request));
 
-    const object = request.body.object;
-    var repo = getRepo(request);
-    var triggerJob = needNewBuild(request);
+    const object = request.object;
+    const repo = getRepo(request);
+    const triggerJob = needNewBuild(request);
 
-    var res = triggerJob ?
+    const res: SyncResponse = triggerJob ?
       {
         "attachments": [allowInsecureExecutionForKaniko(object.spec.build ?
           buildJob(object, repo) :
@@ -42,17 +44,18 @@ export default {
     response.status(200).json(res);
   },
 
-  async customize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`dockerImages customize req (${debugId(request)})`, JSON.stringify(request.body));
+  async customize(customizeRequest: Request, response: Response, next: NextFunction) {
+    const request: CustomizeRequest = customizeRequest.body;
+    if (settings.debug()) console.log(`dockerImages customize req (${debugId(request)})`, JSON.stringify(request));
 
-    var res = {
+    const res: CustomizeResponse = {
       "relatedResources": [
         {
           "apiVersion": "jabos.io/v1",
           "resource": "git-repositories",
-          "namespace": request.body.parent.metadata.namespace,
+          "namespace": request.parent.metadata.namespace,
           "names": [
-            request.body.parent.spec.gitRepository
+            request.parent.spec.gitRepository
           ]
         }
       ]
@@ -62,10 +65,11 @@ export default {
     response.status(200).json(res);
   },
 
-  async finalize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`dockerImages finalize req (${debugId(request)})`, JSON.stringify(request.body));
+  async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
+    const request: FinalizeRequest = finalizeRequest.body;
+    if (settings.debug()) console.log(`dockerImages finalize req (${debugId(request)})`, JSON.stringify(request));
 
-    var res = {
+    const res: FinalizeResponse = {
       "annotations": {},
       "attachments": [],
       "finalized": true,
@@ -260,7 +264,7 @@ function reuseContainer(spec: any, latestCommit: string,): any {
 }
 
 function imageBuilderInitContainer(spec: any, namespace: string, name: string, uid: string, reuseImage?: string): any {
-  var [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
+  const [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
   return {
     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
     "args": [],
@@ -314,7 +318,7 @@ function imageBuilderInitContainer(spec: any, namespace: string, name: string, u
 }
 
 function allowInsecureExecutionForKaniko(job: any): any {
-  var kaniko = job.spec.template.spec.initContainers.filter(container => container.name === "kaniko")[0];
+  const kaniko = job.spec.template.spec.initContainers.filter(container => container.name === "kaniko")[0];
   kaniko.securityContext.runAsNonRoot = false;
   kaniko.securityContext.readOnlyRootFilesystem = false;
   kaniko.securityContext.allowPrivilegeEscalation = true;

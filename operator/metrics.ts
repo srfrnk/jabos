@@ -103,8 +103,8 @@ export function setMetric(metric: string, labels: any, value: number) {
 }
 
 export async function addMetricReq(request: Request, response: Response, next: NextFunction) {
-  var metric = request.params.metric;
-  var labels = request.body;
+  const metric = request.params.metric;
+  const labels = request.body;
 
   addMetric(metric, labels);
 
@@ -112,9 +112,9 @@ export async function addMetricReq(request: Request, response: Response, next: N
 }
 
 export async function setMetricReq(request: Request, response: Response, next: NextFunction) {
-  var metric = request.params.metric;
-  var value = parseFloat(typeof request.query.value === "string" ? request.query.value : "0");
-  var labels = request.body;
+  const metric = request.params.metric;
+  const value = parseFloat(typeof request.query.value === "string" ? request.query.value : "0");
+  const labels = request.body;
 
   setMetric(metric, labels, value);
 

@@ -1,27 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 
 import genericManifests from './genericManifests'
+import { CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
 import { getRepo } from './misc';
 
 export default {
-  async sync(request: Request, response: Response, next: NextFunction) {
+  async sync(syncRequest: Request, response: Response, next: NextFunction) {
+    const request: SyncRequest = syncRequest.body;
     genericManifests.debugRequest('kustomize', 'sync', request);
 
-    var repo = getRepo(request);
-    var latestCommit = repo.status.latestCommit;
-    var spec: any = request.body.object.spec;
-    var namespace = request.body.object.metadata.namespace;
+    const repo = getRepo(request);
+    const latestCommit = repo.status.latestCommit;
+    const spec: any = request.object.spec;
+    const namespace = request.object.metadata.namespace;
 
     // Have to filter, due to the following bug: https://github.com/metacontroller/metacontroller/issues/414
-    var dockerImages = Object.values(request.body.related["DockerImage.jabos.io/v1"] || {}).filter((r: any) => r.metadata.namespace === namespace);
+    const dockerImages = Object.values(request.related["DockerImage.jabos.io/v1"] || {}).filter((r: any) => r.metadata.namespace === namespace);
     if (dockerImages.length !== spec.dockerImages.length) {
       // Have to reject the sync to maintain idempotent response - due to: https://github.com/metacontroller/metacontroller/issues/414
       throw new Error(`No DockerImages from same namespace.`);
     }
 
-    var replacementPrefix = spec.replacementPrefix;
-    var replacementSuffix = spec.replacementSuffix;
-    var replacements = spec.replacements;
+    const replacementPrefix = spec.replacementPrefix;
+    const replacementSuffix = spec.replacementSuffix;
+    const replacements = spec.replacements;
 
     await genericManifests.sync('kustomize', 'kustomize', 'kustomize', {
       'COMMIT': latestCommit,
@@ -32,18 +34,20 @@ export default {
     }, request, response);
   },
 
-  async customize(request: Request, response: Response, next: NextFunction) {
+  async customize(customizeRequest: Request, response: Response, next: NextFunction) {
+    const request: CustomizeRequest = customizeRequest.body;
     genericManifests.debugRequest('kustomize', 'customize', request);
 
     await genericManifests.customize('kustomize', request, response, [{
       "apiVersion": "jabos.io/v1",
       "resource": "docker-images",
-      "namespace": request.body.parent.metadata.namespace,
-      "names": request.body.parent.spec.dockerImages
+      "namespace": request.parent.metadata.namespace,
+      "names": request.parent.spec.dockerImages
     }]);
   },
 
-  async finalize(request: Request, response: Response, next: NextFunction) {
+  async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
+    const request: FinalizeRequest = finalizeRequest.body;
     genericManifests.debugRequest('kustomize', 'finalize', request);
 
     await genericManifests.finalize('kustomize', request, response);
