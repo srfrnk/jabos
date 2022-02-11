@@ -2,7 +2,7 @@
 
 source /kubectl-setup.sh
 
-cat /manifests/manifests.tar.gz.b64 | base64 -d | tar -xzO | tee /tmp/manifests.yaml >/dev/null
+cat /manifests/manifests.tar.gz.b64 | sed 's/:/\n/g' | base64 -d | tar -xzO | tee /tmp/manifests.yaml >/dev/null
 
 set -o pipefail
 ERROR_MESSAGE=$(kc -n ${NAMESPACE} delete -f /tmp/manifests.yaml 2>&1 | tee /dev/tty)

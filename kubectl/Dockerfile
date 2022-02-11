@@ -1,6 +1,6 @@
 FROM alpine
 
-RUN apk add --update curl wget bash coreutils
+RUN apk add --update curl wget bash coreutils sed
 
 RUN \
   curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" &&\
