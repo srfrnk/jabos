@@ -14,6 +14,60 @@ env:
   NAMESPACE: jabos
 
 jobs:
+  manifests:
+    runs-on: ubuntu-latest
+    env:
+      BUILD_NUMBER: ${{github.run_number}}
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Package
+        run: |-
+          docker run --mount "type=bind,src=$PWD/manifests,dst=/src" --entrypoint sh -w /src \
+            -e 'IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
+            -e 'BUILD_NUMBER=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
+            -e 'NAMESPACE=${{env.NAMESPACE}}' \
+            -e 'IS_PRODUCTION=true' \
+          node:lts-alpine -c "npm install && npm run import && npm run compile && npm run test && npm run synth"
+
+      - uses: snyk/actions/setup@master
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.13"
+
+      - run: snyk iac test --sarif-file-output=snyk.sarif ./manifests/dist/jabos.k8s.yaml || true
+        shell: bash
+        env:
+          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
+
+      - uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: snyk.sarif
+          category: manifests
+
+      - uses: srfrnk/setup-yq@v1.0.2
+
+      - name: Generate Docs
+        run: |-
+          mkdir -p ./build/output
+          mkdir -p ./build/input
+          chmod -R 777 ./build/input
+          chmod -R 777 ./build/output
+          cp ./manifests/dist/jabos.k8s.yaml ./build/input/jabos.k8s.yaml
+          yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
+          docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
+            --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
+            ghcr.io/srfrnk/crd-api-doc-gen:latest /input /output /input/api-info.yaml
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            build/output/
+            manifests/dist/jabos.k8s.yaml
+            README.md
+
   images:
     needs: manifests
     runs-on: ubuntu-latest
@@ -166,54 +220,25 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
-  manifests:
+  release:
+    needs: images
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
     env:
       BUILD_NUMBER: ${{github.run_number}}
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Package
-        run: |-
-          docker run --mount "type=bind,src=$PWD/manifests,dst=/src" --entrypoint sh -w /src \
-            -e 'IMAGE_PREFIX=${{env.REGISTRY}}/${{env.IMAGE_PREFIX}}' \
-            -e 'BUILD_NUMBER=${{env.VERSION}}.${{env.BUILD_NUMBER}}' \
-            -e 'NAMESPACE=${{env.NAMESPACE}}' \
-            -e 'IS_PRODUCTION=true' \
-          node:lts-alpine -c "npm install && npm run import && npm run compile && npm run test && npm run synth"
-
-      - uses: snyk/actions/setup@master
-      - uses: actions/setup-go@v1
+      - name: Download docs
+        uses: actions/download-artifact@v2
         with:
-          go-version: "1.13"
+          name: docs
 
-      - run: snyk iac test --sarif-file-output=snyk.sarif ./manifests/dist/jabos.k8s.yaml || true
-        shell: bash
-        env:
-          SNYK_TOKEN: ${{secrets.SNYK_TOKEN}}
-
-      - uses: github/codeql-action/upload-sarif@v1
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
         with:
-          sarif_file: snyk.sarif
-          category: manifests
-
-      - uses: srfrnk/setup-yq@v1.0.2
-
-      - name: Generate Docs
-        run: |-
-          mkdir -p ./build/output
-          mkdir -p ./build/input
-          chmod -R 777 ./build/input
-          chmod -R 777 ./build/output
-          cp ./manifests/dist/jabos.k8s.yaml ./build/input/jabos.k8s.yaml
-          yq e '.api-info.version="${{env.VERSION}}.${{env.BUILD_NUMBER}}"' ./api-info.yaml > ./build/input/api-info.yaml
-          docker run --mount "type=bind,src=$(pwd)/build/input,dst=/input,readonly" \
-            --mount "type=bind,src=$(pwd)/build/output,dst=/output" \
-            ghcr.io/srfrnk/crd-api-doc-gen:latest /input /output /input/api-info.yaml
+          name: artifacts
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@4.1.5
-        if: github.ref == 'refs/heads/main'
         with:
           branch: gh-pages
           folder: build/output
@@ -221,7 +246,7 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
-        if: github.ref == 'refs/heads/main'
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -233,7 +258,7 @@ jobs:
       - name: Upload Manifests Asset
         id: upload-release-asset-manifests
         uses: actions/upload-release-asset@v1
-        if: github.ref == 'refs/heads/main'
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -245,7 +270,7 @@ jobs:
       - name: Upload Readme Asset
         id: upload-release-asset-readme
         uses: actions/upload-release-asset@v1
-        if: github.ref == 'refs/heads/main'
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -257,7 +282,7 @@ jobs:
       - name: Upload Api Docs Asset
         id: upload-release-asset-api-docs
         uses: actions/upload-release-asset@v1
-        if: github.ref == 'refs/heads/main'
+
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
