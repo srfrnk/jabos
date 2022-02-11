@@ -15,11 +15,17 @@ env:
 
 jobs:
   images:
+    needs: manifests
     runs-on: ubuntu-latest
     env:
       BUILD_NUMBER: ${{github.run_number}}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Compile
+        run: |-
+          docker run --mount "type=bind,src=$PWD,dst=/src" --entrypoint sh -w /src/operator \
+          node:lts-alpine -c "npm install && npm run compile"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -161,7 +167,6 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   manifests:
-    needs: images
     runs-on: ubuntu-latest
     env:
       BUILD_NUMBER: ${{github.run_number}}
