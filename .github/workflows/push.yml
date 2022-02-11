@@ -76,6 +76,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: artifacts
+
       - name: Compile
         run: |-
           docker run --mount "type=bind,src=$PWD,dst=/src" --entrypoint sh -w /src/operator \
