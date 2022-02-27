@@ -232,6 +232,8 @@ jobs:
     env:
       BUILD_NUMBER: ${{github.run_number}}
     steps:
+      - uses: actions/checkout@v2
+
       - name: Download manifest artifacts
         uses: actions/download-artifact@v2
         with:
