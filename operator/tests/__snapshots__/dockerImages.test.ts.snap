@@ -1,0 +1,2707 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`dockerImages customize 1`] = `
+Array [
+  Object {
+    "relatedResources": Array [
+      Object {
+        "apiVersion": "jabos.io/v1",
+        "names": Array [
+          "gitRepository_value",
+        ],
+        "namespace": "namespace_value",
+        "resource": "git-repositories",
+      },
+    ],
+  },
+]
+`;
+
+exports[`dockerImages finalize 1`] = `
+Array [
+  Object {
+    "annotations": Object {},
+    "attachments": Array [],
+    "finalized": true,
+  },
+]
+`;
+
+exports[`dockerImages sync no trigger 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "metadata": Object {
+          "namespace": "namespace_value",
+        },
+      },
+    ],
+  },
+]
+`;
+
+exports[`dockerImages sync trigger bad imageName 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-builder",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "BUILD_IMAGE",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///gitTemp/.",
+                    "--dockerfile=Dockerfile",
+                    "--destination=!!!/bad_imageName_value:commit_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger build 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-builder",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "BUILD_IMAGE",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///gitTemp/.",
+                    "--dockerfile=Dockerfile",
+                    "--destination=repo_host:port/imageName_value:commit_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger build with aws 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-builder",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "BUILD_IMAGE",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.aws",
+                      "name": "aws",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///gitTemp/.",
+                    "--dockerfile=Dockerfile",
+                    "--destination=repo_host:port/imageName_value:commit_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/root/.aws/",
+                      "name": "aws",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [
+                      Object {
+                        "secret": Object {
+                          "items": Array [
+                            Object {
+                              "key": "accessKeyId_value",
+                              "path": "aws_access_key_id",
+                            },
+                            Object {
+                              "key": "secretAccessKey_value",
+                              "path": "aws_secret_access_key",
+                            },
+                          ],
+                          "name": "secret_value",
+                        },
+                      },
+                    ],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "aws",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger build with insecureRegistry 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-builder",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "BUILD_IMAGE",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///gitTemp/.",
+                    "--dockerfile=Dockerfile",
+                    "--destination=repo_host:port/imageName_value:commit_value",
+                    "--insecure",
+                    "--skip-tls-verify",
+                    "--skip-tls-verify-pull",
+                    "--insecure-pull",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger reuse 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-reuser",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "repo_host:port/imageName_value:commit_value",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///reuse",
+                    "--dockerfile=Dockerfile",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "reuse",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger reuse with aws 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-reuser",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "repo_host:port/imageName_value:commit_value",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.aws",
+                      "name": "aws",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///reuse",
+                    "--dockerfile=Dockerfile",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/root/.aws/",
+                      "name": "aws",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "reuse",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [
+                      Object {
+                        "secret": Object {
+                          "items": Array [
+                            Object {
+                              "key": "accessKeyId_value",
+                              "path": "aws_access_key_id",
+                            },
+                            Object {
+                              "key": "secretAccessKey_value",
+                              "path": "aws_secret_access_key",
+                            },
+                          ],
+                          "name": "secret_value",
+                        },
+                      },
+                    ],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "aws",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`dockerImages sync trigger reuse with insecureRegistry 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "docker-image-reuser",
+          },
+          "name": "image-object_name-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "image-object_name-commit_value",
+              },
+              "name": "image-object_name-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "docker-images",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "dockerImageBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"docker_image\\":\\"object_name\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "HOST",
+                      "value": "repo_host:port",
+                    },
+                    Object {
+                      "name": "REUSE_IMAGE",
+                      "value": "repo_host:port/imageName_value:commit_value",
+                    },
+                    Object {
+                      "name": "DOCKER_CONFIG",
+                      "value": "{}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixdocker-image-builder-init:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "docker-image-builder-init",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                    },
+                    Object {
+                      "mountPath": "/secrets",
+                      "name": "kaniko-secrets",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "--context=dir:///reuse",
+                    "--dockerfile=Dockerfile",
+                    "--insecure",
+                    "--skip-tls-verify",
+                    "--skip-tls-verify-pull",
+                    "--insecure-pull",
+                    "--no-push",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "object_name",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "object_uid",
+                    },
+                  ],
+                  "image": "settings_imagePrefixkaniko:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "kaniko",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": true,
+                    "capabilities": Object {
+                      "drop": Array [],
+                    },
+                    "readOnlyRootFilesystem": false,
+                    "runAsNonRoot": false,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/reuse",
+                      "name": "reuse",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/kaniko/.docker",
+                      "name": "docker",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-git_repo_name",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "docker",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "reuse",
+                },
+                Object {
+                  "name": "kaniko-secrets",
+                  "projected": Object {
+                    "sources": Array [],
+                  },
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;

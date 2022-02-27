@@ -1,22 +1,24 @@
 import { Request, Response, NextFunction } from 'express';
 import gitRepositorySshSecretEnv from './gitRepositorySshSecretEnv';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
+import { CustomizeRequest, CustomizeResponse, FinalizeRequest, FinalizeResponse, SyncRequest, SyncResponse } from './metaControllerHooks';
 import { debugId } from './misc';
 import settings from './settings';
 
 export default {
-  async sync(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request)})`, JSON.stringify(request.body));
+  async sync(syncRequest: Request, response: Response, next: NextFunction) {
+    const request: SyncRequest = syncRequest.body;
+    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request)})`, JSON.stringify(request));
 
-    var name: string = request.body.object.metadata.name;
-    var uid: string = request.body.object.metadata.uid;
-    var namespace: string = request.body.object.metadata.namespace;
-    var repo: any = request.body.object.spec;
-    var lastCommit: string = (request.body.object.status || {}).lastCommit;
+    const name: string = request.object.metadata.name;
+    const uid: string = request.object.metadata.uid;
+    const namespace: string = request.object.metadata.namespace;
+    const repo: any = request.object.spec;
+    const lastCommit: string = (request.object.status || {}).lastCommit;
 
-    var jobName = `git-repository-updater-${name}`;
+    const jobName = `git-repository-updater-${name}`;
 
-    var attachments = [
+    const attachments = [
       {
         "apiVersion": "rbac.authorization.k8s.io/v1",
         "kind": "Role",
@@ -67,7 +69,7 @@ export default {
       }
     ];
 
-    var res: any = !repo.promotedCommit ?
+    const res: SyncResponse = !repo.promotedCommit ?
       {
         "attachments": [
           ...attachments,
@@ -197,24 +199,26 @@ export default {
     response.status(200).json(res);
   },
 
-  async customize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request)})`, JSON.stringify(request.body));
+  async customize(customizeRequest: Request, response: Response, next: NextFunction) {
+    const request: CustomizeRequest = customizeRequest.body;
+    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request)})`, JSON.stringify(request));
 
-    var res = {
-      "relatedResources": []
+    const res: CustomizeResponse = {
+      relatedResources: []
     };
 
     if (settings.debug()) console.log(`gitRepositories customize res (${debugId(request)})`, JSON.stringify(res));
     response.status(200).json(res);
   },
 
-  async finalize(request: Request, response: Response, next: NextFunction) {
-    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request)})`, JSON.stringify(request.body));
+  async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
+    const request: FinalizeRequest = finalizeRequest.body;
+    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request)})`, JSON.stringify(request));
 
-    var res = {
-      "annotations": {},
-      "attachments": [],
-      "finalized": true,
+    const res: FinalizeResponse = {
+      annotations: {},
+      attachments: [],
+      finalized: true,
     }
 
     if (settings.debug()) console.log(`gitRepositories finalize res (${debugId(request)})`, JSON.stringify(res));

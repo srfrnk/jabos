@@ -16,9 +16,9 @@ export default function (options: {
   metricLabels: {},
   labels: {}
 }): any {
-  var latestCommit = options.repo.status.latestCommit;
-  var jobName = k8sName(`${options.jobNamePrefix}-${options.object.metadata.name}`, latestCommit);
-  var repoSsh = options.repo.spec.ssh;
+  const latestCommit = options.repo.status.latestCommit;
+  const jobName = k8sName(`${options.jobNamePrefix}-${options.object.metadata.name}`, latestCommit);
+  const repoSsh = options.repo.spec.ssh;
 
   (options.containers || []).forEach(container => {
     container.imagePullPolicy = settings.imagePullPolicy();
@@ -126,7 +126,8 @@ export default function (options: {
                   "name": "OBJECT_UID",
                   "value": options.object.metadata.uid
                 },
-                ...jabosOperatorUrlEnv(), ...(!repoSsh ? [] : [
+                ...jabosOperatorUrlEnv(),
+                ...(!repoSsh ? [] : [
                   {
                     "name": "SSH_PASSPHRASE",
                     "valueFrom": {
@@ -181,7 +182,7 @@ export default function (options: {
                 }
               ]
             },
-            ...options.containers
+            ...(options.containers || [])
           ],
           "containers": [
             {

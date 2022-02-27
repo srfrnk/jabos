@@ -4,7 +4,7 @@ export default async (command: string, options?: any): Promise<{ exitCode: numbe
   return new Promise((resolve, reject) => {
     var stdout = '';
     var stderr = '';
-    var proc = child_process.exec(command, options);
+    const proc = child_process.exec(command, options);
     proc.stdout.on('data', (data) => { stdout += data; })
     proc.stderr.on('data', (data) => { stderr += data; })
     proc.on('close', (exitCode) => resolve({

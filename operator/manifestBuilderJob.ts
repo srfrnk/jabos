@@ -24,7 +24,7 @@ export default function (options: {
     ];
   });
 
-  var targetNamespace = options.object.spec.targetNamespace;
+  const targetNamespace = options.object.spec.targetNamespace;
 
   return builderJob({
     object: options.object,

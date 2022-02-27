@@ -1,0 +1,293 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`gitRepositories customize 1`] = `
+Array [
+  Object {
+    "relatedResources": Array [],
+  },
+]
+`;
+
+exports[`gitRepositories finalize 1`] = `
+Array [
+  Object {
+    "annotations": Object {},
+    "attachments": Array [],
+    "finalized": true,
+  },
+]
+`;
+
+exports[`gitRepositories sync 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "jabos.io",
+            ],
+            "resources": Array [
+              "docker-images/status",
+              "jsonnet-manifests/status",
+              "git-repositories/status",
+            ],
+            "verbs": Array [
+              "patch",
+            ],
+          },
+          Object {
+            "apiGroups": Array [
+              "events.k8s.io",
+            ],
+            "resources": Array [
+              "events",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "builder-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-name_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "v1",
+        "kind": "ServiceAccount",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "type": "git-repository-updater",
+          },
+          "name": "git-repository-updater-name_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "job": "git-repository-updater-name_value",
+              },
+              "name": "git-repository-updater-name_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "CURRENT_COMMIT",
+                      "value": "lastCommit_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixgit-repository-updater:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "git-repository-updater",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-name_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+  },
+]
+`;
+
+exports[`gitRepositories sync with promotedCommit 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "jabos.io",
+            ],
+            "resources": Array [
+              "docker-images/status",
+              "jsonnet-manifests/status",
+              "git-repositories/status",
+            ],
+            "verbs": Array [
+              "patch",
+            ],
+          },
+          Object {
+            "apiGroups": Array [
+              "events.k8s.io",
+            ],
+            "resources": Array [
+              "events",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "builder-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-name_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "v1",
+        "kind": "ServiceAccount",
+        "metadata": Object {
+          "name": "builder-name_value",
+          "namespace": "namespace_value",
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "True",
+          "type": "Syncing",
+        },
+      ],
+      "latestCommit": "promotedCommit_value",
+    },
+  },
+]
+`;

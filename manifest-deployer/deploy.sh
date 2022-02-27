@@ -2,8 +2,6 @@
 
 source /kubectl-setup.sh
 
-tar -czf - /manifests/manifests.yaml | base64 | tee /tmp/manifests.tar.gz.b64 >/dev/null
-
 set -o pipefail
 ERROR_MESSAGE=$(kc -n ${TARGET_NAMESPACE} apply -f /manifests/manifests.yaml 2>&1 | tee /dev/tty)
 
@@ -19,7 +17,7 @@ if [ $? -ne 0 ]; then
   sleep 10 # Just to allow fluentd gathering logs before termination
   exit 1
 else
-  kc annotate --overwrite -n ${NAMESPACE} ${TYPE}.jabos.io ${NAME} "deployedManifest=$(cat /tmp/manifests.tar.gz.b64)"
+  kc annotate --overwrite -n ${NAMESPACE} ${TYPE}.jabos.io ${NAME} "deployedManifest=$(tar -czf - /manifests/manifests.yaml | base64 | sed -z 's/\n/:/g')"
 
   echo "Exiting"
   sleep 10 # Just to allow fluentd gathering logs before termination
