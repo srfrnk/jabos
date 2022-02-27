@@ -126,7 +126,8 @@ export default function (options: {
                   "name": "OBJECT_UID",
                   "value": options.object.metadata.uid
                 },
-                ...jabosOperatorUrlEnv(), ...(!repoSsh ? [] : [
+                ...jabosOperatorUrlEnv(),
+                ...(!repoSsh ? [] : [
                   {
                     "name": "SSH_PASSPHRASE",
                     "valueFrom": {
@@ -181,7 +182,7 @@ export default function (options: {
                 }
               ]
             },
-            ...options.containers
+            ...(options.containers || [])
           ],
           "containers": [
             {

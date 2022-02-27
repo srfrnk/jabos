@@ -264,7 +264,7 @@ function reuseContainer(spec: any, latestCommit: string,): any {
 }
 
 function imageBuilderInitContainer(spec: any, namespace: string, name: string, uid: string, reuseImage?: string): any {
-  const [, imageRepositoryHost] = /^([a-z0-9\:\.\-]*)\/(.*)$/.exec(spec.imageName);
+  const [, imageRepositoryHost] = /^([a-z0-9\:\.\-_]*)\/(.*)$/.exec(spec.imageName) || ['', ''];
   return {
     "image": `${settings.imagePrefix()}docker-image-builder-init:${settings.buildNumber()}`,
     "args": [],

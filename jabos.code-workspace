@@ -1,16 +1,30 @@
 {
 	"folders": [
 		{
-			"path": "."
+			"name": "jabos",
+			"path": ".",
 		},
 		{
-			"path": "../jabos-examples"
+			"path": "../jabos-examples",
 		},
 		{
-			"path": "../jabos-examples-private"
+			"path": "../jabos-examples-private",
 		},
 		{
-			"path": "../jabos-examples-gitlab"
-		}
+			"path": "../jabos-examples-gitlab",
+		},
 	],
+	"settings": {
+		"jest.disabledWorkspaceFolders": [
+			"jabos-examples",
+			"jabos-examples-private",
+			"jabos-examples-gitlab",
+		],
+		"jest.rootPath": "operator",
+		"jestrunner.changeDirectoryToWorkspaceRoot": true,
+		"jest.showCoverageOnLoad": true,
+		"jest.autoRun": {
+			"watch": true,
+		}
+	}
 }

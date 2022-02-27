@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response } from 'express';
 
 import settings from './settings';
 import manifestBuilderJob from './manifestBuilderJob';
@@ -11,7 +11,9 @@ import { BaseRequest, CustomizeRequest, FinalizeRequest, SyncRequest } from './m
 
 export default {
   debugRequest(typeName: string, typeFunc: string, request: BaseRequest): void {
-    if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request));
+    if (settings.debug()) {
+      console.log(`${typeName}Manifests ${typeFunc} req (${debugId(request)})`, JSON.stringify(request))
+    }
   },
 
   async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: SyncRequest, response: Response) {
@@ -156,7 +158,7 @@ export default {
 
     const jobName = `manifest-clean-${name}`;
 
-    const jobs: any[] = Object.values(request.attachments['Job.batch/v1']).filter((job: any) => job?.metadata?.labels?.type === 'manifest-cleaner');
+    const jobs: any[] = Object.values((request.attachments || {})['Job.batch/v1'] || []).filter((job: any) => job?.metadata?.labels?.type === 'manifest-cleaner');
 
     const finalized = (spec.cleanupPolicy === "Leave") || ((jobs.length > 0) && (jobs[0].status.succeeded === 1));
 

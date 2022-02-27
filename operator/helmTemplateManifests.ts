@@ -14,7 +14,7 @@ export default {
     const latestCommit = repo.status.latestCommit;
 
     const commitValueKey = spec.commitValueKey;
-    const values = spec.values;
+    const values = spec.values || [];
     values[commitValueKey] = latestCommit;
 
     const valuesEnv = Object.entries(values).map(value => `--set-string "${value[0]}=${value[1]}"`).join(' ');

@@ -1,6 +1,10 @@
 # jabos
 
 ![build](https://github.com/srfrnk/jabos/actions/workflows/push.yml/badge.svg?branch=main)
+![Coverage Lines](https://github.com/srfrnk/jabos/releases/latest/download/badge-lines.svg)
+![Coverage Branches](https://github.com/srfrnk/jabos/releases/latest/download/badge-branches.svg)
+![Coverage Functions](https://github.com/srfrnk/jabos/releases/latest/download/badge-functions.svg)
+![Coverage Statements](https://github.com/srfrnk/jabos/releases/latest/download/badge-statements.svg)
 ![GitHub release](https://img.shields.io/github/v/release/srfrnk/jabos?label=latest%20release&style=plastic)
 ![License](https://img.shields.io/badge/License-MTA-blue.svg)
 

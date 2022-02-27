@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`debugId no value 1`] = `"undefined:undefined"`;
+
+exports[`debugId undefined 1`] = `"undefined:undefined"`;
+
+exports[`misc getRepo no spec and status 1`] = `
+Object {
+  "metadata": Object {
+    "namespace": "namespace_value",
+  },
+  "spec": Object {
+    "branch": "",
+    "ssh": null,
+    "url": "",
+  },
+  "status": Object {
+    "latestCommit": "",
+  },
+}
+`;

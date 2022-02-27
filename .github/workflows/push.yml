@@ -62,7 +62,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: artifacts
+          name: manifest_artifacts
           path: |
             build/output/
             manifests/dist/jabos.k8s.yaml
@@ -79,12 +79,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2
         with:
-          name: artifacts
-
-      - name: Compile
-        run: |-
-          docker run --mount "type=bind,src=$PWD,dst=/src" --entrypoint sh -w /src/operator \
-          node:lts-alpine -c "npm install && npm run compile"
+          name: manifest_artifacts
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
@@ -102,6 +97,11 @@ jobs:
           registry: ${{env.REGISTRY}}
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
+
+      - name: Compile
+        run: |-
+          docker run --mount "type=bind,src=$PWD,dst=/src" --entrypoint sh -w /src/operator \
+          node:lts-alpine -c "npm install && npm run compile && npm run test && npx jest-coverage-badges"
 
       - uses: snyk/actions/setup@master
       - uses: actions/setup-go@v1
@@ -225,6 +225,13 @@ jobs:
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: image_artifacts
+          path: |
+            operator/coverage
+
   release:
     needs: images
     runs-on: ubuntu-latest
@@ -237,10 +244,15 @@ jobs:
         with:
           name: docs
 
-      - name: Download artifacts
+      - name: Download manifest artifacts
         uses: actions/download-artifact@v2
         with:
-          name: artifacts
+          name: manifest_artifacts
+
+      - name: Download image artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: image_artifacts
 
       - name: Deploy Docs
         uses: JamesIves/github-pages-deploy-action@4.1.5
@@ -251,7 +263,6 @@ jobs:
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -263,7 +274,6 @@ jobs:
       - name: Upload Manifests Asset
         id: upload-release-asset-manifests
         uses: actions/upload-release-asset@v1
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -275,7 +285,6 @@ jobs:
       - name: Upload Readme Asset
         id: upload-release-asset-readme
         uses: actions/upload-release-asset@v1
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -287,7 +296,6 @@ jobs:
       - name: Upload Api Docs Asset
         id: upload-release-asset-api-docs
         uses: actions/upload-release-asset@v1
-
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -295,3 +303,47 @@ jobs:
           asset_path: ./build/output/index.html
           asset_name: api-docs.html
           asset_content_type: text/html
+
+      - name: Upload Coverage Asset
+        id: upload-release-asset-coverage-branches
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./operator/coverage/badge-branches.svg
+          asset_name: badge-branches.svg
+          asset_content_type: image/svg+xml
+
+      - name: Upload Coverage Asset
+        id: upload-release-asset-coverage-functions
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./operator/coverage/badge-functions.svg
+          asset_name: badge-functions.svg
+          asset_content_type: image/svg+xml
+
+      - name: Upload Coverage Asset
+        id: upload-release-asset-coverage-lines
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./operator/coverage/badge-lines.svg
+          asset_name: badge-lines.svg
+          asset_content_type: image/svg+xml
+
+      - name: Upload Coverage Asset
+        id: upload-release-asset-coverage-statements
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./operator/coverage/badge-statements.svg
+          asset_name: badge-statements.svg
+          asset_content_type: image/svg+xml

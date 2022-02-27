@@ -73,7 +73,7 @@ snyk-scan: FORCE manifests build_number
 	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/manifests/dist:/project snyk/snyk-cli:docker iac test /project/jabos.k8s.yaml
 
 compile:
-	cd operator && npm run compile
+	cd operator && npm run compile && npm run test
 
 build: FORCE manifests compile images
 	kubectl apply -n jabos -f ./manifests/dist/jabos.k8s.yaml

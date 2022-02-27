@@ -1,5 +1,4 @@
-import { Request } from 'express';
-import { BaseRequest, CustomizeRequest, FinalizeRequest, SyncRequest } from './metaControllerHooks';
+import { SyncRequest } from './metaControllerHooks';
 
 export function k8sName(prefix: string, commit: string): string {
   return `${prefix.substring(0, 52)}-${commit}`.substring(0, 62);
@@ -7,13 +6,15 @@ export function k8sName(prefix: string, commit: string): string {
 
 export type Repo = {
   spec: {
-    url: string, branch: string, ssh: {
+    url: string,
+    branch: string,
+    ssh?: {
       secret: string,
       passphrase: string,
       key: string
     }
   },
-  status: {
+  status?: {
     latestCommit: string,
   }
 };
@@ -49,16 +50,9 @@ export function getExistingJob(request: SyncRequest): any[] {
     });
 }
 
-export function debugId(request: BaseRequest) {
-  try {
-    var object = null;
-    if (request instanceof SyncRequest || request instanceof FinalizeRequest) { object = request.object; }
-    else if (request instanceof CustomizeRequest) { object = request.parent; }
-    return `${object.metadata?.namespace}:${object.metadata?.name}`;
-  }
-  catch {
-    return '(NO_OBJECT)';
-  }
+export function debugId(request: any) {
+  var object = request?.object || request?.parent;
+  return `${object?.metadata?.namespace}:${object?.metadata?.name}`;
 }
 
 export function needNewBuild(request: SyncRequest): boolean {

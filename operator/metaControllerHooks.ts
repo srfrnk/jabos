@@ -1,5 +1,7 @@
 export abstract class BaseRequest {
   readonly controller: any;
+  readonly object?: any;
+  readonly parent?: any;
 }
 
 export abstract class SyncRequest extends BaseRequest {

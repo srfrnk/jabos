@@ -1,4 +1,4 @@
-export default function (aws): any[] {
+export default function (aws: { secret: string, accessKeyId: string, secretAccessKey: string }): any[] {
   return !aws ? [] : [
     {
       "secret": {
