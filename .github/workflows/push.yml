@@ -239,11 +239,6 @@ jobs:
     env:
       BUILD_NUMBER: ${{github.run_number}}
     steps:
-      - name: Download docs
-        uses: actions/download-artifact@v2
-        with:
-          name: docs
-
       - name: Download manifest artifacts
         uses: actions/download-artifact@v2
         with:
