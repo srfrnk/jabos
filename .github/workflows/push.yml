@@ -101,7 +101,7 @@ jobs:
       - name: Compile
         run: |-
           docker run --mount "type=bind,src=$PWD,dst=/src" --entrypoint sh -w /src/operator \
-          node:lts-alpine -c "npm install && npm run compile && npm run test && npx jest-coverage-badges"
+          node:lts-alpine -c "npm install && npm run compile && npm run test"
 
       - uses: snyk/actions/setup@master
       - uses: actions/setup-go@v1
