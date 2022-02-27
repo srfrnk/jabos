@@ -2,16 +2,16 @@
 	"folders": [
 		{
 			"name": "jabos",
-			"path": ".",
+			"path": "."
 		},
 		{
-			"path": "../jabos-examples",
+			"path": "../jabos-examples"
 		},
 		{
-			"path": "../jabos-examples-private",
+			"path": "../jabos-examples-private"
 		},
 		{
-			"path": "../jabos-examples-gitlab",
+			"path": "../jabos-examples-gitlab"
 		},
 	],
 	"settings": {
