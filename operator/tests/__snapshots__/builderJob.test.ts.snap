@@ -402,9 +402,7 @@ Object {
               },
             ],
             "imagePullPolicy": "Always",
-            "metadata": Object {
-              "name": "container_name",
-            },
+            "name": "container_name",
             "securityContext": Object {
               "allowPrivilegeEscalation": false,
               "capabilities": Object {
@@ -649,9 +647,7 @@ Object {
               },
             ],
             "imagePullPolicy": "Always",
-            "metadata": Object {
-              "name": "container_name",
-            },
+            "name": "container_name",
             "securityContext": Object {
               "allowPrivilegeEscalation": false,
               "capabilities": Object {
@@ -917,9 +913,7 @@ Object {
               },
             ],
             "imagePullPolicy": "Always",
-            "metadata": Object {
-              "name": "container_name",
-            },
+            "name": "container_name",
             "securityContext": Object {
               "allowPrivilegeEscalation": false,
               "capabilities": Object {
