@@ -1,3 +1,4 @@
+import { App, Chart } from 'cdk8s';
 import { Request, Response, NextFunction } from 'express';
 import gitRepositorySshSecretEnv from './gitRepositorySshSecretEnv';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
@@ -8,7 +9,7 @@ import settings from './settings';
 export default {
   async sync(syncRequest: Request, response: Response, next: NextFunction) {
     const request: SyncRequest = syncRequest.body;
-    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request)})`, JSON.stringify(request));
+    if (settings.debug()) console.log(`gitRepositories sync req (${debugId(request.object)})`, JSON.stringify(request));
 
     const name: string = request.object.metadata.name;
     const uid: string = request.object.metadata.uid;
@@ -69,7 +70,7 @@ export default {
       }
     ];
 
-    const res: SyncResponse = !repo.promotedCommit ?
+    const res: SyncResponse = new SyncResponse(!repo.promotedCommit ?
       {
         "attachments": [
           ...attachments,
@@ -193,35 +194,35 @@ export default {
             },
           ]
         }
-      };
+      });
 
-    if (settings.debug()) console.log(`gitRepositories sync res (${debugId(request)})`, JSON.stringify(res));
-    response.status(200).json(res);
+    if (settings.debug()) console.log(`gitRepositories sync res (${debugId(request.object)})`, JSON.stringify(res.toJson()));
+    response.status(200).json(res.toJson());
   },
 
   async customize(customizeRequest: Request, response: Response, next: NextFunction) {
     const request: CustomizeRequest = customizeRequest.body;
-    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request)})`, JSON.stringify(request));
+    if (settings.debug()) console.log(`gitRepositories customize req (${debugId(request.parent)})`, JSON.stringify(request));
 
-    const res: CustomizeResponse = {
+    const res: CustomizeResponse = new CustomizeResponse({
       relatedResources: []
-    };
+    });
 
-    if (settings.debug()) console.log(`gitRepositories customize res (${debugId(request)})`, JSON.stringify(res));
-    response.status(200).json(res);
+    if (settings.debug()) console.log(`gitRepositories customize res (${debugId(request.parent)})`, JSON.stringify(res.toJson()));
+    response.status(200).json(res.toJson());
   },
 
   async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
     const request: FinalizeRequest = finalizeRequest.body;
-    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request)})`, JSON.stringify(request));
+    if (settings.debug()) console.log(`gitRepositories finalize req (${debugId(request.object)})`, JSON.stringify(request));
 
-    const res: FinalizeResponse = {
+    const res: FinalizeResponse = new FinalizeResponse({
       annotations: {},
-      attachments: [],
+      attachments: new Chart(new App(), 'attachments'),
       finalized: true,
-    }
+    })
 
-    if (settings.debug()) console.log(`gitRepositories finalize res (${debugId(request)})`, JSON.stringify(res));
-    response.status(200).json(res);
+    if (settings.debug()) console.log(`gitRepositories finalize res (${debugId(request.object)})`, JSON.stringify(res.toJson()));
+    response.status(200).json(res.toJson());
   }
 }

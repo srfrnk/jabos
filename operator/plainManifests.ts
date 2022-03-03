@@ -7,7 +7,7 @@ import { getRepo } from './misc';
 export default {
   async sync(syncRequest: Request, response: Response, next: NextFunction) {
     const request: SyncRequest = syncRequest.body;
-    genericManifests.debugRequest('plain', 'sync', request);
+    genericManifests.debugRequest('plain', 'sync', request.object, request);
 
     const repo = getRepo(request);
     const spec: any = request.object.spec;
@@ -28,14 +28,14 @@ export default {
 
   async customize(customizeRequest: Request, response: Response, next: NextFunction) {
     const request: CustomizeRequest = customizeRequest.body;
-    genericManifests.debugRequest('plain', 'customize', request);
+    genericManifests.debugRequest('plain', 'customize', request.parent, request);
 
     await genericManifests.customize('plain', request, response);
   },
 
   async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
     const request: FinalizeRequest = finalizeRequest.body;
-    genericManifests.debugRequest('plain', 'finalize', request);
+    genericManifests.debugRequest('plain', 'finalize', request.object, request);
 
     await genericManifests.finalize('plain', request, response);
   }
