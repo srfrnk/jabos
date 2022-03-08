@@ -337,3 +337,300 @@ Object {
   },
 }
 `;
+
+exports[`manifestBuilderJob no containers 1`] = `
+Object {
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": Object {
+    "labels": Object {
+      "manifest-builder-type": "type_value",
+      "type": "manifest-builder",
+    },
+    "name": "manifest-name_value-latestCommit_value",
+  },
+  "spec": Object {
+    "activeDeadlineSeconds": 1234,
+    "backoffLimit": 1234,
+    "completionMode": "NonIndexed",
+    "completions": 1,
+    "parallelism": 1,
+    "template": Object {
+      "metadata": Object {
+        "labels": Object {
+          "builder": "manifest-name_value-latestCommit_value",
+        },
+        "name": "manifest-name_value-latestCommit_value",
+      },
+      "spec": Object {
+        "containers": Array [
+          Object {
+            "args": Array [],
+            "env": Array [
+              Object {
+                "name": "TYPE",
+                "value": "type_value",
+              },
+              Object {
+                "name": "NAME",
+                "value": "name_value",
+              },
+              Object {
+                "name": "COMMIT",
+                "value": "latestCommit_value",
+              },
+              Object {
+                "name": "METRIC_NAME",
+                "value": "metricName_value",
+              },
+              Object {
+                "name": "METRIC_LABELS",
+                "value": "{}",
+              },
+              Object {
+                "name": "NAMESPACE",
+                "value": "namespace_value",
+              },
+              Object {
+                "name": "OBJECT_UID",
+                "value": "uid_value",
+              },
+              Object {
+                "name": "JABOS_OPERATOR_URL",
+                "value": "http://operator.settings_namespace:1234/",
+              },
+            ],
+            "image": "settings_imagePrefixpost-builder:settings_build_number",
+            "imagePullPolicy": "Always",
+            "name": "post-builder",
+            "resources": Object {
+              "limits": Object {
+                "cpu": "500m",
+                "memory": "500Mi",
+              },
+              "requests": Object {
+                "cpu": "100m",
+                "memory": "100Mi",
+              },
+            },
+            "securityContext": Object {
+              "allowPrivilegeEscalation": false,
+              "capabilities": Object {
+                "drop": Array [
+                  "ALL",
+                ],
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsNonRoot": true,
+            },
+            "volumeMounts": Array [
+              Object {
+                "mountPath": "/timer",
+                "name": "timer",
+                "readOnly": true,
+              },
+              Object {
+                "mountPath": "/tmp",
+                "name": "temp",
+              },
+            ],
+          },
+        ],
+        "initContainers": Array [
+          Object {
+            "args": Array [],
+            "env": Array [
+              Object {
+                "name": "URL",
+                "value": "repo_url",
+              },
+              Object {
+                "name": "BRANCH",
+                "value": "repo_branch",
+              },
+              Object {
+                "name": "COMMIT",
+                "value": "latestCommit_value",
+              },
+              Object {
+                "name": "METRIC_NAME",
+                "value": "metricName_value",
+              },
+              Object {
+                "name": "METRIC_LABELS",
+                "value": "{}",
+              },
+              Object {
+                "name": "NAMESPACE",
+                "value": "namespace_value",
+              },
+              Object {
+                "name": "NAME",
+                "value": "name_value",
+              },
+              Object {
+                "name": "OBJECT_UID",
+                "value": "uid_value",
+              },
+              Object {
+                "name": "JABOS_OPERATOR_URL",
+                "value": "http://operator.settings_namespace:1234/",
+              },
+            ],
+            "image": "settings_imagePrefixpre-builder:settings_build_number",
+            "imagePullPolicy": "Always",
+            "name": "pre-builder",
+            "resources": Object {
+              "limits": Object {
+                "cpu": "500m",
+                "memory": "500Mi",
+              },
+              "requests": Object {
+                "cpu": "100m",
+                "memory": "100Mi",
+              },
+            },
+            "securityContext": Object {
+              "allowPrivilegeEscalation": false,
+              "capabilities": Object {
+                "drop": Array [
+                  "ALL",
+                ],
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsNonRoot": true,
+            },
+            "volumeMounts": Array [
+              Object {
+                "mountPath": "/gitTemp",
+                "name": "git-temp",
+              },
+              Object {
+                "mountPath": "/tmp",
+                "name": "temp",
+              },
+              Object {
+                "mountPath": "/timer",
+                "name": "timer",
+              },
+            ],
+          },
+          Object {
+            "args": Array [
+              "targetNamespace_value",
+              "type_value",
+              "name_value",
+            ],
+            "env": Array [
+              Object {
+                "name": "NAMESPACE",
+                "value": "namespace_value",
+              },
+              Object {
+                "name": "TARGET_NAMESPACE",
+                "value": "targetNamespace_value",
+              },
+              Object {
+                "name": "TYPE",
+                "value": "type_value",
+              },
+              Object {
+                "name": "NAME",
+                "value": "name_value",
+              },
+              Object {
+                "name": "KIND",
+                "value": "kind_value",
+              },
+              Object {
+                "name": "CONTROLLER",
+                "value": "controller_name",
+              },
+              Object {
+                "name": "NAMESPACE",
+                "value": "namespace_value",
+              },
+              Object {
+                "name": "NAME",
+                "value": "name_value",
+              },
+              Object {
+                "name": "OBJECT_UID",
+                "value": "uid_value",
+              },
+            ],
+            "image": "imagePrefix_valuemanifest-deployer:buildNumber_value",
+            "imagePullPolicy": "Always",
+            "name": "manifest-deployer",
+            "resources": Object {
+              "limits": Object {
+                "cpu": "500m",
+                "memory": "500Mi",
+              },
+              "requests": Object {
+                "cpu": "100m",
+                "memory": "100Mi",
+              },
+            },
+            "securityContext": Object {
+              "allowPrivilegeEscalation": false,
+              "capabilities": Object {
+                "drop": Array [
+                  "ALL",
+                ],
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsNonRoot": true,
+            },
+            "stdin": true,
+            "tty": true,
+            "volumeMounts": Array [
+              Object {
+                "mountPath": "/manifests",
+                "name": "manifests",
+                "readOnly": true,
+              },
+              Object {
+                "mountPath": "/tmp",
+                "name": "temp",
+              },
+              Object {
+                "mountPath": "/build",
+                "name": "build",
+              },
+            ],
+          },
+        ],
+        "restartPolicy": "Never",
+        "securityContext": Object {
+          "runAsNonRoot": true,
+        },
+        "serviceAccountName": "builder-gitRepository_value",
+        "volumes": Array [
+          Object {
+            "emptyDir": Object {},
+            "name": "manifests",
+          },
+          Object {
+            "emptyDir": Object {},
+            "name": "git-temp",
+          },
+          Object {
+            "emptyDir": Object {},
+            "name": "temp",
+          },
+          Object {
+            "emptyDir": Object {},
+            "name": "build",
+          },
+          Object {
+            "emptyDir": Object {},
+            "name": "timer",
+          },
+        ],
+      },
+    },
+    "ttlSecondsAfterFinished": 1234,
+  },
+}
+`;

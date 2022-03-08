@@ -16,7 +16,21 @@ afterEach(() => {
 test('debugRequest debug', () => {
   (settings.debug as jest.Mock).mockReturnValue(true);
   const consoleWarnMock = jest.spyOn(console, 'log').mockImplementation();
-  genericManifests.debugRequest('typeName', 'typeName', { controller: {}, object: { metadata: { namespace: 'namespace_value', name: 'name_value' } }, });
+  genericManifests.debugRequest('typeName', 'typeFunc', {
+    apiVersion: 'apiVersion_value',
+    kind: 'kind_version',
+    metadata: {
+      namespace: 'namespace_value',
+      name: 'name_value'
+    }
+  },
+    {
+      controller: {
+        apiVersion: 'apiVersion_value',
+        kind: 'kind_version',
+      },
+    }
+  );
   expect((console.log as any).mock.calls[0]).toMatchSnapshot();
   consoleWarnMock.mockRestore();
 });
@@ -24,7 +38,21 @@ test('debugRequest debug', () => {
 test('debugRequest not debug', () => {
   (settings.debug as jest.Mock).mockReturnValue(false);
   const consoleWarnMock = jest.spyOn(console, 'log').mockImplementation();
-  genericManifests.debugRequest('typeName', 'typeName', { controller: {}, object: { metadata: { namespace: 'namespace_value', name: 'name_value' } }, });
+  genericManifests.debugRequest('typeName', 'typeFunc',
+    {
+      apiVersion: 'apiVersion_value',
+      kind: 'kind_version',
+      metadata: {
+        namespace: 'namespace_value',
+        name: 'name_value'
+      }
+    },
+    {
+      controller: {
+        apiVersion: 'apiVersion_value',
+        kind: 'kind_version',
+      },
+    });
   expect((console.log as any).mock.calls[0]).toMatchSnapshot();
   consoleWarnMock.mockRestore();
 });
@@ -120,7 +148,7 @@ test('genericManifests sync existing job no trigger', async () => {
     attachments: {
       'Job.batch/v1': [
         {
-          metadata: {}
+          metadata: { name: 'job_name' }
         }
       ]
     }

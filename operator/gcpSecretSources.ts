@@ -1,4 +1,6 @@
-export default function (gcp): any[] {
+import { VolumeProjection } from './imports/k8s';
+
+export default function (gcp: { secret: string, serviceAccountKey?: string }): VolumeProjection[] {
   return !gcp ? [] : [
     {
       "secret": {

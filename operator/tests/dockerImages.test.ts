@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import mockResponse from './mockResponse';
-import dockerImages from '../dockerImages';
+import dockerImages, { INTERNAL_allowInsecureExecutionForKaniko } from '../dockerImages';
 import { clearMock, setMock } from './settingsMock';
 
 beforeEach(() => {
@@ -43,7 +43,7 @@ test('dockerImages sync no trigger', async () => {
       attachments: {
         'Job.batch/v1': [
           {
-            metadata: { namespace: 'namespace_value' }
+            metadata: { namespace: 'namespace_value', name: 'job_name' }
           }
         ]
       }
@@ -452,4 +452,21 @@ test('dockerImages sync trigger bad imageName', async () => {
   await dockerImages.sync(req, res as unknown as Response, () => { /* NOOP */ });
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
+});
+
+test('allowInsecureExecutionForKaniko no value', () => {
+  expect(INTERNAL_allowInsecureExecutionForKaniko(undefined)).toMatchSnapshot();
+});
+
+test('allowInsecureExecutionForKaniko undefined container', () => {
+  expect(INTERNAL_allowInsecureExecutionForKaniko({
+    spec: {
+      template: {
+        spec: {
+          containers: [],
+          initContainers: [undefined]
+        }
+      }
+    }
+  })).toMatchSnapshot();
 });

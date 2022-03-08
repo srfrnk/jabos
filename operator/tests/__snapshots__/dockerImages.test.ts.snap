@@ -1,5 +1,53 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`allowInsecureExecutionForKaniko no value 1`] = `
+Object {
+  "spec": Object {
+    "template": Object {
+      "spec": Object {
+        "initContainers": Array [
+          Object {
+            "securityContext": Object {
+              "allowPrivilegeEscalation": true,
+              "capabilities": Object {
+                "drop": Array [],
+              },
+              "readOnlyRootFilesystem": false,
+              "runAsNonRoot": false,
+            },
+          },
+        ],
+      },
+    },
+  },
+}
+`;
+
+exports[`allowInsecureExecutionForKaniko undefined container 1`] = `
+Object {
+  "spec": Object {
+    "template": Object {
+      "spec": Object {
+        "containers": Array [],
+        "initContainers": Array [
+          undefined,
+          Object {
+            "securityContext": Object {
+              "allowPrivilegeEscalation": true,
+              "capabilities": Object {
+                "drop": Array [],
+              },
+              "readOnlyRootFilesystem": false,
+              "runAsNonRoot": false,
+            },
+          },
+        ],
+      },
+    },
+  },
+}
+`;
+
 exports[`dockerImages customize 1`] = `
 Array [
   Object {
@@ -32,7 +80,10 @@ Array [
   Object {
     "attachments": Array [
       Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
         "metadata": Object {
+          "name": "job_name",
           "namespace": "namespace_value",
         },
       },

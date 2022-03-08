@@ -1,4 +1,6 @@
-export default function (aws: { secret: string, accessKeyId: string, secretAccessKey: string }): any[] {
+import { VolumeProjection } from './imports/k8s';
+
+export default function (aws: { secret: string, accessKeyId?: string, secretAccessKey?: string }): VolumeProjection[] {
   return !aws ? [] : [
     {
       "secret": {
