@@ -8,6 +8,6 @@ COPY . /app
 
 USER 1000
 
-RUN npx tsc --noEmit
+RUN npm run compile && npm run test
 
 ENTRYPOINT ["./start.sh"]
