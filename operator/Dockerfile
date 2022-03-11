@@ -6,8 +6,8 @@ RUN npm install
 
 COPY . /app
 
-USER 1000
-
 RUN npm run compile && npm run test
+
+USER 1000
 
 ENTRYPOINT ["./start.sh"]

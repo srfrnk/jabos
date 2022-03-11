@@ -2,3 +2,4 @@ node_modules
 *.js
 imports
 coverage
+jabos.k8s.yaml

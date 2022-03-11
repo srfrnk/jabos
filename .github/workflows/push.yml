@@ -81,6 +81,11 @@ jobs:
         with:
           name: manifest_artifacts
 
+      - name: Copy manifests artifact
+        run: |-
+          mkdir -p ./operator/imports
+          cp ./manifests/dist/jabos.k8s.yaml ./operator/imports
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       - name: Cache Docker layers

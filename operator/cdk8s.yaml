@@ -2,4 +2,4 @@ language: typescript
 app: ts-node index.ts
 imports:
   - k8s
-  - ../manifests/dist/jabos.k8s.yaml
+  - ./imports/jabos.k8s.yaml
