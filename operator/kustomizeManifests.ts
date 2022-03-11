@@ -7,7 +7,7 @@ import { getRepo } from './misc';
 export default {
   async sync(syncRequest: Request, response: Response, next: NextFunction) {
     const request: SyncRequest = syncRequest.body;
-    genericManifests.debugRequest('kustomize', 'sync', request);
+    genericManifests.debugRequest('kustomize', 'sync', request.object, request);
 
     const repo = getRepo(request);
     const latestCommit = repo.status.latestCommit;
@@ -36,19 +36,19 @@ export default {
 
   async customize(customizeRequest: Request, response: Response, next: NextFunction) {
     const request: CustomizeRequest = customizeRequest.body;
-    genericManifests.debugRequest('kustomize', 'customize', request);
+    genericManifests.debugRequest('kustomize', 'customize', request.parent, request);
 
     await genericManifests.customize('kustomize', request, response, [{
-      "apiVersion": "jabos.io/v1",
-      "resource": "docker-images",
-      "namespace": request.parent.metadata.namespace,
-      "names": request.parent.spec.dockerImages
+      apiVersion: "jabos.io/v1",
+      resource: "docker-images",
+      namespace: request.parent.metadata.namespace,
+      names: request.parent.spec.dockerImages
     }]);
   },
 
   async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
     const request: FinalizeRequest = finalizeRequest.body;
-    genericManifests.debugRequest('kustomize', 'finalize', request);
+    genericManifests.debugRequest('kustomize', 'finalize', request.object, request);
 
     await genericManifests.finalize('kustomize', request, response);
   }

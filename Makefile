@@ -46,6 +46,8 @@ build_number: FORCE
 	$(eval BUILD_NUMBER=$(shell od -An -N10 -i /dev/urandom | tr -d ' -' ))
 
 images: FORCE build_number
+	- mkdir -p ./operator/imports
+	cp ./manifests/dist/jabos.k8s.yaml ./operator/imports
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kubectl -t kubectl:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./operator -t operator:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./docker-image-builder-init -t docker-image-builder-init:${BUILD_NUMBER}
@@ -73,6 +75,8 @@ snyk-scan: FORCE manifests build_number
 	docker run -it -e SNYK_TOKEN=${SNYK_TOKEN} -v $$PWD/manifests/dist:/project snyk/snyk-cli:docker iac test /project/jabos.k8s.yaml
 
 compile:
+	- mkdir -p ./operator/imports
+	cp ./manifests/dist/jabos.k8s.yaml ./operator/imports
 	cd operator && npm run compile && npm run test
 
 build: FORCE manifests compile images

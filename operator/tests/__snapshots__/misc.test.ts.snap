@@ -6,6 +6,8 @@ exports[`debugId undefined 1`] = `"undefined:undefined"`;
 
 exports[`misc getRepo no spec and status 1`] = `
 Object {
+  "apiVersion": "apiVersion_value",
+  "kind": "kind_version",
   "metadata": Object {
     "namespace": "namespace_value",
   },

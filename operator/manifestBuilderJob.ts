@@ -1,27 +1,32 @@
+import { ApiObjectProps } from 'cdk8s';
 import builderJob from './builderJob';
-import { Repo } from './misc';
+import { Container, KubeJobProps, Quantity } from './imports/k8s';
+import { GitRepositoryPropsEx } from './misc';
 import settings from './settings';
 
 export default function (options: {
-  object: any,
-  repo: Repo,
+  object: ApiObjectProps,
+  repo: GitRepositoryPropsEx,
   imagePrefix: string,
   buildNumber: string,
   type: string,
-  containers: any[],
+  containers: Container[],
   metricName: string,
-  metricLabels: {},
+  metricLabels: { [key: string]: string; },
   kind: string,
   controller: string
-}) {
-  options.containers.forEach(container => {
-    container.volumeMounts = [
-      ...(container.volumeMounts || []),
-      {
-        "name": "manifests",
-        "mountPath": "/manifests",
-      }
-    ];
+}): KubeJobProps {
+  const containers = (options.containers || []).map(container => {
+    return {
+      ...container,
+      volumeMounts: [
+        ...(container.volumeMounts || []),
+        {
+          name: "manifests",
+          mountPath: "/manifests",
+        }
+      ]
+    };
   });
 
   const targetNamespace = options.object.spec.targetNamespace;
@@ -38,62 +43,62 @@ export default function (options: {
     metricLabels: options.metricLabels,
     labels: { type: "manifest-builder", "manifest-builder-type": options.type },
     containers: [
-      ...options.containers,
+      ...containers,
       {
-        "image": `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
-        "args": [targetNamespace, options.type, options.object.metadata.name],
-        "stdin": true,
-        "tty": true,
-        "env": [
+        image: `${options.imagePrefix}manifest-deployer:${options.buildNumber}`,
+        args: [targetNamespace, options.type, options.object.metadata.name],
+        stdin: true,
+        tty: true,
+        env: [
           {
-            "name": "NAMESPACE",
-            "value": options.object.metadata.namespace
+            name: "NAMESPACE",
+            value: options.object.metadata.namespace
           },
           {
-            "name": "TARGET_NAMESPACE",
-            "value": targetNamespace
+            name: "TARGET_NAMESPACE",
+            value: targetNamespace
           },
           {
-            "name": "TYPE",
-            "value": options.type
+            name: "TYPE",
+            value: options.type
           },
           {
-            "name": "NAME",
-            "value": options.object.metadata.name
+            name: "NAME",
+            value: options.object.metadata.name
           },
           {
-            "name": "KIND",
-            "value": options.kind
+            name: "KIND",
+            value: options.kind
           },
           {
-            "name": "CONTROLLER",
-            "value": options.controller
+            name: "CONTROLLER",
+            value: options.controller
           },
         ],
-        "name": "manifest-deployer",
-        "volumeMounts": [
+        name: "manifest-deployer",
+        volumeMounts: [
           {
-            "name": "manifests",
-            "mountPath": "/manifests",
-            "readOnly": true
+            name: "manifests",
+            mountPath: "/manifests",
+            readOnly: true
           }
         ],
-        "resources": {
-          "limits": {
-            "cpu": "500m",
-            "memory": "500Mi"
+        resources: {
+          limits: {
+            cpu: Quantity.fromString("500m"),
+            memory: Quantity.fromString("500Mi")
           },
-          "requests": {
-            "cpu": "100m",
-            "memory": "100Mi"
+          requests: {
+            cpu: Quantity.fromString("100m"),
+            memory: Quantity.fromString("100Mi")
           }
         },
       }
     ],
-    "volumes": [
+    volumes: [
       {
-        "name": "manifests",
-        "emptyDir": {}
+        name: "manifests",
+        emptyDir: {}
       }
     ]
   });

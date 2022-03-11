@@ -57,7 +57,7 @@ test('gitRepositories sync with promotedCommit', async () => {
 });
 
 test('gitRepositories customize', async () => {
-  const req = {} as unknown as Request;
+  const req = { body: {} } as unknown as Request;
   const res = mockResponse();
   await gitRepositories.customize(req, res as unknown as Response, () => { /* NOOP */ });
   expect(res.json.mock.calls[0]).toMatchSnapshot();
@@ -65,7 +65,7 @@ test('gitRepositories customize', async () => {
 });
 
 test('gitRepositories finalize', async () => {
-  const req = {} as unknown as Request;
+  const req = { body: {} } as unknown as Request;
   const res = mockResponse();
   await gitRepositories.finalize(req, res as unknown as Response, () => { /* NOOP */ });
   expect(res.json.mock.calls[0]).toMatchSnapshot();

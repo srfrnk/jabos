@@ -1,4 +1,6 @@
+import { App, Chart } from 'cdk8s';
 import builderJob from '../builderJob';
+import { KubeJob } from '../imports/k8s';
 import { clearMock, setMock } from './settingsMock';
 
 beforeEach(() => {
@@ -11,7 +13,11 @@ afterEach(() => {
 
 test('awsSecretSources with options', () => {
   const options = {
-    object: { metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' } },
+    object: {
+      apiVersion: 'apiVersion_value',
+      kind: 'kind_version',
+      metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' }
+    },
     jobNamePrefix: 'jobNamePrefix_value',
     imagePrefix: 'imagePrefix_value-',
     buildNumber: 'buildNumber_value',
@@ -24,12 +30,17 @@ test('awsSecretSources with options', () => {
     metricLabels: { 'metricLabelName': 'metricLabelValue' },
     labels: { 'label_name': 'label_value' }
   }
-  expect(builderJob(options)).toMatchSnapshot();
+  const chart = new Chart(new App(), 'chart');
+  expect(new KubeJob(chart, 'job', builderJob(options)).toJson()).toMatchSnapshot();
 });
 
 test('awsSecretSources with ssh', () => {
   const options = {
-    object: { metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' } },
+    object: {
+      apiVersion: 'apiVersion_value',
+      kind: 'kind_version',
+      metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' }
+    },
     jobNamePrefix: 'jobNamePrefix_value',
     imagePrefix: 'imagePrefix_value',
     buildNumber: 'buildNumber_value',
@@ -42,12 +53,17 @@ test('awsSecretSources with ssh', () => {
     metricLabels: { 'metricLabelName': 'metricLabelValue' },
     labels: { 'label_name': 'label_value' }
   }
-  expect(builderJob(options)).toMatchSnapshot();
+  const chart = new Chart(new App(), 'chart');
+  expect(new KubeJob(chart, 'job', builderJob(options)).toJson()).toMatchSnapshot();
 });
 
 test('awsSecretSources with no containers', () => {
   const options = {
-    object: { metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' } },
+    object: {
+      apiVersion: 'apiVersion_value',
+      kind: 'kind_version',
+      metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' }
+    },
     jobNamePrefix: 'jobNamePrefix_value',
     imagePrefix: 'imagePrefix_value',
     buildNumber: 'buildNumber_value',
@@ -60,12 +76,18 @@ test('awsSecretSources with no containers', () => {
     metricLabels: { 'metricLabelName': 'metricLabelValue' },
     labels: { 'label_name': 'label_value' }
   }
-  expect(builderJob(options)).toMatchSnapshot();
+  const chart = new Chart(new App(), 'chart');
+
+  expect(new KubeJob(chart, 'job', builderJob(options)).toJson()).toMatchSnapshot();
 });
 
 test('awsSecretSources with no volumes', () => {
   const options = {
-    object: { metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' } },
+    object: {
+      apiVersion: 'apiVersion_value',
+      kind: 'kind_version',
+      metadata: { namespace: 'object_namespace', name: 'object_name', uid: 'object_uid' }
+    },
     jobNamePrefix: 'jobNamePrefix_value',
     imagePrefix: 'imagePrefix_value',
     buildNumber: 'buildNumber_value',
@@ -78,6 +100,7 @@ test('awsSecretSources with no volumes', () => {
     metricLabels: { 'metricLabelName': 'metricLabelValue' },
     labels: { 'label_name': 'label_value' }
   }
-  expect(builderJob(options)).toMatchSnapshot();
+  const chart = new Chart(new App(), 'chart');
+  expect(new KubeJob(chart, 'job', builderJob(options)).toJson()).toMatchSnapshot();
 });
 

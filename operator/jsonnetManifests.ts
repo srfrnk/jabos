@@ -7,7 +7,7 @@ import { getRepo } from './misc';
 export default {
   async sync(syncRequest: Request, response: Response, next: NextFunction) {
     const request: SyncRequest = syncRequest.body;
-    genericManifests.debugRequest('jsonnet', 'sync', request);
+    genericManifests.debugRequest('jsonnet', 'sync', request.object,request);
 
     const repo = getRepo(request);
     const spec: any = request.object.spec;
@@ -23,14 +23,14 @@ export default {
 
   async customize(customizeRequest: Request, response: Response, next: NextFunction) {
     const request: CustomizeRequest = customizeRequest.body;
-    genericManifests.debugRequest('jsonnet', 'customize', request);
+    genericManifests.debugRequest('jsonnet', 'customize', request.parent,request);
 
     await genericManifests.customize('jsonnet', request, response);
   },
 
   async finalize(finalizeRequest: Request, response: Response, next: NextFunction) {
     const request: FinalizeRequest = finalizeRequest.body;
-    genericManifests.debugRequest('jsonnet', 'finalize', request);
+    genericManifests.debugRequest('jsonnet', 'finalize', request.object,request);
 
     await genericManifests.finalize('jsonnet', request, response);
   }
