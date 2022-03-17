@@ -153,6 +153,8 @@ function(latestCommitId) {
 1. Create secret with these credentials. (i.e. `kubectl create secret generic -n example-env aws --from-file=aws_access_key_id=./build/aws_access_key_id --from-file=aws_secret_access_key=./build/aws_secret_access_key`)
 1. Add a `aws` property to any applicable `DockerImage` object to point to the secret.
 
+**Note**:  You can use instance roles instead when pushing to ECR from a EC2 instance or from EKS, by [configuring the instance role permissions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html).
+
 #### Metrics
 
 All metrics are exported into `Prometheus` using the `ServiceMonitor` API by `kube-prometheus-stack`.
