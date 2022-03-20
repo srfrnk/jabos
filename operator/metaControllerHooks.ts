@@ -44,6 +44,7 @@ export class SyncResponse {
   constructor(protected props: SyncResponseProps) { }
 
   toJson(): any {
+    (String.prototype as any).toISOString = function () { return this; };
     return {
       ...(!!this.props?.labels && { labels: this.props.labels }),
       ...(!!this.props?.annotations && { annotations: this.props.annotations }),

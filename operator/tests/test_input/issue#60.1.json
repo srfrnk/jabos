@@ -1,0 +1,1131 @@
+{
+    "controller": {
+        "kind": "DecoratorController",
+        "apiVersion": "metacontroller.k8s.io/v1alpha1",
+        "metadata": {
+            "name": "docker-images-controller",
+            "uid": "b4771f54-af86-4a04-a62a-c0262fc9df69",
+            "resourceVersion": "2081",
+            "generation": 1,
+            "creationTimestamp": "2022-03-18T14:39:11Z",
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"metacontroller.k8s.io/v1alpha1\",\"kind\":\"DecoratorController\",\"metadata\":{\"annotations\":{},\"name\":\"docker-images-controller\"},\"spec\":{\"attachments\":[{\"apiVersion\":\"batch/v1\",\"resource\":\"jobs\",\"updateStrategy\":{\"method\":\"InPlace\"}}],\"hooks\":{\"customize\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/docker-images-customize\"}},\"finalize\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/docker-images-finalize\"}},\"sync\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/docker-images-sync\"}}},\"resources\":[{\"apiVersion\":\"jabos.io/v1\",\"resource\":\"docker-images\"}],\"resyncPeriodSeconds\":30}}\n"
+            },
+            "managedFields": [
+                {
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "apiVersion": "metacontroller.k8s.io/v1alpha1",
+                    "time": "2022-03-18T14:39:11Z",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            ".": {},
+                            "f:attachments": {},
+                            "f:hooks": {
+                                ".": {},
+                                "f:customize": {
+                                    ".": {},
+                                    "f:webhook": {
+                                        ".": {},
+                                        "f:timeout": {},
+                                        "f:url": {}
+                                    }
+                                },
+                                "f:finalize": {
+                                    ".": {},
+                                    "f:webhook": {
+                                        ".": {},
+                                        "f:timeout": {},
+                                        "f:url": {}
+                                    }
+                                },
+                                "f:sync": {
+                                    ".": {},
+                                    "f:webhook": {
+                                        ".": {},
+                                        "f:timeout": {},
+                                        "f:url": {}
+                                    }
+                                }
+                            },
+                            "f:resources": {},
+                            "f:resyncPeriodSeconds": {}
+                        }
+                    }
+                }
+            ]
+        },
+        "spec": {
+            "resources": [
+                {
+                    "apiVersion": "jabos.io/v1",
+                    "resource": "docker-images"
+                }
+            ],
+            "attachments": [
+                {
+                    "apiVersion": "batch/v1",
+                    "resource": "jobs",
+                    "updateStrategy": {
+                        "method": "InPlace"
+                    }
+                }
+            ],
+            "hooks": {
+                "customize": {
+                    "webhook": {
+                        "url": "http://operator.jabos:3000/docker-images-customize",
+                        "timeout": "10s"
+                    }
+                },
+                "sync": {
+                    "webhook": {
+                        "url": "http://operator.jabos:3000/docker-images-sync",
+                        "timeout": "10s"
+                    }
+                },
+                "finalize": {
+                    "webhook": {
+                        "url": "http://operator.jabos:3000/docker-images-finalize",
+                        "timeout": "10s"
+                    }
+                }
+            },
+            "resyncPeriodSeconds": 30
+        },
+        "status": {}
+    },
+    "object": {
+        "apiVersion": "jabos.io/v1",
+        "kind": "DockerImage",
+        "metadata": {
+            "annotations": {
+                "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"DockerImage\",\"metadata\":{\"annotations\":{},\"name\":\"failed-first-image\",\"namespace\":\"example-env\"},\"spec\":{\"contextPath\":\"simple-runtime/images-failed\",\"gitRepository\":\"first-repo\",\"imageName\":\"registry.kube-system:80/example-image-failed\"}}\n"
+            },
+            "creationTimestamp": "2022-03-18T14:48:52Z",
+            "finalizers": [
+                "metacontroller.io/decoratorcontroller-docker-images-controller"
+            ],
+            "generation": 1,
+            "managedFields": [
+                {
+                    "apiVersion": "jabos.io/v1",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:annotations": {
+                                ".": {},
+                                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                            }
+                        },
+                        "f:spec": {
+                            ".": {},
+                            "f:build": {},
+                            "f:contextPath": {},
+                            "f:dockerConfig": {},
+                            "f:dockerFile": {},
+                            "f:gitRepository": {},
+                            "f:imageName": {},
+                            "f:insecureRegistry": {}
+                        }
+                    },
+                    "manager": "kubectl-client-side-apply",
+                    "operation": "Update",
+                    "time": "2022-03-18T14:48:52Z"
+                },
+                {
+                    "apiVersion": "jabos.io/v1",
+                    "fieldsType": "FieldsV1",
+                    "fieldsV1": {
+                        "f:metadata": {
+                            "f:finalizers": {
+                                ".": {},
+                                "v:\"metacontroller.io/decoratorcontroller-docker-images-controller\"": {}
+                            }
+                        }
+                    },
+                    "manager": "metacontroller",
+                    "operation": "Update",
+                    "time": "2022-03-18T14:49:24Z"
+                }
+            ],
+            "name": "failed-first-image",
+            "namespace": "example-env",
+            "resourceVersion": "3334",
+            "uid": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+        },
+        "spec": {
+            "build": true,
+            "contextPath": "simple-runtime/images-failed",
+            "dockerConfig": {},
+            "dockerFile": "Dockerfile",
+            "gitRepository": "first-repo",
+            "imageName": "registry.kube-system:80/example-image-failed",
+            "insecureRegistry": true
+        },
+        "status": {
+            "conditions": [
+                {
+                    "status": "False",
+                    "type": "Synced"
+                }
+            ]
+        }
+    },
+    "attachments": {
+        "Job.batch/v1": {
+            "image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c": {
+                "apiVersion": "batch/v1",
+                "kind": "Job",
+                "metadata": {
+                    "annotations": {
+                        "batch.kubernetes.io/job-tracking": "",
+                        "metacontroller.k8s.io/decorator-controller": "docker-images-controller",
+                        "metacontroller.k8s.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{\"metacontroller.k8s.io/decorator-controller\":\"docker-images-controller\"},\"labels\":{\"type\":\"docker-image-builder\"},\"name\":\"image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c\"},\"spec\":{\"activeDeadlineSeconds\":3600,\"backoffLimit\":5,\"completionMode\":\"NonIndexed\",\"completions\":1,\"parallelism\":1,\"template\":{\"metadata\":{\"labels\":{\"builder\":\"image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c\"},\"name\":\"image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c\"},\"spec\":{\"containers\":[{\"args\":[],\"env\":[{\"name\":\"TYPE\",\"value\":\"docker-images\"},{\"name\":\"NAME\",\"value\":\"failed-first-image\"},{\"name\":\"COMMIT\",\"value\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"METRIC_NAME\",\"value\":\"dockerImageBuilder\"},{\"name\":\"METRIC_LABELS\",\"value\":\"{\\\"namespace\\\":\\\"example-env\\\",\\\"docker_image\\\":\\\"failed-first-image\\\"}\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"OBJECT_UID\",\"value\":\"1a6a48e2-21ac-4e08-9431-fddc14219fe2\"},{\"name\":\"JABOS_OPERATOR_URL\",\"value\":\"http://operator.jabos:3000/\"}],\"image\":\"post-builder:1508380837168002640231923\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"post-builder\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/timer\",\"name\":\"timer\",\"readOnly\":true},{\"mountPath\":\"/tmp\",\"name\":\"temp\"}]}],\"initContainers\":[{\"args\":[],\"env\":[{\"name\":\"URL\",\"value\":\"https://github.com/srfrnk/jabos-examples.git\"},{\"name\":\"BRANCH\",\"value\":\"main\"},{\"name\":\"COMMIT\",\"value\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"METRIC_NAME\",\"value\":\"dockerImageBuilder\"},{\"name\":\"METRIC_LABELS\",\"value\":\"{\\\"namespace\\\":\\\"example-env\\\",\\\"docker_image\\\":\\\"failed-first-image\\\"}\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-first-image\"},{\"name\":\"OBJECT_UID\",\"value\":\"1a6a48e2-21ac-4e08-9431-fddc14219fe2\"},{\"name\":\"JABOS_OPERATOR_URL\",\"value\":\"http://operator.jabos:3000/\"}],\"image\":\"pre-builder:1508380837168002640231923\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"pre-builder\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/gitTemp\",\"name\":\"git-temp\"},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/timer\",\"name\":\"timer\"}]},{\"args\":[],\"env\":[{\"name\":\"HOST\",\"value\":\"registry.kube-system:80\"},{\"name\":\"REUSE_IMAGE\",\"value\":\"BUILD_IMAGE\"},{\"name\":\"DOCKER_CONFIG\",\"value\":\"{}\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-first-image\"},{\"name\":\"OBJECT_UID\",\"value\":\"1a6a48e2-21ac-4e08-9431-fddc14219fe2\"}],\"image\":\"docker-image-builder-init:1508380837168002640231923\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"docker-image-builder-init\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/kaniko/.docker\",\"name\":\"docker\"},{\"mountPath\":\"/secrets\",\"name\":\"kaniko-secrets\",\"readOnly\":true},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/build\",\"name\":\"build\"}]},{\"args\":[\"--context=dir:///gitTemp/simple-runtime/images-failed\",\"--dockerfile=Dockerfile\",\"--destination=registry.kube-system:80/example-image-failed:71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\",\"--insecure\",\"--skip-tls-verify\",\"--skip-tls-verify-pull\",\"--insecure-pull\"],\"env\":[{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-first-image\"},{\"name\":\"OBJECT_UID\",\"value\":\"1a6a48e2-21ac-4e08-9431-fddc14219fe2\"}],\"image\":\"kaniko:1508380837168002640231923\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"kaniko\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":true,\"capabilities\":{\"drop\":[]},\"readOnlyRootFilesystem\":false,\"runAsNonRoot\":false},\"stdin\":true,\"tty\":true,\"volumeMounts\":[{\"mountPath\":\"/gitTemp\",\"name\":\"git-temp\",\"readOnly\":true},{\"mountPath\":\"/kaniko/.docker\",\"name\":\"docker\",\"readOnly\":true},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/build\",\"name\":\"build\"}]}],\"restartPolicy\":\"Never\",\"securityContext\":{\"runAsNonRoot\":true},\"serviceAccountName\":\"builder-first-repo\",\"volumes\":[{\"emptyDir\":{},\"name\":\"docker\"},{\"name\":\"kaniko-secrets\",\"projected\":{\"sources\":[]}},{\"emptyDir\":{},\"name\":\"git-temp\"},{\"emptyDir\":{},\"name\":\"temp\"},{\"emptyDir\":{},\"name\":\"build\"},{\"emptyDir\":{},\"name\":\"timer\"}]}},\"ttlSecondsAfterFinished\":30}}"
+                    },
+                    "creationTimestamp": "2022-03-18T15:01:52Z",
+                    "generation": 1,
+                    "labels": {
+                        "type": "docker-image-builder"
+                    },
+                    "managedFields": [
+                        {
+                            "apiVersion": "batch/v1",
+                            "fieldsType": "FieldsV1",
+                            "fieldsV1": {
+                                "f:metadata": {
+                                    "f:annotations": {
+                                        ".": {},
+                                        "f:metacontroller.k8s.io/decorator-controller": {},
+                                        "f:metacontroller.k8s.io/last-applied-configuration": {}
+                                    },
+                                    "f:labels": {
+                                        ".": {},
+                                        "f:type": {}
+                                    },
+                                    "f:ownerReferences": {
+                                        ".": {},
+                                        "k:{\"uid\":\"1a6a48e2-21ac-4e08-9431-fddc14219fe2\"}": {}
+                                    }
+                                },
+                                "f:spec": {
+                                    "f:activeDeadlineSeconds": {},
+                                    "f:backoffLimit": {},
+                                    "f:completionMode": {},
+                                    "f:completions": {},
+                                    "f:parallelism": {},
+                                    "f:suspend": {},
+                                    "f:template": {
+                                        "f:metadata": {
+                                            "f:labels": {
+                                                ".": {},
+                                                "f:builder": {}
+                                            },
+                                            "f:name": {}
+                                        },
+                                        "f:spec": {
+                                            "f:containers": {
+                                                "k:{\"name\":\"post-builder\"}": {
+                                                    ".": {},
+                                                    "f:env": {
+                                                        ".": {},
+                                                        "k:{\"name\":\"COMMIT\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"JABOS_OPERATOR_URL\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"METRIC_LABELS\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"METRIC_NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAMESPACE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"OBJECT_UID\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"TYPE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        }
+                                                    },
+                                                    "f:image": {},
+                                                    "f:imagePullPolicy": {},
+                                                    "f:name": {},
+                                                    "f:resources": {
+                                                        ".": {},
+                                                        "f:limits": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        },
+                                                        "f:requests": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        }
+                                                    },
+                                                    "f:securityContext": {
+                                                        ".": {},
+                                                        "f:allowPrivilegeEscalation": {},
+                                                        "f:capabilities": {
+                                                            ".": {},
+                                                            "f:drop": {}
+                                                        },
+                                                        "f:readOnlyRootFilesystem": {},
+                                                        "f:runAsNonRoot": {}
+                                                    },
+                                                    "f:terminationMessagePath": {},
+                                                    "f:terminationMessagePolicy": {},
+                                                    "f:volumeMounts": {
+                                                        ".": {},
+                                                        "k:{\"mountPath\":\"/timer\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {},
+                                                            "f:readOnly": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/tmp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "f:dnsPolicy": {},
+                                            "f:initContainers": {
+                                                ".": {},
+                                                "k:{\"name\":\"docker-image-builder-init\"}": {
+                                                    ".": {},
+                                                    "f:env": {
+                                                        ".": {},
+                                                        "k:{\"name\":\"DOCKER_CONFIG\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"HOST\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAMESPACE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"OBJECT_UID\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"REUSE_IMAGE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        }
+                                                    },
+                                                    "f:image": {},
+                                                    "f:imagePullPolicy": {},
+                                                    "f:name": {},
+                                                    "f:resources": {
+                                                        ".": {},
+                                                        "f:limits": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        },
+                                                        "f:requests": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        }
+                                                    },
+                                                    "f:securityContext": {
+                                                        ".": {},
+                                                        "f:allowPrivilegeEscalation": {},
+                                                        "f:capabilities": {
+                                                            ".": {},
+                                                            "f:drop": {}
+                                                        },
+                                                        "f:readOnlyRootFilesystem": {},
+                                                        "f:runAsNonRoot": {}
+                                                    },
+                                                    "f:terminationMessagePath": {},
+                                                    "f:terminationMessagePolicy": {},
+                                                    "f:volumeMounts": {
+                                                        ".": {},
+                                                        "k:{\"mountPath\":\"/build\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/kaniko/.docker\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/secrets\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {},
+                                                            "f:readOnly": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/tmp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        }
+                                                    }
+                                                },
+                                                "k:{\"name\":\"kaniko\"}": {
+                                                    ".": {},
+                                                    "f:args": {},
+                                                    "f:env": {
+                                                        ".": {},
+                                                        "k:{\"name\":\"NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAMESPACE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"OBJECT_UID\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        }
+                                                    },
+                                                    "f:image": {},
+                                                    "f:imagePullPolicy": {},
+                                                    "f:name": {},
+                                                    "f:resources": {
+                                                        ".": {},
+                                                        "f:limits": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        },
+                                                        "f:requests": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        }
+                                                    },
+                                                    "f:securityContext": {
+                                                        ".": {},
+                                                        "f:allowPrivilegeEscalation": {},
+                                                        "f:capabilities": {},
+                                                        "f:readOnlyRootFilesystem": {},
+                                                        "f:runAsNonRoot": {}
+                                                    },
+                                                    "f:stdin": {},
+                                                    "f:terminationMessagePath": {},
+                                                    "f:terminationMessagePolicy": {},
+                                                    "f:tty": {},
+                                                    "f:volumeMounts": {
+                                                        ".": {},
+                                                        "k:{\"mountPath\":\"/build\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/gitTemp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {},
+                                                            "f:readOnly": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/kaniko/.docker\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {},
+                                                            "f:readOnly": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/tmp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        }
+                                                    }
+                                                },
+                                                "k:{\"name\":\"pre-builder\"}": {
+                                                    ".": {},
+                                                    "f:env": {
+                                                        ".": {},
+                                                        "k:{\"name\":\"BRANCH\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"COMMIT\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"JABOS_OPERATOR_URL\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"METRIC_LABELS\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"METRIC_NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAME\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"NAMESPACE\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"OBJECT_UID\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        },
+                                                        "k:{\"name\":\"URL\"}": {
+                                                            ".": {},
+                                                            "f:name": {},
+                                                            "f:value": {}
+                                                        }
+                                                    },
+                                                    "f:image": {},
+                                                    "f:imagePullPolicy": {},
+                                                    "f:name": {},
+                                                    "f:resources": {
+                                                        ".": {},
+                                                        "f:limits": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        },
+                                                        "f:requests": {
+                                                            ".": {},
+                                                            "f:cpu": {},
+                                                            "f:memory": {}
+                                                        }
+                                                    },
+                                                    "f:securityContext": {
+                                                        ".": {},
+                                                        "f:allowPrivilegeEscalation": {},
+                                                        "f:capabilities": {
+                                                            ".": {},
+                                                            "f:drop": {}
+                                                        },
+                                                        "f:readOnlyRootFilesystem": {},
+                                                        "f:runAsNonRoot": {}
+                                                    },
+                                                    "f:terminationMessagePath": {},
+                                                    "f:terminationMessagePolicy": {},
+                                                    "f:volumeMounts": {
+                                                        ".": {},
+                                                        "k:{\"mountPath\":\"/gitTemp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/timer\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        },
+                                                        "k:{\"mountPath\":\"/tmp\"}": {
+                                                            ".": {},
+                                                            "f:mountPath": {},
+                                                            "f:name": {}
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "f:restartPolicy": {},
+                                            "f:schedulerName": {},
+                                            "f:securityContext": {
+                                                ".": {},
+                                                "f:runAsNonRoot": {}
+                                            },
+                                            "f:serviceAccount": {},
+                                            "f:serviceAccountName": {},
+                                            "f:terminationGracePeriodSeconds": {},
+                                            "f:volumes": {
+                                                ".": {},
+                                                "k:{\"name\":\"build\"}": {
+                                                    ".": {},
+                                                    "f:emptyDir": {},
+                                                    "f:name": {}
+                                                },
+                                                "k:{\"name\":\"docker\"}": {
+                                                    ".": {},
+                                                    "f:emptyDir": {},
+                                                    "f:name": {}
+                                                },
+                                                "k:{\"name\":\"git-temp\"}": {
+                                                    ".": {},
+                                                    "f:emptyDir": {},
+                                                    "f:name": {}
+                                                },
+                                                "k:{\"name\":\"kaniko-secrets\"}": {
+                                                    ".": {},
+                                                    "f:name": {},
+                                                    "f:projected": {
+                                                        ".": {},
+                                                        "f:defaultMode": {},
+                                                        "f:sources": {}
+                                                    }
+                                                },
+                                                "k:{\"name\":\"temp\"}": {
+                                                    ".": {},
+                                                    "f:emptyDir": {},
+                                                    "f:name": {}
+                                                },
+                                                "k:{\"name\":\"timer\"}": {
+                                                    ".": {},
+                                                    "f:emptyDir": {},
+                                                    "f:name": {}
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "f:ttlSecondsAfterFinished": {}
+                                }
+                            },
+                            "manager": "metacontroller",
+                            "operation": "Update",
+                            "time": "2022-03-18T15:01:52Z"
+                        },
+                        {
+                            "apiVersion": "batch/v1",
+                            "fieldsType": "FieldsV1",
+                            "fieldsV1": {
+                                "f:status": {
+                                    "f:active": {},
+                                    "f:failed": {},
+                                    "f:startTime": {},
+                                    "f:uncountedTerminatedPods": {}
+                                }
+                            },
+                            "manager": "kube-controller-manager",
+                            "operation": "Update",
+                            "subresource": "status",
+                            "time": "2022-03-18T15:04:17Z"
+                        }
+                    ],
+                    "name": "image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c",
+                    "namespace": "example-env",
+                    "ownerReferences": [
+                        {
+                            "apiVersion": "jabos.io/v1",
+                            "blockOwnerDeletion": true,
+                            "controller": true,
+                            "kind": "DockerImage",
+                            "name": "failed-first-image",
+                            "uid": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+                        }
+                    ],
+                    "resourceVersion": "12519",
+                    "uid": "ede652a4-ae61-40d3-9f49-3700edc1d383"
+                },
+                "spec": {
+                    "activeDeadlineSeconds": 3600,
+                    "backoffLimit": 5,
+                    "completionMode": "NonIndexed",
+                    "com2022-03-18T15:04:17.471889127Z pletions": 1,
+                    "parallelism": 1,
+                    "selector": {
+                        "matchLabels": {
+                            "controller-uid": "ede652a4-ae61-40d3-9f49-3700edc1d383"
+                        }
+                    },
+                    "suspend": false,
+                    "template": {
+                        "metadata": {
+                            "creationTimestamp": null,
+                            "labels": {
+                                "builder": "image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c",
+                                "controller-uid": "ede652a4-ae61-40d3-9f49-3700edc1d383",
+                                "job-name": "image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c"
+                            },
+                            "name": "image-failed-first-image-71d81140a15f1ea3a18b5a99aa819579e6d8c"
+                        },
+                        "spec": {
+                            "containers": [
+                                {
+                                    "env": [
+                                        {
+                                            "name": "TYPE",
+                                            "value": "docker-images"
+                                        },
+                                        {
+                                            "name": "NAME",
+                                            "value": "failed-first-image"
+                                        },
+                                        {
+                                            "name": "COMMIT",
+                                            "value": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                                        },
+                                        {
+                                            "name": "METRIC_NAME",
+                                            "value": "dockerImageBuilder"
+                                        },
+                                        {
+                                            "name": "METRIC_LABELS",
+                                            "value": "{\"namespace\":\"example-env\",\"docker_image\":\"failed-first-image\"}"
+                                        },
+                                        {
+                                            "name": "NAMESPACE",
+                                            "value": "example-env"
+                                        },
+                                        {
+                                            "name": "OBJECT_UID",
+                                            "value": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+                                        },
+                                        {
+                                            "name": "JABOS_OPERATOR_URL",
+                                            "value": "http://operator.jabos:3000/"
+                                        }
+                                    ],
+                                    "image": "post-builder:1508380837168002640231923",
+                                    "imagePullPolicy": "IfNotPresent",
+                                    "name": "post-builder",
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "500m",
+                                            "memory": "500Mi"
+                                        },
+                                        "requests": {
+                                            "cpu": "100m",
+                                            "memory": "100Mi"
+                                        }
+                                    },
+                                    "securityContext": {
+                                        "allowPrivilegeEscalation": false,
+                                        "capabilities": {
+                                            "drop": [
+                                                "ALL"
+                                            ]
+                                        },
+                                        "readOnlyRootFilesystem": true,
+                                        "runAsNonRoot": true
+                                    },
+                                    "terminationMessagePath": "/dev/termination-log",
+                                    "terminationMessagePolicy": "File",
+                                    "volumeMounts": [
+                                        {
+                                            "mountPath": "/timer",
+                                            "name": "timer",
+                                            "readOnly": true
+                                        },
+                                        {
+                                            "mountPath": "/tmp",
+                                            "name": "temp"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "dnsPolicy": "ClusterFirst",
+                            "initContainers": [
+                                {
+                                    "env": [
+                                        {
+                                            "name": "URL",
+                                            "value": "https://github.com/srfrnk/jabos-examples.git"
+                                        },
+                                        {
+                                            "name": "BRANCH",
+                                            "value": "main"
+                                        },
+                                        {
+                                            "name": "COMMIT",
+                                            "value": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                                        },
+                                        {
+                                            "name": "METRIC_NAME",
+                                            "value": "dockerImageBuilder"
+                                        },
+                                        {
+                                            "name": "METRIC_LABELS",
+                                            "value": "{\"namespace\":\"example-env\",\"docker_image\":\"failed-first-image\"}"
+                                        },
+                                        {
+                                            "name": "NAMESPACE",
+                                            "value": "example-env"
+                                        },
+                                        {
+                                            "name": "NAME",
+                                            "value": "failed-first-image"
+                                        },
+                                        {
+                                            "name": "OBJECT_UID",
+                                            "value": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+                                        },
+                                        {
+                                            "name": "JABOS_OPERATOR_URL",
+                                            "value": "http://operator.jabos:3000/"
+                                        }
+                                    ],
+                                    "image": "pre-builder:1508380837168002640231923",
+                                    "imagePullPolicy": "IfNotPresent",
+                                    "name": "pre-builder",
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "500m",
+                                            "memory": "500Mi"
+                                        },
+                                        "requests": {
+                                            "cpu": "100m",
+                                            "memory": "100Mi"
+                                        }
+                                    },
+                                    "securityContext": {
+                                        "allowPrivilegeEscalation": false,
+                                        "capabilities": {
+                                            "drop": [
+                                                "ALL"
+                                            ]
+                                        },
+                                        "readOnlyRootFilesystem": true,
+                                        "runAsNonRoot": true
+                                    },
+                                    "terminationMessagePath": "/dev/termination-log",
+                                    "terminationMessagePolicy": "File",
+                                    "volumeMounts": [
+                                        {
+                                            "mountPath": "/gitTemp",
+                                            "name": "git-temp"
+                                        },
+                                        {
+                                            "mountPath": "/tmp",
+                                            "name": "temp"
+                                        },
+                                        {
+                                            "mountPath": "/timer",
+                                            "name": "timer"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "env": [
+                                        {
+                                            "name": "HOST",
+                                            "value": "registry.kube-system:80"
+                                        },
+                                        {
+                                            "name": "REUSE_IMAGE",
+                                            "value": "BUILD_IMAGE"
+                                        },
+                                        {
+                                            "name": "DOCKER_CONFIG",
+                                            "value": "{}"
+                                        },
+                                        {
+                                            "name": "NAMESPACE",
+                                            "value": "example-env"
+                                        },
+                                        {
+                                            "name": "NAME",
+                                            "value": "failed-first-image"
+                                        },
+                                        {
+                                            "name": "OBJECT_UID",
+                                            "value": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+                                        }
+                                    ],
+                                    "image": "docker-image-builder-init:1508380837168002640231923",
+                                    "imagePullPolicy": "IfNotPresent",
+                                    "name": "docker-image-builder-init",
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "500m",
+                                            "memory": "500Mi"
+                                        },
+                                        "requests": {
+                                            "cpu": "100m",
+                                            "memory": "100Mi"
+                                        }
+                                    },
+                                    "securityContext": {
+                                        "allowPrivilegeEscalation": false,
+                                        "capabilities": {
+                                            "drop": [
+                                                "ALL"
+                                            ]
+                                        },
+                                        "readOnlyRootFilesystem": true,
+                                        "runAsNonRoot": true
+                                    },
+                                    "terminationMessagePath": "/dev/termination-log",
+                                    "terminationMessagePolicy": "File",
+                                    "volumeMounts": [
+                                        {
+                                            "mountPath": "/kaniko/.docker",
+                                            "name": "docker"
+                                        },
+                                        {
+                                            "mountPath": "/secrets",
+                                            "name": "kaniko-secrets",
+                                            "readOnly": true
+                                        },
+                                        {
+                                            "mountPath": "/tmp",
+                                            "name": "temp"
+                                        },
+                                        {
+                                            "mountPath": "/build",
+                                            "name": "build"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "args": [
+                                        "--context=dir:///gitTemp/simple-runtime/images-failed",
+                                        "--dockerfile=Dockerfile",
+                                        "--destination=registry.kube-system:80/example-image-failed:71d81140a15f1ea3a18b5a99aa819579e6d8cbe9",
+                                        "--insecure",
+                                        "--skip-tls-verify",
+                                        "--skip-tls-verify-pull",
+                                        "--insecure-pull"
+                                    ],
+                                    "env": [
+                                        {
+                                            "name": "NAMESPACE",
+                                            "value": "example-env"
+                                        },
+                                        {
+                                            "name": "NAME",
+                                            "value": "failed-first-image"
+                                        },
+                                        {
+                                            "name": "OBJECT_UID",
+                                            "value": "1a6a48e2-21ac-4e08-9431-fddc14219fe2"
+                                        }
+                                    ],
+                                    "image": "kaniko:1508380837168002640231923",
+                                    "imagePullPolicy": "IfNotPresent",
+                                    "name": "kaniko",
+                                    "resources": {
+                                        "limits": {
+                                            "cpu": "500m",
+                                            "memory": "500Mi"
+                                        },
+                                        "requests": {
+                                            "cpu": "100m",
+                                            "memory": "100Mi"
+                                        }
+                                    },
+                                    "securityContext": {
+                                        "allowPrivilegeEscalation": true,
+                                        "capabilities": {},
+                                        "readOnlyRootFilesystem": false,
+                                        "runAsNonRoot": false
+                                    },
+                                    "stdin": true,
+                                    "terminationMessagePath": "/dev/termination-log",
+                                    "terminationMessagePolicy": "File",
+                                    "tty": true,
+                                    "volumeMounts": [
+                                        {
+                                            "mountPath": "/gitTemp",
+                                            "name": "git-temp",
+                                            "readOnly": true
+                                        },
+                                        {
+                                            "mountPath": "/kaniko/.docker",
+                                            "name": "docker",
+                                            "readOnly": true
+                                        },
+                                        {
+                                            "mountPath": "/tmp",
+                                            "name": "temp"
+                                        },
+                                        {
+                                            "mountPath": "/build",
+                                            "name": "build"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "restartPolicy": "Never",
+                            "schedulerName": "default-scheduler",
+                            "securityContext": {
+                                "runAsNonRoot": true
+                            },
+                            "serviceAccount": "builder-first-repo",
+                            "serviceAccountName": "builder-first-repo",
+                            "terminationGracePeriodSeconds": 30,
+                            "volumes": [
+                                {
+                                    "emptyDir": {},
+                                    "name": "docker"
+                                },
+                                {
+                                    "name": "kaniko-secrets",
+                                    "projected": {
+                                        "defaultMode": 420,
+                                        "sources": null
+                                    }
+                                },
+                                {
+                                    "emptyDir": {},
+                                    "name": "git-temp"
+                                },
+                                {
+                                    "emptyDir": {},
+                                    "name": "temp"
+                                },
+                                {
+                                    "emptyDir": {},
+                                    "name": "build"
+                                },
+                                {
+                                    "emptyDir": {},
+                                    "name": "timer"
+                                }
+                            ]
+                        }
+                    },
+                    "ttlSecondsAfterFinished": 30
+                },
+                "status": {
+                    "active": 1,
+                    "failed": 3,
+                    "startTime": "2022-03-18T15:01:52Z",
+                    "uncountedTerminatedPods": {}
+                }
+            }
+        }
+    },
+    "related": {
+        "GitRepository.jabos.io/v1": {
+            "first-repo": {
+                "apiVersion": "jabos.io/v1",
+                "kind": "GitRepository",
+                "metadata": {
+                    "annotations": {
+                        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"GitRepository\",\"metadata\":{\"annotations\":{},\"name\":\"first-repo\",\"namespace\":\"example-env\"},\"spec\":{\"branch\":\"main\",\"url\":\"https://github.com/srfrnk/jabos-examples.git\"}}\n"
+                    },
+                    "creationTimestamp": "2022-03-18T14:48:51Z",
+                    "finalizers": [
+                        "metacontroller.io/decoratorcontroller-git-repositories-controller"
+                    ],
+                    "generation": 1,
+                    "managedFields": [
+                        {
+                            "apiVersion": "jabos.io/v1",
+                            "fieldsType": "FieldsV1",
+                            "fieldsV1": {
+                                "f:metadata": {
+                                    "f:annotations": {
+                                        ".": {},
+                                        "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                                    }
+                                },
+                                "f:spec": {
+                                    ".": {},
+                                    "f:branch": {},
+                                    "f:url": {}
+                                }
+                            },
+                            "manager": "kubectl-client-side-apply",
+                            "operation": "Update",
+                            "time": "2022-03-18T14:48:51Z"
+                        },
+                        {
+                            "apiVersion": "jabos.io/v1",
+                            "fieldsType": "FieldsV1",
+                            "fieldsV1": {
+                                "f:metadata": {
+                                    "f:finalizers": {
+                                        ".": {},
+                                        "v:\"metacontroller.io/decoratorcontroller-git-repositories-controller\"": {}
+                                    }
+                                }
+                            },
+                            "manager": "metacontroller",
+                            "operation": "Update",
+                            "time": "2022-03-18T14:48:51Z"
+                        },
+                        {
+                            "apiVersion": "jabos.io/v1",
+                            "fieldsType": "FieldsV1",
+                            "fieldsV1": {
+                                "f:status": {
+                                    ".": {},
+                                    "f:conditions": {},
+                                    "f:latestCommit": {}
+                                }
+                            },
+                            "manager": "curl",
+                            "operation": "Update",
+                            "subresource": "status",
+                            "time": "2022-03-18T14:48:57Z"
+                        }
+                    ],
+                    "name": "first-repo",
+                    "namespace": "example-env",
+                    "resourceVersion": "2899",
+                    "uid": "1b7be6c4-47b9-455d-9be4-6e42ea2c95f0"
+                },
+                "spec": {
+                    "branch": "main",
+                    "url": "https://github.com/srfrnk/jabos-examples.git"
+                },
+                "status": {
+                    "conditions": [
+                        {
+                            "status": "True",
+                            "type": "Syncing"
+                        }
+                    ],
+                    "latestCommit": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                }
+            }
+        }
+    },
+    "finalizing": false
+}

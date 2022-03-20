@@ -196,3 +196,14 @@ test('kustomizeManifests finalize delete', async () => {
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
 });
+
+test('Issue #60', async () => {
+  const req = {
+    body: require('./test_input/issue#60.2.json')
+  } as Request;
+
+  const res = mockResponse();
+  await kustomizeManifests.sync(req, res as unknown as Response, () => { /* NOOP */ });
+  expect(res.json.mock.calls[0][0].attachments[2].metadata.annotations['metacontroller.k8s.io/last-applied-configuration']).toBeUndefined();
+  expect(res.status).toHaveBeenCalledWith(200);
+});

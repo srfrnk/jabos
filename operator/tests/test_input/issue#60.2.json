@@ -1,0 +1,1161 @@
+{
+  "controller": {
+    "kind": "DecoratorController",
+    "apiVersion": "metacontroller.k8s.io/v1alpha1",
+    "metadata": {
+      "name": "kustomize-manifests-controller",
+      "uid": "31c5a172-674d-4f7e-9508-720c90aa355d",
+      "resourceVersion": "1727",
+      "generation": 1,
+      "creationTimestamp": "2022-03-18T16:21:00Z",
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"metacontroller.k8s.io/v1alpha1\",\"kind\":\"DecoratorController\",\"metadata\":{\"annotations\":{},\"name\":\"kustomize-manifests-controller\"},\"spec\":{\"attachments\":[{\"apiVersion\":\"batch/v1\",\"resource\":\"jobs\",\"updateStrategy\":{\"method\":\"InPlace\"}},{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"resource\":\"roles\"},{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"resource\":\"rolebindings\"}],\"hooks\":{\"customize\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/kustomize-manifests-customize\"}},\"finalize\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/kustomize-manifests-finalize\"}},\"sync\":{\"webhook\":{\"timeout\":\"10s\",\"url\":\"http://operator.jabos:3000/kustomize-manifests-sync\"}}},\"resources\":[{\"apiVersion\":\"jabos.io/v1\",\"resource\":\"kustomize-manifests\"}],\"resyncPeriodSeconds\":30}}\n"
+      },
+      "managedFields": [
+        {
+          "manager": "kubectl-client-side-apply",
+          "operation": "Update",
+          "apiVersion": "metacontroller.k8s.io/v1alpha1",
+          "time": "2022-03-18T16:21:00Z",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:annotations": {
+                ".": {},
+                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:attachments": {},
+              "f:hooks": {
+                ".": {},
+                "f:customize": {
+                  ".": {},
+                  "f:webhook": {
+                    ".": {},
+                    "f:timeout": {},
+                    "f:url": {}
+                  }
+                },
+                "f:finalize": {
+                  ".": {},
+                  "f:webhook": {
+                    ".": {},
+                    "f:timeout": {},
+                    "f:url": {}
+                  }
+                },
+                "f:sync": {
+                  ".": {},
+                  "f:webhook": {
+                    ".": {},
+                    "f:timeout": {},
+                    "f:url": {}
+                  }
+                }
+              },
+              "f:resources": {},
+              "f:resyncPeriodSeconds": {}
+            }
+          }
+        }
+      ]
+    },
+    "spec": {
+      "resources": [
+        {
+          "apiVersion": "jabos.io/v1",
+          "resource": "kustomize-manifests"
+        }
+      ],
+      "attachments": [
+        {
+          "apiVersion": "batch/v1",
+          "resource": "jobs",
+          "updateStrategy": {
+            "method": "InPlace"
+          }
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "resource": "roles"
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "resource": "rolebindings"
+        }
+      ],
+      "hooks": {
+        "customize": {
+          "webhook": {
+            "url": "http://operator.jabos:3000/kustomize-manifests-customize",
+            "timeout": "10s"
+          }
+        },
+        "sync": {
+          "webhook": {
+            "url": "http://operator.jabos:3000/kustomize-manifests-sync",
+            "timeout": "10s"
+          }
+        },
+        "finalize": {
+          "webhook": {
+            "url": "http://operator.jabos:3000/kustomize-manifests-finalize",
+            "timeout": "10s"
+          }
+        }
+      },
+      "resyncPeriodSeconds": 30
+    },
+    "status": {}
+  },
+  "object": {
+    "apiVersion": "jabos.io/v1",
+    "kind": "KustomizeManifest",
+    "metadata": {
+      "annotations": {
+        "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"KustomizeManifest\",\"metadata\":{\"annotations\":{},\"name\":\"failed-deploy-kustomize-manifest\",\"namespace\":\"example-env\"},\"spec\":{\"cleanupPolicy\":\"Delete\",\"dockerImages\":[\"first-image\",\"first-image-docker-hub-public\",\"first-image-docker-hub-private\"],\"gitRepository\":\"first-repo\",\"path\":\"simple-runtime/kustomize-failed-deploy\",\"replacementPrefix\":\"\\\\*\\\\*\",\"replacementSuffix\":\"\\\\*\\\\*\",\"replacements\":{\"env\":\"dev\"},\"targetNamespace\":\"example-env\"}}\n"
+      },
+      "creationTimestamp": "2022-03-18T16:27:13Z",
+      "finalizers": [
+        "metacontroller.io/decoratorcontroller-kustomize-manifests-controller"
+      ],
+      "generation": 1,
+      "managedFields": [
+        {
+          "apiVersion": "jabos.io/v1",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:annotations": {
+                ".": {},
+                "f:kubectl.kubernetes.io/last-applied-configuration": {}
+              }
+            },
+            "f:spec": {
+              ".": {},
+              "f:cleanupPolicy": {},
+              "f:dockerImages": {},
+              "f:gitRepository": {},
+              "f:path": {},
+              "f:replacementPrefix": {},
+              "f:replacementSuffix": {},
+              "f:replacements": {
+                ".": {},
+                "f:env": {}
+              },
+              "f:targetNamespace": {}
+            }
+          },
+          "manager": "kubectl-client-side-apply",
+          "operation": "Update",
+          "time": "2022-03-18T16:27:13Z"
+        },
+        {
+          "apiVersion": "jabos.io/v1",
+          "fieldsType": "FieldsV1",
+          "fieldsV1": {
+            "f:metadata": {
+              "f:finalizers": {
+                ".": {},
+                "v:\"metacontroller.io/decoratorcontroller-kustomize-manifests-controller\"": {}
+              }
+            }
+          },
+          "manager": "metacontroller",
+          "operation": "Update",
+          "time": "2022-03-18T16:27:22Z"
+        }
+      ],
+      "name": "failed-deploy-kustomize-manifest",
+      "namespace": "example-env",
+      "resourceVersion": "2294",
+      "uid": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+    },
+    "spec": {
+      "cleanupPolicy": "Delete",
+      "dockerImages": [
+        "first-image",
+        "first-image-docker-hub-public",
+        "first-image-docker-hub-private"
+      ],
+      "gitRepository": "first-repo",
+      "path": "simple-runtime/kustomize-failed-deploy",
+      "replacementPrefix": "\\*\\*",
+      "replacementSuffix": "\\*\\*",
+      "replacements": {
+        "env": "dev"
+      },
+      "targetNamespace": "example-env"
+    },
+    "status": {
+      "conditions": [
+        {
+          "status": "False",
+          "type": "Synced"
+        }
+      ]
+    }
+  },
+  "attachments": {
+    "Job.batch/v1": {
+      "manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b": {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": {
+          "annotations": {
+            "batch.kubernetes.io/job-tracking": "",
+            "metacontroller.k8s.io/decorator-controller": "kustomize-manifests-controller",
+            "metacontroller.k8s.io/last-applied-configuration": "{\"apiVersion\":\"batch/v1\",\"kind\":\"Job\",\"metadata\":{\"annotations\":{\"metacontroller.k8s.io/decorator-controller\":\"kustomize-manifests-controller\"},\"labels\":{\"manifest-builder-type\":\"kustomize-manifests\",\"type\":\"manifest-builder\"},\"name\":\"manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b\"},\"spec\":{\"activeDeadlineSeconds\":3600,\"backoffLimit\":5,\"completionMode\":\"NonIndexed\",\"completions\":1,\"parallelism\":1,\"template\":{\"metadata\":{\"labels\":{\"builder\":\"manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b\"},\"name\":\"manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b\"},\"spec\":{\"containers\":[{\"args\":[],\"env\":[{\"name\":\"TYPE\",\"value\":\"kustomize-manifests\"},{\"name\":\"NAME\",\"value\":\"failed-deploy-kustomize-manifest\"},{\"name\":\"COMMIT\",\"value\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"METRIC_NAME\",\"value\":\"kustomizeManifestsBuilder\"},{\"name\":\"METRIC_LABELS\",\"value\":\"{\\\"namespace\\\":\\\"example-env\\\",\\\"kustomize_manifests\\\":\\\"failed-deploy-kustomize-manifest\\\"}\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"OBJECT_UID\",\"value\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"},{\"name\":\"JABOS_OPERATOR_URL\",\"value\":\"http://operator.jabos:3000/\"}],\"image\":\"post-builder:1149678155184019003924567\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"post-builder\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/timer\",\"name\":\"timer\",\"readOnly\":true},{\"mountPath\":\"/tmp\",\"name\":\"temp\"}]}],\"initContainers\":[{\"args\":[],\"env\":[{\"name\":\"URL\",\"value\":\"https://github.com/srfrnk/jabos-examples.git\"},{\"name\":\"BRANCH\",\"value\":\"main\"},{\"name\":\"COMMIT\",\"value\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"METRIC_NAME\",\"value\":\"kustomizeManifestsBuilder\"},{\"name\":\"METRIC_LABELS\",\"value\":\"{\\\"namespace\\\":\\\"example-env\\\",\\\"kustomize_manifests\\\":\\\"failed-deploy-kustomize-manifest\\\"}\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-deploy-kustomize-manifest\"},{\"name\":\"OBJECT_UID\",\"value\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"},{\"name\":\"JABOS_OPERATOR_URL\",\"value\":\"http://operator.jabos:3000/\"}],\"image\":\"pre-builder:1149678155184019003924567\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"pre-builder\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"volumeMounts\":[{\"mountPath\":\"/gitTemp\",\"name\":\"git-temp\"},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/timer\",\"name\":\"timer\"}]},{\"args\":[],\"env\":[{\"name\":\"SRC_PATH\",\"value\":\"simple-runtime/kustomize-failed-deploy\"},{\"name\":\"KIND\",\"value\":\"KustomizeManifest\"},{\"name\":\"CONTROLLER\",\"value\":\"kustomize-manifests-controller\"},{\"name\":\"COMMIT\",\"value\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"REPLACEMENT_STRINGS\",\"value\":\"s/\\\\*\\\\*env\\\\*\\\\*/dev/g\"},{\"name\":\"IMAGES\",\"value\":\"[{\\\"name\\\":\\\"registry.kube-system:80/example-image-dev\\\",\\\"newTag\\\":\\\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\\\"},{\\\"name\\\":\\\"jabos/example-image-private\\\",\\\"newTag\\\":\\\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\\\"},{\\\"name\\\":\\\"jabos/example-image-public\\\",\\\"newTag\\\":\\\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\\\"}]\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-deploy-kustomize-manifest\"},{\"name\":\"OBJECT_UID\",\"value\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"}],\"image\":\"kustomize-manifest-builder:1149678155184019003924567\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"kustomize-manifest-builder\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"stdin\":true,\"tty\":true,\"volumeMounts\":[{\"mountPath\":\"/gitTemp\",\"name\":\"git-temp\",\"readOnly\":true},{\"mountPath\":\"/manifests\",\"name\":\"manifests\"},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/build\",\"name\":\"build\"}]},{\"args\":[\"example-env\",\"kustomize-manifests\",\"failed-deploy-kustomize-manifest\"],\"env\":[{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"TARGET_NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"TYPE\",\"value\":\"kustomize-manifests\"},{\"name\":\"NAME\",\"value\":\"failed-deploy-kustomize-manifest\"},{\"name\":\"KIND\",\"value\":\"KustomizeManifest\"},{\"name\":\"CONTROLLER\",\"value\":\"kustomize-manifests-controller\"},{\"name\":\"NAMESPACE\",\"value\":\"example-env\"},{\"name\":\"NAME\",\"value\":\"failed-deploy-kustomize-manifest\"},{\"name\":\"OBJECT_UID\",\"value\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"}],\"image\":\"manifest-deployer:1149678155184019003924567\",\"imagePullPolicy\":\"IfNotPresent\",\"name\":\"manifest-deployer\",\"resources\":{\"limits\":{\"cpu\":\"500m\",\"memory\":\"500Mi\"},\"requests\":{\"cpu\":\"100m\",\"memory\":\"100Mi\"}},\"securityContext\":{\"allowPrivilegeEscalation\":false,\"capabilities\":{\"drop\":[\"ALL\"]},\"readOnlyRootFilesystem\":true,\"runAsNonRoot\":true},\"stdin\":true,\"tty\":true,\"volumeMounts\":[{\"mountPath\":\"/manifests\",\"name\":\"manifests\",\"readOnly\":true},{\"mountPath\":\"/tmp\",\"name\":\"temp\"},{\"mountPath\":\"/build\",\"name\":\"build\"}]}],\"restartPolicy\":\"Never\",\"securityContext\":{\"runAsNonRoot\":true},\"serviceAccountName\":\"builder-first-repo\",\"volumes\":[{\"emptyDir\":{},\"name\":\"manifests\"},{\"emptyDir\":{},\"name\":\"git-temp\"},{\"emptyDir\":{},\"name\":\"temp\"},{\"emptyDir\":{},\"name\":\"build\"},{\"emptyDir\":{},\"name\":\"timer\"}]}},\"ttlSecondsAfterFinished\":30}}"
+          },
+          "creationTimestamp": "2022-03-18T16:34:26Z",
+          "deletionGracePeriodSeconds": 0,
+          "deletionTimestamp": "2022-03-18T16:39:19Z",
+          "finalizers": [
+            "foregroundDeletion"
+          ],
+          "generation": 2,
+          "labels": {
+            "manifest-builder-type": "kustomize-manifests",
+            "type": "manifest-builder"
+          },
+          "name": "manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b",
+          "namespace": "example-env",
+          "ownerReferences": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "KustomizeManifest",
+              "name": "failed-deploy-kustomize-manifest",
+              "uid": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+            }
+          ],
+          "resourceVersion": "9535",
+          "uid": "82aafbcf-e6c0-4ff3-acee-bf41939a286c"
+        },
+        "spec": {
+          "activeDeadlineSeconds": 3600,
+          "backoffLimit": 5,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "selector": {
+            "matchLabels": {
+              "controller-uid": "82aafbcf-e6c0-4ff3-acee-bf41939a286c"
+            }
+          },
+          "suspend": false,
+          "template": {
+            "metadata": {
+              "creationTimestamp": null,
+              "labels": {
+                "builder": "manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b",
+                "controller-uid": "82aafbcf-e6c0-4ff3-acee-bf41939a286c",
+                "job-name": "manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b"
+              },
+              "name": "manifest-failed-deploy-kustomize-manifest-71d81140a15f1ea3a18b"
+            },
+            "spec": {
+              "containers": [
+                {
+                  "env": [
+                    {
+                      "name": "TYPE",
+                      "value": "kustomize-manifests"
+                    },
+                    {
+                      "name": "NAME",
+                      "value": "failed-deploy-kustomize-manifest"
+                    },
+                    {
+                      "name": "COMMIT",
+                      "value": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                    },
+                    {
+                      "name": "METRIC_NAME",
+                      "value": "kustomizeManifestsBuilder"
+                    },
+                    {
+                      "name": "METRIC_LABELS",
+                      "value": "{\"namespace\":\"example-env\",\"kustomize_manifests\":\"failed-deploy-kustomize-manifest\"}"
+                    },
+                    {
+                      "name": "NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "OBJECT_UID",
+                      "value": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+                    },
+                    {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.jabos:3000/"
+                    }
+                  ],
+                  "image": "post-builder:1149678155184019003924567",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "post-builder",
+                  "resources": {
+                    "limits": {
+                      "cpu": "500m",
+                      "memory": "500Mi"
+                    },
+                    "requests": {
+                      "cpu": "100m",
+                      "memory": "100Mi"
+                    }
+                  },
+                  "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                      "drop": [
+                        "ALL"
+                      ]
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true
+                  },
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true
+                    },
+                    {
+                      "mountPath": "/tmp",
+                      "name": "temp"
+                    }
+                  ]
+                }
+              ],
+              "dnsPolicy": "ClusterFirst",
+              "initContainers": [
+                {
+                  "env": [
+                    {
+                      "name": "URL",
+                      "value": "https://github.com/srfrnk/jabos-examples.git"
+                    },
+                    {
+                      "name": "BRANCH",
+                      "value": "main"
+                    },
+                    {
+                      "name": "COMMIT",
+                      "value": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                    },
+                    {
+                      "name": "METRIC_NAME",
+                      "value": "kustomizeManifestsBuilder"
+                    },
+                    {
+                      "name": "METRIC_LABELS",
+                      "value": "{\"namespace\":\"example-env\",\"kustomize_manifests\":\"failed-deploy-kustomize-manifest\"}"
+                    },
+                    {
+                      "name": "NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "NAME",
+                      "value": "failed-deploy-kustomize-manifest"
+                    },
+                    {
+                      "name": "OBJECT_UID",
+                      "value": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+                    },
+                    {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.jabos:3000/"
+                    }
+                  ],
+                  "image": "pre-builder:1149678155184019003924567",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "pre-builder",
+                  "resources": {
+                    "limits": {
+                      "cpu": "500m",
+                      "memory": "500Mi"
+                    },
+                    "requests": {
+                      "cpu": "100m",
+                      "memory": "100Mi"
+                    }
+                  },
+                  "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                      "drop": [
+                        "ALL"
+                      ]
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true
+                  },
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File",
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp"
+                    },
+                    {
+                      "mountPath": "/tmp",
+                      "name": "temp"
+                    },
+                    {
+                      "mountPath": "/timer",
+                      "name": "timer"
+                    }
+                  ]
+                },
+                {
+                  "env": [
+                    {
+                      "name": "SRC_PATH",
+                      "value": "simple-runtime/kustomize-failed-deploy"
+                    },
+                    {
+                      "name": "KIND",
+                      "value": "KustomizeManifest"
+                    },
+                    {
+                      "name": "CONTROLLER",
+                      "value": "kustomize-manifests-controller"
+                    },
+                    {
+                      "name": "COMMIT",
+                      "value": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+                    },
+                    {
+                      "name": "REPLACEMENT_STRINGS",
+                      "value": "s/\\*\\*env\\*\\*/dev/g"
+                    },
+                    {
+                      "name": "IMAGES",
+                      "value": "[{\"name\":\"registry.kube-system:80/example-image-dev\",\"newTag\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"jabos/example-image-private\",\"newTag\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"},{\"name\":\"jabos/example-image-public\",\"newTag\":\"71d81140a15f1ea3a18b5a99aa819579e6d8cbe9\"}]"
+                    },
+                    {
+                      "name": "NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "NAME",
+                      "value": "failed-deploy-kustomize-manifest"
+                    },
+                    {
+                      "name": "OBJECT_UID",
+                      "value": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+                    }
+                  ],
+                  "image": "kustomize-manifest-builder:1149678155184019003924567",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "kustomize-manifest-builder",
+                  "resources": {
+                    "limits": {
+                      "cpu": "500m",
+                      "memory": "500Mi"
+                    },
+                    "requests": {
+                      "cpu": "100m",
+                      "memory": "100Mi"
+                    }
+                  },
+                  "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                      "drop": [
+                        "ALL"
+                      ]
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true
+                  },
+                  "stdin": true,
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File",
+                  "tty": true,
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true
+                    },
+                    {
+                      "mountPath": "/manifests",
+                      "name": "manifests"
+                    },
+                    {
+                      "mountPath": "/tmp",
+                      "name": "temp"
+                    },
+                    {
+                      "mountPath": "/build",
+                      "name": "build"
+                    }
+                  ]
+                },
+                {
+                  "args2022-03-18T16:39:19.012276836Z ": [
+                    "example-env",
+                    "kustomize-manifests",
+                    "failed-deploy-kustomize-manifest"
+                  ],
+                  "env": [
+                    {
+                      "name": "NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "TYPE",
+                      "value": "kustomize-manifests"
+                    },
+                    {
+                      "name": "NAME",
+                      "value": "failed-deploy-kustomize-manifest"
+                    },
+                    {
+                      "name": "KIND",
+                      "value": "KustomizeManifest"
+                    },
+                    {
+                      "name": "CONTROLLER",
+                      "value": "kustomize-manifests-controller"
+                    },
+                    {
+                      "name": "NAMESPACE",
+                      "value": "example-env"
+                    },
+                    {
+                      "name": "NAME",
+                      "value": "failed-deploy-kustomize-manifest"
+                    },
+                    {
+                      "name": "OBJECT_UID",
+                      "value": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+                    }
+                  ],
+                  "image": "manifest-deployer:1149678155184019003924567",
+                  "imagePullPolicy": "IfNotPresent",
+                  "name": "manifest-deployer",
+                  "resources": {
+                    "limits": {
+                      "cpu": "500m",
+                      "memory": "500Mi"
+                    },
+                    "requests": {
+                      "cpu": "100m",
+                      "memory": "100Mi"
+                    }
+                  },
+                  "securityContext": {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": {
+                      "drop": [
+                        "ALL"
+                      ]
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true
+                  },
+                  "stdin": true,
+                  "terminationMessagePath": "/dev/termination-log",
+                  "terminationMessagePolicy": "File",
+                  "tty": true,
+                  "volumeMounts": [
+                    {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true
+                    },
+                    {
+                      "mountPath": "/tmp",
+                      "name": "temp"
+                    },
+                    {
+                      "mountPath": "/build",
+                      "name": "build"
+                    }
+                  ]
+                }
+              ],
+              "restartPolicy": "Never",
+              "schedulerName": "default-scheduler",
+              "securityContext": {
+                "runAsNonRoot": true
+              },
+              "serviceAccount": "builder-first-repo",
+              "serviceAccountName": "builder-first-repo",
+              "terminationGracePeriodSeconds": 30,
+              "volumes": [
+                {
+                  "emptyDir": {},
+                  "name": "manifests"
+                },
+                {
+                  "emptyDir": {},
+                  "name": "git-temp"
+                },
+                {
+                  "emptyDir": {},
+                  "name": "temp"
+                },
+                {
+                  "emptyDir": {},
+                  "name": "build"
+                },
+                {
+                  "emptyDir": {},
+                  "name": "timer"
+                }
+              ]
+            }
+          },
+          "ttlSecondsAfterFinished": 30
+        },
+        "status": {
+          "conditions": [
+            {
+              "lastProbeTime": "2022-03-18T16:38:49Z",
+              "lastTransitionTime": "2022-03-18T16:38:49Z",
+              "message": "Job has reached the specified backoff limit",
+              "reason": "BackoffLimitExceeded",
+              "status": "True",
+              "type": "Failed"
+            }
+          ],
+          "failed": 6,
+          "startTime": "2022-03-18T16:34:26Z",
+          "uncountedTerminatedPods": {}
+        }
+      }
+    },
+    "Role.rbac.authorization.k8s.io/v1": {
+      "deployer-failed-deploy-kustomize-manifest": {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": {
+          "annotations": {
+            "metacontroller.k8s.io/decorator-controller": "kustomize-manifests-controller",
+            "metacontroller.k8s.io/last-applied-configuration": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"Role\",\"metadata\":{\"annotations\":{\"metacontroller.k8s.io/decorator-controller\":\"kustomize-manifests-controller\"},\"name\":\"deployer-failed-deploy-kustomize-manifest\",\"namespace\":\"example-env\"},\"rules\":[{\"apiGroups\":[\"*\"],\"resources\":[\"*\"],\"verbs\":[\"get\",\"list\",\"watch\",\"create\",\"update\",\"patch\"]}]}"
+          },
+          "creationTimestamp": "2022-03-18T16:27:40Z",
+          "managedFields": [
+            {
+              "apiVersion": "rbac.authorization.k8s.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:metacontroller.k8s.io/decorator-controller": {},
+                    "f:metacontroller.k8s.io/last-applied-configuration": {}
+                  },
+                  "f:ownerReferences": {
+                    ".": {},
+                    "k:{\"uid\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"}": {}
+                  }
+                },
+                "f:rules": {}
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:40Z"
+            }
+          ],
+          "name": "deployer-failed-deploy-kustomize-manifest",
+          "namespace": "example-env",
+          "ownerReferences": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "KustomizeManifest",
+              "name": "failed-deploy-kustomize-manifest",
+              "uid": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+            }
+          ],
+          "resourceVersion": "2420",
+          "uid": "a19826b0-372e-4176-bbf1-e6c38a48dd8b"
+        },
+        "rules": [
+          {
+            "apiGroups": [
+              "*"
+            ],
+            "resources": [
+              "*"
+            ],
+            "verbs": [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch"
+            ]
+          }
+        ]
+      }
+    },
+    "RoleBinding.rbac.authorization.k8s.io/v1": {
+      "deployer-failed-deploy-kustomize-manifest": {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": {
+          "annotations": {
+            "metacontroller.k8s.io/decorator-controller": "kustomize-manifests-controller",
+            "metacontroller.k8s.io/last-applied-configuration": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"RoleBinding\",\"metadata\":{\"annotations\":{\"metacontroller.k8s.io/decorator-controller\":\"kustomize-manifests-controller\"},\"name\":\"deployer-failed-deploy-kustomize-manifest\",\"namespace\":\"example-env\"},\"roleRef\":{\"apiGroup\":\"rbac.authorization.k8s.io\",\"kind\":\"Role\",\"name\":\"deployer-failed-deploy-kustomize-manifest\"},\"subjects\":[{\"kind\":\"ServiceAccount\",\"name\":\"builder-first-repo\",\"namespace\":\"example-env\"}]}"
+          },
+          "creationTimestamp": "2022-03-18T16:27:45Z",
+          "managedFields": [
+            {
+              "apiVersion": "rbac.authorization.k8s.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:metacontroller.k8s.io/decorator-controller": {},
+                    "f:metacontroller.k8s.io/last-applied-configuration": {}
+                  },
+                  "f:ownerReferences": {
+                    ".": {},
+                    "k:{\"uid\":\"2c56ffea-482b-4b26-823b-6f9fc871682a\"}": {}
+                  }
+                },
+                "f:roleRef": {},
+                "f:subjects": {}
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:45Z"
+            }
+          ],
+          "name": "deployer-failed-deploy-kustomize-manifest",
+          "namespace": "example-env",
+          "ownerReferences": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "blockOwnerDeletion": true,
+              "controller": true,
+              "kind": "KustomizeManifest",
+              "name": "failed-deploy-kustomize-manifest",
+              "uid": "2c56ffea-482b-4b26-823b-6f9fc871682a"
+            }
+          ],
+          "resourceVersion": "2531",
+          "uid": "02b86acb-842d-4a81-acbd-885f981af2c6"
+        },
+        "roleRef": {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-failed-deploy-kustomize-manifest"
+        },
+        "subjects": [
+          {
+            "kind": "ServiceAccount",
+            "name": "builder-first-repo",
+            "namespace": "example-env"
+          }
+        ]
+      }
+    }
+  },
+  "related": {
+    "DockerImage.jabos.io/v1": {
+      "first-image": {
+        "apiVersion": "jabos.io/v1",
+        "kind": "DockerImage",
+        "metadata": {
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"DockerImage\",\"metadata\":{\"annotations\":{},\"name\":\"first-image\",\"namespace\":\"example-env\"},\"spec\":{\"contextPath\":\"simple-runtime/images\",\"gitRepository\":\"first-repo\",\"imageName\":\"registry.kube-system:80/example-image-dev\"}}\n"
+          },
+          "creationTimestamp": "2022-03-18T16:27:12Z",
+          "finalizers": [
+            "metacontroller.io/decoratorcontroller-docker-images-controller"
+          ],
+          "generation": 1,
+          "managedFields": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                  }
+                },
+                "f:spec": {
+                  ".": {},
+                  "f:build": {},
+                  "f:contextPath": {},
+                  "f:dockerConfig": {},
+                  "f:dockerFile": {},
+                  "f:gitRepository": {},
+                  "f:imageName": {},
+                  "f:insecureRegistry": {}
+                }
+              },
+              "manager": "kubectl-client-side-apply",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:finalizers": {
+                    ".": {},
+                    "v:\"metacontroller.io/decoratorcontroller-docker-images-controller\"": {}
+                  }
+                }
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:builtCommit": {},
+                  "f:conditions": {}
+                }
+              },
+              "manager": "curl",
+              "operation": "Update",
+              "subresource": "status",
+              "time": "2022-03-18T16:31:20Z"
+            }
+          ],
+          "name": "first-image",
+          "namespace": "example-env",
+          "resourceVersion": "5480",
+          "uid": "23b9f77f-88a6-4a46-ae66-da404439a406"
+        },
+        "spec": {
+          "build": true,
+          "contextPath": "simple-runtime/images",
+          "dockerConfig": {},
+          "dockerFile": "Dockerfile",
+          "gitRepository": "first-repo",
+          "imageName": "registry.kube-system:80/example-image-dev",
+          "insecureRegistry": true
+        },
+        "status": {
+          "builtCommit": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9",
+          "conditions": [
+            {
+              "status": "True",
+              "type": "Synced"
+            }
+          ]
+        }
+      },
+      "first-image-docker-hub-private": {
+        "apiVersion": "jabos.io/v1",
+        "kind": "DockerImage",
+        "metadata": {
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"DockerImage\",\"metadata\":{\"annotations\":{},\"name\":\"first-image-docker-hub-private\",\"namespace\":\"example-env\"},\"spec\":{\"contextPath\":\"simple-runtime/images\",\"dockerHub\":{\"secret\":\"docker-hub\"},\"gitRepository\":\"first-repo\",\"imageName\":\"jabos/example-image-private\"}}\n"
+          },
+          "creationTimestamp": "2022-03-18T16:27:12Z",
+          "finalizers": [
+            "metacontroller.io/decoratorcontroller-docker-images-controller"
+          ],
+          "generation": 1,
+          "managedFields": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                  }
+                },
+                "f:spec": {
+                  ".": {},
+                  "f:build": {},
+                  "f:contextPath": {},
+                  "f:dockerConfig": {},
+                  "f:dockerFile": {},
+                  "f:dockerHub": {
+                    ".": {},
+                    "f:password": {},
+                    "f:secret": {},
+                    "f:username": {}
+                  },
+                  "f:gitRepository": {},
+                  "f:imageName": {},
+                  "f:insecureRegistry": {}
+                }
+              },
+              "manager": "kubectl-client-side-apply",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:finalizers": {
+                    ".": {},
+                    "v:\"metacontroller.io/decoratorcontroller-docker-images-controller\"": {}
+                  }
+                }
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:17Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:builtCommit": {},
+                  "f:conditions": {}
+                }
+              },
+              "manager": "curl",
+              "operation": "Update",
+              "subresource": "status",
+              "time": "2022-03-18T16:30:20Z"
+            }
+          ],
+          "name": "first-image-docker-hub-private",
+          "namespace": "example-env",
+          "resourceVersion": "4871",
+          "uid": "406167ac-418a-46b7-b99d-4f66468f1286"
+        },
+        "spec": {
+          "build": true,
+          "contextPath": "simple-runtime/images",
+          "dockerConfig": {},
+          "dockerFile": "Dockerfile",
+          "dockerHub": {
+            "password": "docker_hub_password",
+            "secret": "docker-hub",
+            "username": "docker_hub_username"
+          },
+          "gitRepository": "first-repo",
+          "imageName": "jabos/example-image-private",
+          "insecureRegistry": true
+        },
+        "status": {
+          "builtCommit": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9",
+          "conditions": [
+            {
+              "status": "True",
+              "type": "Synced"
+            }
+          ]
+        }
+      },
+      "first-image-docker-hub-public": {
+        "apiVersion": "jabos.io/v1",
+        "kind": "DockerImage",
+        "metadata": {
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"DockerImage\",\"metadata\":{\"annotations\":{},\"name\":\"first-image-docker-hub-public\",\"namespace\":\"example-env\"},\"spec\":{\"contextPath\":\"simple-runtime/images\",\"dockerHub\":{\"secret\":\"docker-hub\"},\"gitRepository\":\"first-repo\",\"imageName\":\"jabos/example-image-public\"}}\n"
+          },
+          "creationTimestamp": "2022-03-18T16:27:12Z",
+          "finalizers": [
+            "metacontroller.io/decoratorcontroller-docker-images-controller"
+          ],
+          "generation": 1,
+          "managedFields": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                  }
+                },
+                "f:spec": {
+                  ".": {},
+                  "f:build": {},
+                  "f:contextPath": {},
+                  "f:dockerConfig": {},
+                  "f:dockerFile": {},
+                  "f:dockerHub": {
+                    ".": {},
+                    "f:password": {},
+                    "f:secret": {},
+                    "f:username": {}
+                  },
+                  "f:gitRepository": {},
+                  "f:imageName": {},
+                  "f:insecureRegistry": {}
+                }
+              },
+              "manager": "kubectl-client-side-apply",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:finalizers": {
+                    ".": {},
+                    "v:\"metacontroller.io/decoratorcontroller-docker-images-controller\"": {}
+                  }
+                }
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:13Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  "f:builtCommit": {},
+                  "f:conditions": {}
+                }
+              },
+              "manager": "curl",
+              "operation": "Update",
+              "subresource": "status",
+              "time": "2022-03-18T16:30:32Z"
+            }
+          ],
+          "name": "first-image-docker-hub-public",
+          "namespace": "example-env",
+          "resourceVersion": "4980",
+          "uid": "760e1dee-68de-4e01-9323-d958f48b8cdc"
+        },
+        "spec": {
+          "build": true,
+          "contextPath": "simple-runtime/images",
+          "dockerConfig": {},
+          "dockerFile": "Dockerfile",
+          "dockerHub": {
+            "password": "docker_hub_password",
+            "secret": "docker-hub",
+            "username": "docker_hub_username"
+          },
+          "gitRepository": "first-repo",
+          "imageName": "jabos/example-image-public",
+          "insecureRegistry": true
+        },
+        "status": {
+          "builtCommit": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9",
+          "conditions": [
+            {
+              "status": "True",
+              "type": "Synced"
+            }
+          ]
+        }
+      }
+    },
+    "GitRepository.jabos.io/v1": {
+      "first-repo": {
+        "apiVersion": "jabos.io/v1",
+        "kind": "GitRepository",
+        "metadata": {
+          "annotations": {
+            "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"jabos.io/v1\",\"kind\":\"GitRepository\",\"metadata\":{\"annotations\":{},\"name\":\"first-repo\",\"namespace\":\"example-env\"},\"spec\":{\"branch\":\"main\",\"url\":\"https://github.com/srfrnk/jabos-examples.git\"}}\n"
+          },
+          "creationTimestamp": "2022-03-18T16:27:12Z",
+          "finalizers": [
+            "metacontroller.io/decoratorcontroller-git-repositories-controller"
+          ],
+          "generation": 1,
+          "managedFields": [
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:annotations": {
+                    ".": {},
+                    "f:kubectl.kubernetes.io/last-applied-configuration": {}
+                  }
+                },
+                "f:spec": {
+                  ".": {},
+                  "f:branch": {},
+                  "f:url": {}
+                }
+              },
+              "manager": "kubectl-client-side-apply",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:metadata": {
+                  "f:finalizers": {
+                    ".": {},
+                    "v:\"metacontroller.io/decoratorcontroller-git-repositories-controller\"": {}
+                  }
+                }
+              },
+              "manager": "metacontroller",
+              "operation": "Update",
+              "time": "2022-03-18T16:27:12Z"
+            },
+            {
+              "apiVersion": "jabos.io/v1",
+              "fieldsType": "FieldsV1",
+              "fieldsV1": {
+                "f:status": {
+                  ".": {},
+                  "f:conditions": {},
+                  "f:latestCommit": {}
+                }
+              },
+              "manager": "curl",
+              "operation": "Update",
+              "subresource": "status",
+              "time": "2022-03-18T16:27:15Z"
+            }
+          ],
+          "name": "first-repo",
+          "namespace": "example-env",
+          "resourceVersion": "2206",
+          "uid": "e3983e39-2640-4212-bc5f-e109bb0aba85"
+        },
+        "spec": {
+          "branch": "main",
+          "url": "https://github.com/srfrnk/jabos-examples.git"
+        },
+        "status": {
+          "conditions": [
+            {
+              "status": "True",
+              "type": "Syncing"
+            }
+          ],
+          "latestCommit": "71d81140a15f1ea3a18b5a99aa819579e6d8cbe9"
+        }
+      }
+    }
+  },
+  "finalizing": false
+}

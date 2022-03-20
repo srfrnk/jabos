@@ -240,11 +240,12 @@ Please add a `security` label for quicker response.
 ### Prerequisites
 
 1. `make` installed (Depending on your OS - start <a href="https://www.gnu.org/software/make/" target="_blank">here</a>)
-1. `docker` installed (To install wee <a href="https://www.docker.com/get-started" target="_blank">here</a>)
+1. `docker` installed (To install see <a href="https://www.docker.com/get-started" target="_blank">here</a>)
 1. `minikube` installed (To install minikube see <a href="https://minikube.sigs.k8s.io/docs/start/" target="_blank">this</a>)
 1. `NodeJS` installed (To install NodeJS see <a href="https://nodejs.org" target="_blank">this</a>)
 1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
 1. `GNU Parallel` installed for <a href="https://www.gnu.org/software/parallel/" target="_blank">your OS</a>. For Debian based you can use `sudo apt-get install parallel`.
+1. `K9s` installed (To install see <a href="https://k9scli.io/topics/install/" target="_blank">here</a>). For automated port forwarding set  [K9s configuration](~/.config/k9s/config.yml) with `scanForAutoPf: true`. Make sure K9s version supports the feature (https://github.com/derailed/k9s/pull/1498).
 
 ### Environment Setup
 
@@ -253,7 +254,6 @@ Please add a `security` label for quicker response.
 1. Start a minikube cluster `minikube start`
 1. Run `make setup` once
 1. Run `make build` after each code change
-1. Run terminal with `kubectl port-forward -n efk svc/efk-kibana 5601` then open <a href="http://localhost:5601/app/discover" target="_blank">kibana</a>
 1. To deploy examples
    1. Locally clone <a href="https://github.com/srfrnk/jabos-examples" target="_blank">jabos-examples repo</a>
    1. Follow instructions from the README file in the cloned folder

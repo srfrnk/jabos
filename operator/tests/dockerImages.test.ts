@@ -470,3 +470,15 @@ test('allowInsecureExecutionForKaniko undefined container', () => {
     }
   })).toMatchSnapshot();
 });
+
+
+test('Issue #60 1', async () => {
+  const req = {
+    body: require('./test_input/issue#60.1.json')
+  } as Request;
+
+  const res = mockResponse();
+  await dockerImages.sync(req, res as unknown as Response, () => { /* NOOP */ });
+  expect(res.json.mock.calls[0][0].attachments[0].metadata.annotations['metacontroller.k8s.io/last-applied-configuration']).toBeUndefined();
+  expect(res.status).toHaveBeenCalledWith(200);
+});

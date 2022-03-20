@@ -163,7 +163,7 @@ export interface ServiceMonitorSpec {
   readonly selector: ServiceMonitorSpecSelector;
 
   /**
-   * TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics. All labels set in `selector.matchLabels` are automatically transferred.
+   * TargetLabels transfers labels from the Kubernetes `Service` onto the created metrics.
    *
    * @schema ServiceMonitorSpec#targetLabels
    */
@@ -237,6 +237,13 @@ export interface ServiceMonitorSpecEndpoints {
   readonly bearerTokenSecret?: ServiceMonitorSpecEndpointsBearerTokenSecret;
 
   /**
+   * FollowRedirects configures whether scrape requests follow HTTP 3xx redirects.
+   *
+   * @schema ServiceMonitorSpecEndpoints#followRedirects
+   */
+  readonly followRedirects?: boolean;
+
+  /**
    * HonorLabels chooses the metric's labels on collisions with target labels.
    *
    * @schema ServiceMonitorSpecEndpoints#honorLabels
@@ -300,7 +307,7 @@ export interface ServiceMonitorSpecEndpoints {
   readonly proxyUrl?: string;
 
   /**
-   * RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields and replaces original scrape job name with __tmp_prometheus_job_name. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
+   * RelabelConfigs to apply to samples before scraping. Prometheus Operator automatically adds relabelings for a few standard Kubernetes fields. The original scrape job's name is available via the `__tmp_prometheus_job_name` label. More info: https://prometheus.io/docs/prometheus/latest/configuration/configuration/#relabel_config
    *
    * @schema ServiceMonitorSpecEndpoints#relabelings
    */
@@ -347,6 +354,7 @@ export function toJson_ServiceMonitorSpecEndpoints(obj: ServiceMonitorSpecEndpoi
     'basicAuth': toJson_ServiceMonitorSpecEndpointsBasicAuth(obj.basicAuth),
     'bearerTokenFile': obj.bearerTokenFile,
     'bearerTokenSecret': toJson_ServiceMonitorSpecEndpointsBearerTokenSecret(obj.bearerTokenSecret),
+    'followRedirects': obj.followRedirects,
     'honorLabels': obj.honorLabels,
     'honorTimestamps': obj.honorTimestamps,
     'interval': obj.interval,
@@ -381,7 +389,7 @@ export interface ServiceMonitorSpecNamespaceSelector {
   readonly any?: boolean;
 
   /**
-   * List of namespace names.
+   * List of namespace names to select from.
    *
    * @schema ServiceMonitorSpecNamespaceSelector#matchNames
    */
