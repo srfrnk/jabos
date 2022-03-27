@@ -291,6 +291,9 @@ p {
               <h2>Apis</h2>
             <li>
                         <li class="">
+                          <a href="#crd-Cdk8sManifest">Cdk8sManifest</a>
+                        </li>
+                        <li class="">
                           <a href="#crd-DockerImage">DockerImage</a>
                         </li>
                         <li class="">
@@ -317,12 +320,14 @@ p {
             <p><h1>Jabos - Just Another Boring Ops System</h1></p>
             <p>Jabos attempts to be a fully automated K8s GitOps framework.</p>
             <p>
-                <div class="app-desc">Version: 1.0.195</div>
+                <div class="app-desc">Version: 1.0.205</div>
             </p>
           </div>
         </div>
         <div class="clearfix"></div>
         <div id="sections">
+                        <section id="crd-Cdk8sManifest" class="crd" data="Cdk8sManifest">
+                        </section>
                         <section id="crd-DockerImage" class="crd" data="DockerImage">
                         </section>
                         <section id="crd-GitRepository" class="crd" data="GitRepository">
@@ -863,6 +868,60 @@ g,0<c.length&&(c=Aa[c[0]])&&(a.c[e]=c))}a.c[e]||(c=Aa[e])&&(a.c[e]=c);for(c=0;c<
   <script>
     // Script section to load models into a JS Var
     var defs = {}
+    defs["Cdk8sManifest"] = {
+  "title" : "Cdk8sManifest",
+  "required" : [ "spec" ],
+  "type" : "object",
+  "properties" : {
+    "spec" : {
+      "$ref" : "#/components/schemas/Cdk8sManifest_spec"
+    },
+    "status" : {
+      "$ref" : "#/components/schemas/DockerImage_status"
+    }
+  },
+  "description" : "`Cdk8sManifest` objects define a folder with [Cdk8s](https://cdk8s.io/) based manifests to deploy.",
+  "xml" : {
+    "name" : "jabos.io",
+    "namespace" : "v1"
+  }
+};
+    defs["Cdk8sManifest_spec"] = {
+  "required" : [ "gitRepository", "targetNamespace" ],
+  "type" : "object",
+  "properties" : {
+    "cleanupPolicy" : {
+      "type" : "string",
+      "description" : "The cleanup policy to use when object is deleted. **`Delete`** will delete all created objects. **`Leave`** will leave all object intact.",
+      "default" : "Leave",
+      "enum" : [ "Delete", "Leave" ]
+    },
+    "commitEnvKey" : {
+      "type" : "string",
+      "description" : "The name of the environment variable to use for injecting the latest git commit hash. The commit hash is used to tag generated images for example. See usage example below.",
+      "default" : "latestCommitHash"
+    },
+    "env" : {
+      "type" : "object",
+      "additionalProperties" : true,
+      "description" : "Key-Values of environment variables to inject when building.",
+      "default" : { }
+    },
+    "gitRepository" : {
+      "type" : "string",
+      "description" : "The name of a `GitRepository` object which defines the codebase for the manifests. **Must be in the same namespace**."
+    },
+    "path" : {
+      "type" : "string",
+      "description" : "The folder path **relative to the git repository root** where the jsonnet manifests are found.",
+      "default" : "."
+    },
+    "targetNamespace" : {
+      "type" : "string",
+      "description" : "The namespace into which deployment should be made. **Important Note: Due to a limitation with [Metacontroller](https://github.com/metacontroller/metacontroller) this has to be the same namespace as this object is put into.**"
+    }
+  }
+};
     defs["DockerImage"] = {
   "title" : "DockerImage",
   "required" : [ "spec" ],
