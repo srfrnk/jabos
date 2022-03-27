@@ -13,12 +13,16 @@
 		{
 			"path": "../jabos-examples-gitlab"
 		},
+		{
+			"path": "../k9s"
+		}
 	],
 	"settings": {
 		"jest.disabledWorkspaceFolders": [
 			"jabos-examples",
 			"jabos-examples-private",
 			"jabos-examples-gitlab",
+			"k9s"
 		],
 		"jest.rootPath": "operator",
 		"jestrunner.changeDirectoryToWorkspaceRoot": true,

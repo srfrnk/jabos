@@ -1,5 +1,6 @@
 import { ApiObjectProps } from 'cdk8s';
-import { debugId, getRepo } from '../misc';
+import { Quantity } from '../imports/k8s';
+import { debugId, getRepo, _private } from '../misc';
 
 test('misc getRepo no related', () => {
   expect(() => {
@@ -171,4 +172,12 @@ test('debugId no value', () => {
 
 test('debugId undefined', () => {
   expect(debugId(undefined as ApiObjectProps)).toMatchSnapshot();
+});
+
+test('convertQuantities with number', () => {
+  expect(_private.convertQuantities({ num: 10 })).toMatchSnapshot();
+});
+
+test('convertQuantities with Quantity', () => {
+  expect(_private.convertQuantities({ num: Quantity.fromNumber(10) })).toMatchSnapshot();
 });

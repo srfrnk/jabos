@@ -1,5 +1,5 @@
 import { App, Chart } from 'cdk8s';
-import { Container, KubeJob } from '../imports/k8s';
+import { Container, KubeJob, Volume } from '../imports/k8s';
 import manifestBuilderJob from '../manifestBuilderJob';
 import { clearMock, setMock } from './settingsMock';
 
@@ -39,6 +39,7 @@ test('manifestBuilderJob', () => {
     buildNumber: 'buildNumber_value',
     type: 'type_value',
     containers: [{} as Container],
+    volumes: [],
     metricName: 'metricName_value',
     metricLabels: {},
     kind: 'kind_value',
@@ -76,6 +77,7 @@ test('manifestBuilderJob no containers', () => {
     buildNumber: 'buildNumber_value',
     type: 'type_value',
     containers: undefined,
+    volumes: [],
     metricName: 'metricName_value',
     metricLabels: {},
     kind: 'kind_value',

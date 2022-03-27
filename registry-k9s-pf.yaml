@@ -1,0 +1,5 @@
+spec:
+  template:
+    metadata:
+      annotations:
+        k9scli.io/auto-port-forwards: registry::5555:5000

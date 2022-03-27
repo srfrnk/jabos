@@ -1,0 +1,5 @@
+spec:
+  template:
+    metadata:
+      annotations:
+        k9scli.io/auto-port-forwards: grafana::3000:3000

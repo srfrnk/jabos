@@ -1,6 +1,6 @@
 import { ApiObjectProps } from 'cdk8s';
 import builderJob from './builderJob';
-import { Container, KubeJobProps, Quantity } from './imports/k8s';
+import { Container, KubeJobProps, Quantity, Volume } from './imports/k8s';
 import { GitRepositoryPropsEx } from './misc';
 import settings from './settings';
 
@@ -11,6 +11,7 @@ export default function (options: {
   buildNumber: string,
   type: string,
   containers: Container[],
+  volumes: Volume[],
   metricName: string,
   metricLabels: { [key: string]: string; },
   kind: string,
@@ -96,6 +97,7 @@ export default function (options: {
       }
     ],
     volumes: [
+      ...options.volumes,
       {
         name: "manifests",
         emptyDir: {}

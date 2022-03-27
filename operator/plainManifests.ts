@@ -19,11 +19,17 @@ export default {
     const replacements = spec.replacements;
     replacements[commitReplacementString] = latestCommit;
 
-    await genericManifests.sync('plain', 'plain', 'plain', {
-      'REPLACEMENT_STRINGS': Object.entries(replacements)
-        .map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`)
-        .join(';')
-    }, request, response);
+    await genericManifests.sync(
+      {
+        metricName: 'plain',
+        type: 'plain',
+        metricLabel: 'plain',
+        env: {
+          'REPLACEMENT_STRINGS': Object.entries(replacements)
+            .map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`)
+            .join(';')
+        }
+      }, request, response);
   },
 
   async customize(customizeRequest: Request, response: Response, next: NextFunction) {

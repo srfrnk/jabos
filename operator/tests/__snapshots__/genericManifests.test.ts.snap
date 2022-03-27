@@ -832,6 +832,874 @@ Array [
 ]
 `;
 
+exports[`genericManifests sync no volumeMounts 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "*",
+            ],
+            "resources": Array [
+              "*",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-gitRepository_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "manifest-builder-type": "type_value-manifests",
+            "type": "manifest-builder",
+          },
+          "name": "manifest-name_value-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "manifest-name_value-commit_value",
+              },
+              "name": "manifest-name_value-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "SRC_PATH",
+                      "value": ".",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "env1",
+                      "value": "value1",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixtype_value-manifest-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "type_value-manifest-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "targetNamespace_value",
+                    "type_value-manifests",
+                    "name_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "targetNamespace_value",
+                    },
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixmanifest-deployer:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "manifest-deployer",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-gitRepository_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "manifests",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`genericManifests sync no volumes 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "*",
+            ],
+            "resources": Array [
+              "*",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-gitRepository_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "manifest-builder-type": "type_value-manifests",
+            "type": "manifest-builder",
+          },
+          "name": "manifest-name_value-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "manifest-name_value-commit_value",
+              },
+              "name": "manifest-name_value-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "SRC_PATH",
+                      "value": ".",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "env1",
+                      "value": "value1",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixtype_value-manifest-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "type_value-manifest-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "targetNamespace_value",
+                    "type_value-manifests",
+                    "name_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "targetNamespace_value",
+                    },
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixmanifest-deployer:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "manifest-deployer",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-gitRepository_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "manifests",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
 exports[`genericManifests sync same commit no trigger 1`] = `
 Array [
   Object {
@@ -1151,6 +2019,1308 @@ Array [
                   "resources": Object {
                     "limits": Object {
                       "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "targetNamespace_value",
+                    "type_value-manifests",
+                    "name_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "targetNamespace_value",
+                    },
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixmanifest-deployer:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "manifest-deployer",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-gitRepository_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "manifests",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`genericManifests sync with empty resource requests 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "*",
+            ],
+            "resources": Array [
+              "*",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-gitRepository_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "manifest-builder-type": "type_value-manifests",
+            "type": "manifest-builder",
+          },
+          "name": "manifest-name_value-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "manifest-name_value-commit_value",
+              },
+              "name": "manifest-name_value-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "SRC_PATH",
+                      "value": ".",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "env1",
+                      "value": "value1",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixtype_value-manifest-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "type_value-manifest-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": 1234,
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "targetNamespace_value",
+                    "type_value-manifests",
+                    "name_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "targetNamespace_value",
+                    },
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixmanifest-deployer:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "manifest-deployer",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-gitRepository_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "manifests",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`genericManifests sync with empty resources 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "*",
+            ],
+            "resources": Array [
+              "*",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-gitRepository_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "manifest-builder-type": "type_value-manifests",
+            "type": "manifest-builder",
+          },
+          "name": "manifest-name_value-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "manifest-name_value-commit_value",
+              },
+              "name": "manifest-name_value-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "SRC_PATH",
+                      "value": ".",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "env1",
+                      "value": "value1",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixtype_value-manifest-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "type_value-manifest-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [
+                    "targetNamespace_value",
+                    "type_value-manifests",
+                    "name_value",
+                  ],
+                  "env": Array [
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "TARGET_NAMESPACE",
+                      "value": "targetNamespace_value",
+                    },
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixmanifest-deployer:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "manifest-deployer",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "stdin": true,
+                  "tty": true,
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/manifests",
+                      "name": "manifests",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/build",
+                      "name": "build",
+                    },
+                  ],
+                },
+              ],
+              "restartPolicy": "Never",
+              "securityContext": Object {
+                "runAsNonRoot": true,
+              },
+              "serviceAccountName": "builder-gitRepository_value",
+              "volumes": Array [
+                Object {
+                  "emptyDir": Object {},
+                  "name": "manifests",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "git-temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "temp",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "build",
+                },
+                Object {
+                  "emptyDir": Object {},
+                  "name": "timer",
+                },
+              ],
+            },
+          },
+          "ttlSecondsAfterFinished": 1234,
+        },
+      },
+    ],
+    "status": Object {
+      "conditions": Array [
+        Object {
+          "status": "False",
+          "type": "Synced",
+        },
+      ],
+    },
+  },
+]
+`;
+
+exports[`genericManifests sync with resource limits 1`] = `
+Array [
+  Object {
+    "attachments": Array [
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "Role",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "rules": Array [
+          Object {
+            "apiGroups": Array [
+              "*",
+            ],
+            "resources": Array [
+              "*",
+            ],
+            "verbs": Array [
+              "get",
+              "list",
+              "watch",
+              "create",
+              "update",
+              "patch",
+            ],
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "kind": "RoleBinding",
+        "metadata": Object {
+          "name": "deployer-name_value",
+          "namespace": "targetNamespace_value",
+        },
+        "roleRef": Object {
+          "apiGroup": "rbac.authorization.k8s.io",
+          "kind": "Role",
+          "name": "deployer-name_value",
+        },
+        "subjects": Array [
+          Object {
+            "kind": "ServiceAccount",
+            "name": "builder-gitRepository_value",
+            "namespace": "namespace_value",
+          },
+        ],
+      },
+      Object {
+        "apiVersion": "batch/v1",
+        "kind": "Job",
+        "metadata": Object {
+          "labels": Object {
+            "manifest-builder-type": "type_value-manifests",
+            "type": "manifest-builder",
+          },
+          "name": "manifest-name_value-commit_value",
+        },
+        "spec": Object {
+          "activeDeadlineSeconds": 1234,
+          "backoffLimit": 1234,
+          "completionMode": "NonIndexed",
+          "completions": 1,
+          "parallelism": 1,
+          "template": Object {
+            "metadata": Object {
+              "labels": Object {
+                "builder": "manifest-name_value-commit_value",
+              },
+              "name": "manifest-name_value-commit_value",
+            },
+            "spec": Object {
+              "containers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "TYPE",
+                      "value": "type_value-manifests",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpost-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "post-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                      "readOnly": true,
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                  ],
+                },
+              ],
+              "initContainers": Array [
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "URL",
+                      "value": "url_value",
+                    },
+                    Object {
+                      "name": "BRANCH",
+                      "value": "branch_value",
+                    },
+                    Object {
+                      "name": "COMMIT",
+                      "value": "commit_value",
+                    },
+                    Object {
+                      "name": "METRIC_NAME",
+                      "value": "metricName_valueManifestsBuilder",
+                    },
+                    Object {
+                      "name": "METRIC_LABELS",
+                      "value": "{\\"namespace\\":\\"namespace_value\\",\\"metricLabel_value_manifests\\":\\"name_value\\"}",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                    Object {
+                      "name": "JABOS_OPERATOR_URL",
+                      "value": "http://operator.settings_namespace:1234/",
+                    },
+                  ],
+                  "image": "settings_imagePrefixpre-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "pre-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": "500m",
+                      "memory": "500Mi",
+                    },
+                    "requests": Object {
+                      "cpu": "100m",
+                      "memory": "100Mi",
+                    },
+                  },
+                  "securityContext": Object {
+                    "allowPrivilegeEscalation": false,
+                    "capabilities": Object {
+                      "drop": Array [
+                        "ALL",
+                      ],
+                    },
+                    "readOnlyRootFilesystem": true,
+                    "runAsNonRoot": true,
+                  },
+                  "volumeMounts": Array [
+                    Object {
+                      "mountPath": "/gitTemp",
+                      "name": "git-temp",
+                    },
+                    Object {
+                      "mountPath": "/tmp",
+                      "name": "temp",
+                    },
+                    Object {
+                      "mountPath": "/timer",
+                      "name": "timer",
+                    },
+                  ],
+                },
+                Object {
+                  "args": Array [],
+                  "env": Array [
+                    Object {
+                      "name": "SRC_PATH",
+                      "value": ".",
+                    },
+                    Object {
+                      "name": "KIND",
+                      "value": "kind_value",
+                    },
+                    Object {
+                      "name": "CONTROLLER",
+                      "value": "controller_name",
+                    },
+                    Object {
+                      "name": "env1",
+                      "value": "value1",
+                    },
+                    Object {
+                      "name": "NAMESPACE",
+                      "value": "namespace_value",
+                    },
+                    Object {
+                      "name": "NAME",
+                      "value": "name_value",
+                    },
+                    Object {
+                      "name": "OBJECT_UID",
+                      "value": "uid_value",
+                    },
+                  ],
+                  "image": "settings_imagePrefixtype_value-manifest-builder:settings_build_number",
+                  "imagePullPolicy": "Always",
+                  "name": "type_value-manifest-builder",
+                  "resources": Object {
+                    "limits": Object {
+                      "cpu": 1234,
                       "memory": "500Mi",
                     },
                     "requests": Object {

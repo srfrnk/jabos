@@ -10,6 +10,8 @@ import jsonnetManifests from './jsonnetManifests';
 import plainManifests from './plainManifests';
 import helmTemplateManifests from './helmTemplateManifests';
 import kustomizeManifests from './kustomizeManifests';
+import cdk8sManifests from './cdk8sManifests';
+
 
 const app = express();
 
@@ -35,31 +37,28 @@ app.get('/', asyncHandler(async (request: Request, response: Response, next: Nex
 app.post('/addMetric/:metric', asyncHandler(addMetricReq));
 app.post('/setMetric/:metric', asyncHandler(setMetricReq));
 
-app.post('/git-repositories-sync', asyncHandler(gitRepositories.sync));
-app.post('/git-repositories-customize', asyncHandler(gitRepositories.customize));
-app.post('/git-repositories-finalize', asyncHandler(gitRepositories.finalize));
+registerCrdHooks('git-repositories', gitRepositories);
+registerCrdHooks('docker-images', dockerImages);
 
-app.post('/docker-images-sync', asyncHandler(dockerImages.sync));
-app.post('/docker-images-customize', asyncHandler(dockerImages.customize));
-app.post('/docker-images-finalize', asyncHandler(dockerImages.finalize));
-
-app.post('/jsonnet-manifests-sync', asyncHandler(jsonnetManifests.sync));
-app.post('/jsonnet-manifests-customize', asyncHandler(jsonnetManifests.customize));
-app.post('/jsonnet-manifests-finalize', asyncHandler(jsonnetManifests.finalize));
-
-app.post('/plain-manifests-sync', asyncHandler(plainManifests.sync));
-app.post('/plain-manifests-customize', asyncHandler(plainManifests.customize));
-app.post('/plain-manifests-finalize', asyncHandler(plainManifests.finalize));
-
-app.post('/helm-template-manifests-sync', asyncHandler(helmTemplateManifests.sync));
-app.post('/helm-template-manifests-customize', asyncHandler(helmTemplateManifests.customize));
-app.post('/helm-template-manifests-finalize', asyncHandler(helmTemplateManifests.finalize));
-
-app.post('/kustomize-manifests-sync', asyncHandler(kustomizeManifests.sync));
-app.post('/kustomize-manifests-customize', asyncHandler(kustomizeManifests.customize));
-app.post('/kustomize-manifests-finalize', asyncHandler(kustomizeManifests.finalize));
+registerManifestCrdHooks('jsonnet', jsonnetManifests);
+registerManifestCrdHooks('plain', plainManifests);
+registerManifestCrdHooks('helm-template', helmTemplateManifests);
+registerManifestCrdHooks('kustomize', kustomizeManifests);
+registerManifestCrdHooks('cdk8s', cdk8sManifests);
 
 app.use((err, req, res, next) => {
   console.error("Unhandled Exception:", err);
   res.status(500).send(err);
 });
+
+type Handler = (syncRequest: Request, response: Response, next: NextFunction) => void;
+
+function registerCrdHooks(crdName: string, controller: { sync: Handler, customize: Handler, finalize: Handler }) {
+  app.post(`/${crdName}-sync`, asyncHandler(controller.sync));
+  app.post(`/${crdName}-customize`, asyncHandler(controller.customize));
+  app.post(`/${crdName}-finalize`, asyncHandler(controller.finalize));
+}
+
+function registerManifestCrdHooks(manifestCrdName: string, controller: { sync: Handler, customize: Handler, finalize: Handler }) {
+  registerCrdHooks(`${manifestCrdName}-manifests`, controller);
+}

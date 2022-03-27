@@ -1,5 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`convertQuantities with Quantity 1`] = `
+Object {
+  "num": Quantity {
+    "value": 10,
+  },
+}
+`;
+
+exports[`convertQuantities with number 1`] = `
+Object {
+  "num": Quantity {
+    "value": 10,
+  },
+}
+`;
+
 exports[`debugId no value 1`] = `"undefined:undefined"`;
 
 exports[`debugId undefined 1`] = `"undefined:undefined"`;

@@ -1,0 +1,5 @@
+spec:
+  template:
+    metadata:
+      annotations:
+        k9scli.io/auto-port-forwards: efk-kibana::5601:5601

@@ -33,14 +33,18 @@ setup: FORCE
 		done; \
 		kubectl -n grafana-dashboard-operator create secret generic grafana-api --from-literal=token=$${TOKEN}
 	kubectl wait -n efk --for=condition=complete --timeout=600s job/initializer
+	@kubectl patch -n efk deployments.apps efk-kibana --patch-file efk-k9s-pf.yaml
+	@kubectl patch -n monitoring deployments.apps kube-prometheus-stack-grafana --patch-file grafana-k9s-pf.yaml
+	@kubectl patch -n kube-system replicationcontrollers registry --patch-file registry-k9s-pf.yaml
+	@kubectl delete pod -n kube-system -l kubernetes.io/minikube-addons=registry -l actual-registry=true
 	@tput bold
 	@tput setaf 2
 	@echo
+	@echo "You can make you sure your K9s configuration (~/.config/k9s/config.yml) has 'scanForAutoPf: true' and then run 'k9s' to provide port-forwarding."
 	@echo "You can view Kibana in your browser by going to http://localhost:5601/app/discover"
 	@echo "You can view Grafana in your browser by going to http://localhost:3000 (User:'admin' Password:'prom-operator')"
 	@echo
 	@tput sgr0
-	make service-port-forward
 
 build_number: FORCE
 	$(eval BUILD_NUMBER=$(shell od -An -N10 -i /dev/urandom | tr -d ' -' ))
@@ -62,6 +66,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./cdk8s-manifest-builder -t cdk8s-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
 	docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
@@ -85,10 +90,7 @@ build: FORCE manifests compile images
 deploy-examples: FORCE
 	docker pull node:lts-alpine
 	docker tag node:lts-alpine localhost:5555/node:lts-alpine
-	kubectl port-forward -n kube-system svc/registry 5555:80 &
-	until curl localhost:5555; do sleep 1; done
 	docker push localhost:5555/node:lts-alpine
-	- ps aux | grep "kubectl port-forward -n kube-system svc/registry 5555:80" | awk '{print $$2}'| xargs kill
 
 	make -C ../jabos-examples set-secret
 	make -C ../jabos-examples-private set-secret
@@ -104,9 +106,6 @@ un-deploy-examples: FORCE
 	- kubectl delete -f ../jabos-examples/failed-builds.yaml
 	- kubectl delete -f ../jabos-examples-private/simple-build.yaml
 	- kubectl delete -f ../jabos-examples-gitlab/simple-build.yaml
-
-service-port-forward: FORCE
-	parallel --linebuffer -j0 eval kubectl port-forward -n {} ::: "efk svc/efk-kibana 5601" "monitoring svc/kube-prometheus-stack-grafana 3000:80"
 
 build-docs: FORCE manifests
 	docker run --mount "type=bind,src=$$PWD,dst=/data" \
@@ -130,3 +129,6 @@ status-check-examples:
 	@echo ""
 	@echo "PlainManifest:"
 	- @kubectl get --all-namespaces plain-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
+	@echo ""
+	@echo "Cdk8sManifest:"
+	- @kubectl get --all-namespaces cdk8s-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
