@@ -66,6 +66,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./plain-manifest-builder -t plain-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./helm-template-manifest-builder -t helm-template-manifest-builder:${BUILD_NUMBER}
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./kustomize-manifest-builder -t kustomize-manifest-builder:${BUILD_NUMBER}
+	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./cdk8s-manifest-builder -t cdk8s-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
 	docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
@@ -128,3 +129,6 @@ status-check-examples:
 	@echo ""
 	@echo "PlainManifest:"
 	- @kubectl get --all-namespaces plain-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"
+	@echo ""
+	@echo "Cdk8sManifest:"
+	- @kubectl get --all-namespaces cdk8s-manifests.jabos.io -ojsonpath="{range .items[*]}{.metadata.namespace}{':'}{.metadata.name}{'\t'}{.status.conditions[?(@.type=='Synced')].status}{'\n'}{end}" | GREP_COLOR="1;32" grep --color=always -E "True|$$" | GREP_COLOR="1;31" grep --color=always -E "False|$$"

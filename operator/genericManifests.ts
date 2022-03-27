@@ -7,14 +7,23 @@ import { debugId, useExistingJob, getRepo, needNewBuild } from './misc';
 import jabosOperatorUrlEnv from './jabosOperatorUrlEnv';
 import { BaseRequest, CustomizeRequest, CustomizeResponse, CustomizeResponseRelatedResource, FinalizeRequest, FinalizeResponse, SyncRequest, SyncResponse } from './metaControllerHooks';
 import { ApiObjectProps, App, Chart } from 'cdk8s';
-import { KubeJob, KubeRole, KubeRoleBinding, KubeServiceAccount, Quantity } from './imports/k8s';
+import { KubeJob, KubeRole, KubeRoleBinding, KubeServiceAccount, Quantity, ResourceRequirements, Volume, VolumeMount } from './imports/k8s';
 
 export default {
   debugRequest(typeName: string, typeFunc: string, object: ApiObjectProps, request: BaseRequest): void {
     if (settings.debug()) console.log(`${typeName}Manifests ${typeFunc} req (${debugId(object)})`, JSON.stringify(request));
   },
 
-  async sync(metricName: string, type: string, metricLabel: string, env: { [key: string]: string }, request: SyncRequest, response: Response) {
+  async sync(options: {
+    metricName: string,
+    type: string,
+    metricLabel: string,
+    env: { [key: string]: string },
+    volumes?: Volume[],
+    volumeMounts?: VolumeMount[],
+    resources?: ResourceRequirements,
+    writableGitFolder?: boolean
+  }, request: SyncRequest, response: Response) {
     const object = request.object;
     const name: string = object.metadata.name;
     const namespace: string = object.metadata.namespace;
@@ -68,14 +77,14 @@ export default {
         repo,
         imagePrefix: settings.imagePrefix(),
         buildNumber: settings.buildNumber(),
-        type: `${type}-manifests`,
+        type: `${options.type}-manifests`,
         kind,
         controller,
-        metricName: `${metricName}ManifestsBuilder`,
-        metricLabels: { namespace: namespace, [`${metricLabel}_manifests`]: name },
+        metricName: `${options.metricName}ManifestsBuilder`,
+        metricLabels: { namespace: namespace, [`${options.metricLabel}_manifests`]: name },
         containers: [
           {
-            image: `${settings.imagePrefix()}${type}-manifest-builder:${settings.buildNumber()}`,
+            image: `${settings.imagePrefix()}${options.type}-manifest-builder:${settings.buildNumber()}`,
             args: [],
             stdin: true,
             tty: true,
@@ -92,34 +101,38 @@ export default {
                 name: "CONTROLLER",
                 value: controller
               },
-              ...(Object.entries(env).map(entry => ({
+              ...(Object.entries(options.env).map(entry => ({
                 name: entry[0],
                 value: entry[1]
               })))
             ],
             volumeMounts: [
+              ...options.volumeMounts || [],
               {
                 name: "git-temp",
                 mountPath: "/gitTemp",
-                readOnly: true
+                ...!options.writableGitFolder && { readOnly: true }
               }
             ],
-            name: `${type}-manifest-builder`,
+            name: `${options.type}-manifest-builder`,
             resources: {
               limits: {
                 cpu: Quantity.fromString("500m"),
-                memory: Quantity.fromString("500Mi")
+                memory: Quantity.fromString("500Mi"),
+                ...options.resources?.limits
               },
               requests: {
                 cpu: Quantity.fromString("100m"),
-                memory: Quantity.fromString("100Mi")
+                memory: Quantity.fromString("100Mi"),
+                ...options.resources?.requests
               }
             },
           }
-        ]
+        ],
+        volumes: options.volumes || [],
       });
 
-      const job = new KubeJob(attachments, `${type}-manifest-builder`, jobProps);
+      const job = new KubeJob(attachments, `${options.type}-manifest-builder`, jobProps);
       job.addDependency(roleBinding);
     }
     else {
@@ -141,10 +154,10 @@ export default {
     });
 
     if (triggerJob) {
-      addMetric(`${metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${metricLabel}_manifests`]: name, 'commit': latestCommit });
+      addMetric(`${options.metricName}ManifestsBuildTrigger`, { 'namespace': namespace, [`${options.metricLabel}_manifests`]: name, 'commit': latestCommit });
     }
 
-    if (settings.debug()) console.log(`${metricName}Manifests sync res (${debugId(request.object)})`, JSON.stringify(res.toJson()));
+    if (settings.debug()) console.log(`${options.metricName}Manifests sync res (${debugId(request.object)})`, JSON.stringify(res.toJson()));
     response.status(200).json(res.toJson());
   },
 

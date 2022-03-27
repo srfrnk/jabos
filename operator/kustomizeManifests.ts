@@ -25,12 +25,17 @@ export default {
     const replacementSuffix = spec.replacementSuffix;
     const replacements = spec.replacements;
 
-    await genericManifests.sync('kustomize', 'kustomize', 'kustomize', {
-      'COMMIT': latestCommit,
-      'REPLACEMENT_STRINGS': Object.entries(
-        replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
-        ).join(';'),
-      'IMAGES': JSON.stringify(dockerImages.map((image: any) => ({ "name": image.spec.imageName, "newTag": latestCommit })))
+    await genericManifests.sync({
+      metricName: 'kustomize',
+      type: 'kustomize',
+      metricLabel: 'kustomize',
+      env: {
+        'COMMIT': latestCommit,
+        'REPLACEMENT_STRINGS': Object.entries(
+          replacements).map(replacement => `s/${replacementPrefix}${replacement[0]}${replacementSuffix}/${replacement[1]}/g`
+          ).join(';'),
+        'IMAGES': JSON.stringify(dockerImages.map((image: any) => ({ "name": image.spec.imageName, "newTag": latestCommit })))
+      },
     }, request, response);
   },
 

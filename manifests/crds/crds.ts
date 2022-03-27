@@ -1,4 +1,5 @@
 import { Construct } from 'constructs';
+import Cdk8sManifests from './cdk8sManifests';
 import DockerImage from './dockerImage';
 import GitRepository from './gitRepository';
 import HelmTemplateManifests from './helmTemplateManifests';
@@ -15,5 +16,6 @@ export default class CRDs extends Construct {
     new KustomizeManifests(this);
     new PlainManifests(this);
     new HelmTemplateManifests(this);
+    new Cdk8sManifests(this);
   }
 }

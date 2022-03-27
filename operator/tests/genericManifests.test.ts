@@ -4,6 +4,7 @@ import mockResponse from './mockResponse';
 import genericManifests from '../genericManifests';
 import { CustomizeRequest, FinalizeRequest, SyncRequest } from '../metaControllerHooks';
 import { clearMock, setMock } from './settingsMock';
+import { Quantity } from '../imports/k8s';
 
 beforeEach(() => {
   setMock();
@@ -101,7 +102,14 @@ test('genericManifests sync same commit no trigger', async () => {
     }
   } as unknown as SyncRequest;
   const res = mockResponse();
-  await genericManifests.sync('metricName_value', 'type_value', 'metricLabel_value', { 'env1': 'value1' }, req, res as unknown as Response);
+  await genericManifests.sync({
+    metricName: 'metricName_value',
+    type: 'type_value',
+    metricLabel: 'metricLabel_value',
+    env: { 'env1': 'value1' },
+    volumes: [],
+    volumeMounts: []
+  }, req, res as unknown as Response);
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
 });
@@ -154,7 +162,15 @@ test('genericManifests sync existing job no trigger', async () => {
     }
   } as unknown as SyncRequest;
   const res = mockResponse();
-  await genericManifests.sync('metricName_value', 'type_value', 'metricLabel_value', { 'env1': 'value1' }, req, res as unknown as Response);
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+      volumeMounts: []
+    }, req, res as unknown as Response);
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
 });
@@ -205,7 +221,15 @@ test('genericManifests sync trigger', async () => {
   const res = mockResponse();
   const metrics = require('../metrics');
   metrics.addMetric = jest.fn();
-  await genericManifests.sync('metricName_value', 'type_value', 'metricLabel_value', { 'env1': 'value1' }, req, res as unknown as Response);
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+      volumeMounts: []
+    }, req, res as unknown as Response);
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
   (metrics.addMetric as jest.Mock).mockReset();
@@ -439,4 +463,313 @@ test('genericManifests finalize undefined job', async () => {
   await genericManifests.finalize('metricName_value', req, res as unknown as Response);
   expect(res.json.mock.calls[0]).toMatchSnapshot();
   expect(res.status).toHaveBeenCalledWith(200);
+});
+
+test('genericManifests sync no volumes', async () => {
+  const req = {
+    controller: {
+      metadata: {
+        name: 'controller_name'
+      }
+    },
+    object: {
+      kind: 'kind_value',
+      metadata: {
+        name: 'name_value',
+        namespace: 'namespace_value',
+        uid: 'uid_value',
+      },
+      spec: {
+        gitRepository: 'gitRepository_value',
+        path: '.',
+        targetNamespace: 'targetNamespace_value'
+      },
+      status: {
+        builtCommit: 'commit_value1'
+      }
+    },
+    related: {
+      'GitRepository.jabos.io/v1': [
+        {
+          metadata: {
+            namespace: 'namespace_value'
+          },
+          spec: {
+            url: 'url_value',
+            branch: 'branch_value'
+          },
+          status: {
+            latestCommit: 'commit_value'
+          }
+        }
+      ]
+    },
+    attachments: {
+      'Job.batch/v1': []
+    }
+  } as unknown as SyncRequest;
+  const res = mockResponse();
+  const metrics = require('../metrics');
+  metrics.addMetric = jest.fn();
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumeMounts: []
+    }, req, res as unknown as Response);
+  expect(res.json.mock.calls[0]).toMatchSnapshot();
+  expect(res.status).toHaveBeenCalledWith(200);
+  (metrics.addMetric as jest.Mock).mockReset();
+});
+
+test('genericManifests sync no volumeMounts', async () => {
+  const req = {
+    controller: {
+      metadata: {
+        name: 'controller_name'
+      }
+    },
+    object: {
+      kind: 'kind_value',
+      metadata: {
+        name: 'name_value',
+        namespace: 'namespace_value',
+        uid: 'uid_value',
+      },
+      spec: {
+        gitRepository: 'gitRepository_value',
+        path: '.',
+        targetNamespace: 'targetNamespace_value'
+      },
+      status: {
+        builtCommit: 'commit_value1'
+      }
+    },
+    related: {
+      'GitRepository.jabos.io/v1': [
+        {
+          metadata: {
+            namespace: 'namespace_value'
+          },
+          spec: {
+            url: 'url_value',
+            branch: 'branch_value'
+          },
+          status: {
+            latestCommit: 'commit_value'
+          }
+        }
+      ]
+    },
+    attachments: {
+      'Job.batch/v1': []
+    }
+  } as unknown as SyncRequest;
+  const res = mockResponse();
+  const metrics = require('../metrics');
+  metrics.addMetric = jest.fn();
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+    }, req, res as unknown as Response);
+  expect(res.json.mock.calls[0]).toMatchSnapshot();
+  expect(res.status).toHaveBeenCalledWith(200);
+  (metrics.addMetric as jest.Mock).mockReset();
+});
+
+test('genericManifests sync with empty resources', async () => {
+  const req = {
+    controller: {
+      metadata: {
+        name: 'controller_name'
+      }
+    },
+    object: {
+      kind: 'kind_value',
+      metadata: {
+        name: 'name_value',
+        namespace: 'namespace_value',
+        uid: 'uid_value',
+      },
+      spec: {
+        gitRepository: 'gitRepository_value',
+        path: '.',
+        targetNamespace: 'targetNamespace_value'
+      },
+      status: {
+        builtCommit: 'commit_value1'
+      }
+    },
+    related: {
+      'GitRepository.jabos.io/v1': [
+        {
+          metadata: {
+            namespace: 'namespace_value'
+          },
+          spec: {
+            url: 'url_value',
+            branch: 'branch_value'
+          },
+          status: {
+            latestCommit: 'commit_value'
+          }
+        }
+      ]
+    },
+    attachments: {
+      'Job.batch/v1': []
+    }
+  } as unknown as SyncRequest;
+  const res = mockResponse();
+  const metrics = require('../metrics');
+  metrics.addMetric = jest.fn();
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+      volumeMounts: [],
+      resources: {}
+    }, req, res as unknown as Response);
+  expect(res.json.mock.calls[0]).toMatchSnapshot();
+  expect(res.status).toHaveBeenCalledWith(200);
+  (metrics.addMetric as jest.Mock).mockReset();
+});
+
+test('genericManifests sync with resource limits', async () => {
+  const req = {
+    controller: {
+      metadata: {
+        name: 'controller_name'
+      }
+    },
+    object: {
+      kind: 'kind_value',
+      metadata: {
+        name: 'name_value',
+        namespace: 'namespace_value',
+        uid: 'uid_value',
+      },
+      spec: {
+        gitRepository: 'gitRepository_value',
+        path: '.',
+        targetNamespace: 'targetNamespace_value'
+      },
+      status: {
+        builtCommit: 'commit_value1'
+      }
+    },
+    related: {
+      'GitRepository.jabos.io/v1': [
+        {
+          metadata: {
+            namespace: 'namespace_value'
+          },
+          spec: {
+            url: 'url_value',
+            branch: 'branch_value'
+          },
+          status: {
+            latestCommit: 'commit_value'
+          }
+        }
+      ]
+    },
+    attachments: {
+      'Job.batch/v1': []
+    }
+  } as unknown as SyncRequest;
+  const res = mockResponse();
+  const metrics = require('../metrics');
+  metrics.addMetric = jest.fn();
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+      volumeMounts: [],
+      resources: {
+        limits: {
+          cpu: Quantity.fromNumber(1234)
+        }
+      }
+    }, req, res as unknown as Response);
+  expect(res.json.mock.calls[0]).toMatchSnapshot();
+  expect(res.status).toHaveBeenCalledWith(200);
+  (metrics.addMetric as jest.Mock).mockReset();
+});
+
+test('genericManifests sync with empty resource requests', async () => {
+  const req = {
+    controller: {
+      metadata: {
+        name: 'controller_name'
+      }
+    },
+    object: {
+      kind: 'kind_value',
+      metadata: {
+        name: 'name_value',
+        namespace: 'namespace_value',
+        uid: 'uid_value',
+      },
+      spec: {
+        gitRepository: 'gitRepository_value',
+        path: '.',
+        targetNamespace: 'targetNamespace_value'
+      },
+      status: {
+        builtCommit: 'commit_value1'
+      }
+    },
+    related: {
+      'GitRepository.jabos.io/v1': [
+        {
+          metadata: {
+            namespace: 'namespace_value'
+          },
+          spec: {
+            url: 'url_value',
+            branch: 'branch_value'
+          },
+          status: {
+            latestCommit: 'commit_value'
+          }
+        }
+      ]
+    },
+    attachments: {
+      'Job.batch/v1': []
+    }
+  } as unknown as SyncRequest;
+  const res = mockResponse();
+  const metrics = require('../metrics');
+  metrics.addMetric = jest.fn();
+  await genericManifests.sync(
+    {
+      metricName: 'metricName_value',
+      type: 'type_value',
+      metricLabel: 'metricLabel_value',
+      env: { 'env1': 'value1' },
+      volumes: [],
+      volumeMounts: [],
+      resources: {
+        requests: {
+          cpu: Quantity.fromNumber(1234)
+        }
+      }
+    }, req, res as unknown as Response);
+  expect(res.json.mock.calls[0]).toMatchSnapshot();
+  expect(res.status).toHaveBeenCalledWith(200);
+  (metrics.addMetric as jest.Mock).mockReset();
 });
