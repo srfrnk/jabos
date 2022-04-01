@@ -11,7 +11,7 @@
   "author": "srfrnk@gmail.com",
   "license": "MIT",
   "dependencies": {
-    "cdk8s": "^1.5.7",
+    "cdk8s": "^1.5.39",
     "cdk8s-plus-22": "^1.0.0-beta.108",
     "constructs": "^3.3.208",
     "express": "^4.17.2",
@@ -23,7 +23,7 @@
     "@types/express-prometheus-middleware": "^1.2.1",
     "@types/jest": "^27.4.1",
     "@types/node": "^16.11.26",
-    "cdk8s": "^1.5.34",
+    "cdk8s": "^1.5.39",
     "cdk8s-cli": "^1.0.118",
     "cdk8s-plus-22": "^1.0.0-beta.108",
     "constructs": "^3.3.235",
