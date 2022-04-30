@@ -5,6 +5,18 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "operator pod",
+            "address": "localhost",
+            "port": 9229,
+            "localRoot": "${workspaceFolder}/operator",
+            "remoteRoot": "/app",
+            "request": "attach",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "type": "node",
             "name": "vscode-jest-tests",
             "request": "launch",
@@ -18,6 +30,6 @@
                 "--runInBand",
                 "--watchAll=false"
             ]
-        }
+        },
     ]
 }

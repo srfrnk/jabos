@@ -29,6 +29,9 @@
 		"jest.showCoverageOnLoad": true,
 		"jest.autoRun": {
 			"watch": true,
+		},
+		"yaml.schemas": {
+			"https://json.schemastore.org/github-workflow.json": "../k9s/.github/workflows/build.yml"
 		}
 	}
 }

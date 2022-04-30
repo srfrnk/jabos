@@ -13,4 +13,5 @@ export default {
   imagePrefix: (): string => { return process.env.IMAGE_PREFIX || ''; },
   buildNumber: (): string => { return process.env.BUILD_NUMBER || ''; },
   isProduction: (): boolean => { return process.env.IS_PRODUCTION === 'true'; },
+  debugPort: (): string => { return process.env.DEBUG_PORT || '9229'; },
 };

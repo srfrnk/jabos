@@ -52,7 +52,12 @@ export default class Operator extends Construct {
         template: {
           metadata: {
             name: 'operator',
-            labels: labels
+            labels: labels,
+            ...!settings.isProduction() && {
+              annotations: {
+                "k9scli.io/auto-port-forwards": `operator::${settings.debugPort()}:${settings.debugPort()}`
+              }
+            }
           },
           spec: {
             serviceAccountName: serviceAccount.metadata.name,
@@ -79,6 +84,10 @@ export default class Operator extends Construct {
                   {
                     name: 'IS_PRODUCTION',
                     value: settings.isProduction().toString(),
+                  },
+                  {
+                    name: 'DEBUG_PORT',
+                    value: settings.debugPort().toString(),
                   },
                   {
                     name: 'PROMETHEUS_METRIC_PREFIX',
@@ -117,12 +126,14 @@ export default class Operator extends Construct {
                   },
                 ],
                 livenessProbe: {
+                  timeoutSeconds: settings.isProduction() ? 5 : 10e6,
                   httpGet: {
                     path: '/',
                     port: IntOrString.fromString('web'),
                   },
                 },
                 readinessProbe: {
+                  timeoutSeconds: settings.isProduction() ? 5 : 10e6,
                   httpGet: {
                     path: '/',
                     port: IntOrString.fromString('web'),

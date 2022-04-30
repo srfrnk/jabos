@@ -258,7 +258,7 @@ export interface ServiceMonitorSpecEndpoints {
   readonly honorTimestamps?: boolean;
 
   /**
-   * Interval at which metrics should be scraped
+   * Interval at which metrics should be scraped If not specified Prometheus' global scrape interval is used.
    *
    * @schema ServiceMonitorSpecEndpoints#interval
    */
@@ -321,7 +321,7 @@ export interface ServiceMonitorSpecEndpoints {
   readonly scheme?: string;
 
   /**
-   * Timeout after which the scrape is ended
+   * Timeout after which the scrape is ended If not specified, the Prometheus global scrape timeout is used unless it is less than `Interval` in which the latter is used.
    *
    * @schema ServiceMonitorSpecEndpoints#scrapeTimeout
    */
