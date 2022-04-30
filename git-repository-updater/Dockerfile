@@ -16,6 +16,8 @@ COPY ./get_latest_commit.sh /
 COPY ./error-event.jsonnet /
 COPY ./status.jsonnet /
 
+RUN git config --system --add safe.directory /gitTemp
+
 USER 1000
 
 ENTRYPOINT ["/get_latest_commit.sh"]

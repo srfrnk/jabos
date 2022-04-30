@@ -11,6 +11,8 @@ RUN mkdir /home/user/.ssh &&\
 
 COPY ./pre-build.sh /
 
+RUN git config --system --add safe.directory /gitTemp
+
 USER 1000
 
 ENTRYPOINT ["/pre-build.sh"]
