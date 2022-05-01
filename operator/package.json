@@ -13,7 +13,7 @@
   "dependencies": {
     "cdk8s": "^1.5.39",
     "cdk8s-plus-22": "^1.0.0-beta.108",
-    "constructs": "^3.3.208",
+    "constructs": "^3.3.239",
     "express": "^4.17.2",
     "express-async-handler": "^1.2.0",
     "prom-client": "^14.0.1"
@@ -26,7 +26,7 @@
     "cdk8s-cli": "^1.0.162",
     "cdk8s": "^1.5.39",
     "cdk8s-plus-22": "^1.0.0-beta.108",
-    "constructs": "^3.3.235",
+    "constructs": "^3.3.239",
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "jest": "^27.5.1",
