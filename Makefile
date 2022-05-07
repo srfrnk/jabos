@@ -69,6 +69,7 @@ images: FORCE build_number
 	eval $$(minikube docker-env) && docker build --build-arg "IMAGE_PREFIX=" --build-arg "IMAGE_VERSION=:${BUILD_NUMBER}" ./cdk8s-manifest-builder -t cdk8s-manifest-builder:${BUILD_NUMBER}
 
 manifests: FORCE build_number
+	cd manifests && npm i
 	docker run -it --mount "type=bind,src=$$PWD/manifests,dst=/src" --entrypoint sh -w /src \
 		-e 'IMAGE_PREFIX=' \
 		-e 'BUILD_NUMBER=${BUILD_NUMBER}' \
@@ -82,7 +83,7 @@ snyk-scan: FORCE manifests build_number
 compile:
 	- mkdir -p ./operator/imports
 	cp ./manifests/dist/jabos.k8s.yaml ./operator/imports
-	cd operator && npm run compile && npm run test
+	cd operator && npm i && npm run compile && npm run test
 
 build: FORCE manifests compile images
 	kubectl apply -n jabos -f ./manifests/dist/jabos.k8s.yaml

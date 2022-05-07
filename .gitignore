@@ -1,2 +1,3 @@
 build
 a-dashboard-operator/manifests/kube.libsonnet
+*.log

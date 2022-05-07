@@ -257,6 +257,7 @@ Please add a `security` label for quicker response.
 1. Run `make setup` once
 1. Run `make build` after each code change
 1. To deploy examples
+   1. Run `K9s` or if already running use `<ctrl>+p` to start port forwards
    1. Locally clone <a href="https://github.com/srfrnk/jabos-examples" target="_blank">jabos-examples repo</a>
    1. Follow instructions from the README file in the cloned folder
    1. The examples would be deployed into namespace `example-env`
