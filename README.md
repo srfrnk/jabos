@@ -83,14 +83,14 @@ and a `Built Commit`(`builtCommit`) status containing the `git` commit id last b
 ### Image Reuse
 
 Build images in DEV/QA only and reuse when commit is promoted to other environments.
-To mark a [`DockerImage`](https://srfrnk.github.io/jabos/#crd-DockerImage) for reuse of an image built in another environnement add `build: false` to the spec.
+To mark a <a href="https://srfrnk.github.io/jabos/#crd-DockerImage" target="_blank">`DockerImage`</a> for reuse of an image built in another environnement add `build: false` to the spec.
 
 ### Promoted Commits
 
 It's possible to bind an environment to a specific commit rather than to a branch.
 This allows promoting specific commits to environments avoiding the need to merge and maintain an an environment branch.
 Together with [Image Reuse](#image-reuse) this allow deploying artifacts built and tested through another environment.
-To use a promoted commit set the [`GitRepository`](https://srfrnk.github.io/jabos/#crd-GitRepository) spec property `promotedCommit` to the commit ID and **remove** the `branch` property.
+To use a promoted commit set the <a href="https://srfrnk.github.io/jabos/#crd-GitRepository" target="_blank">`GitRepository`</a> spec property `promotedCommit` to the commit ID and **remove** the `branch` property.
 
 ### Jsonnet example
 
