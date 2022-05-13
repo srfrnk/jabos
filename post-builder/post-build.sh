@@ -1,9 +1,8 @@
 #! /bin/bash
 
 source /kubectl-setup.sh
-
 kcurl PATCH "/apis/jabos.io/v1/namespaces/${NAMESPACE}/${TYPE}/${NAME}/status" "application/merge-patch+json" \
-  "$(jsonnet -A "builtCommit=${COMMIT}" /status.jsonnet)" >/dev/null
+  "$(jsonnet -A "commit=${COMMIT}" -A "label=${COMMIT_LABEL}" /status.jsonnet)" >/dev/null
 
 START=$(cat /timer/start)
 END=$(date +%s.%N)

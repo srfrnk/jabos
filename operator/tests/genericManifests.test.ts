@@ -78,7 +78,7 @@ test('genericManifests sync same commit no trigger', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value'
+        deployedCommit: 'commit_value'
       }
     },
     related: {
@@ -134,7 +134,7 @@ test('genericManifests sync existing job no trigger', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -195,7 +195,7 @@ test('genericManifests sync trigger', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -485,7 +485,7 @@ test('genericManifests sync no volumes', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -544,7 +544,7 @@ test('genericManifests sync no volumeMounts', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -603,7 +603,7 @@ test('genericManifests sync with empty resources', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -664,7 +664,7 @@ test('genericManifests sync with resource limits', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {
@@ -729,7 +729,7 @@ test('genericManifests sync with empty resource requests', async () => {
         targetNamespace: 'targetNamespace_value'
       },
       status: {
-        builtCommit: 'commit_value1'
+        deployedCommit: 'commit_value1'
       }
     },
     related: {

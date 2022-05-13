@@ -53,9 +53,9 @@ export default class Manifests extends JabosCRD {
             status: {
               description: 'Will contains a condition of type "`Synced`". If it becomes "`False`" an `Event` will describe the error.',
               properties: {
-                builtCommit: {
+                deployedCommit: {
                   type: 'string',
-                  description: 'The latest `git` commit id build',
+                  description: 'The latest `git` commit id built and deployed',
                 },
               },
             },

@@ -41,6 +41,10 @@ Object {
                 "value": "latestCommit_value",
               },
               Object {
+                "name": "COMMIT_LABEL",
+                "value": "builtCommit",
+              },
+              Object {
                 "name": "METRIC_NAME",
                 "value": "metricName_value",
               },
@@ -249,6 +253,10 @@ Object {
               Object {
                 "name": "COMMIT",
                 "value": "latestCommit_value",
+              },
+              Object {
+                "name": "COMMIT_LABEL",
+                "value": "builtCommit",
               },
               Object {
                 "name": "METRIC_NAME",
@@ -494,6 +502,10 @@ Object {
               Object {
                 "name": "COMMIT",
                 "value": "latestCommit_value",
+              },
+              Object {
+                "name": "COMMIT_LABEL",
+                "value": "builtCommit",
               },
               Object {
                 "name": "METRIC_NAME",
@@ -742,6 +754,10 @@ Object {
               Object {
                 "name": "COMMIT",
                 "value": "latestCommit_value",
+              },
+              Object {
+                "name": "COMMIT_LABEL",
+                "value": "builtCommit",
               },
               Object {
                 "name": "METRIC_NAME",

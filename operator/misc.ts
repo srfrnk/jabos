@@ -110,9 +110,9 @@ export function needNewBuild(request: SyncRequest): boolean {
   const object = request.object;
   const repo = getRepo(request);
   const existingJob = Object.values(request.attachments['Job.batch/v1']).length > 0;
-  const builtCommit: string = (object.status || {}).builtCommit || '';
+  const currentCommit: string = (object.status || {}).builtCommit || (object.status || {}).deployedCommit || '';
   const latestCommit: string = repo.status.latestCommit;
-  return !existingJob && !!latestCommit && latestCommit !== builtCommit;
+  return !existingJob && !!latestCommit && latestCommit !== currentCommit;
 }
 
 export const _private = { convertQuantities: convertQuantities };

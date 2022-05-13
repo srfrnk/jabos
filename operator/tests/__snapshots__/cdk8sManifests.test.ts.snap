@@ -299,6 +299,10 @@ Array [
                       "value": "commit_value",
                     },
                     Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "deployedCommit",
+                    },
+                    Object {
                       "name": "METRIC_NAME",
                       "value": "cdk8sManifestsBuilder",
                     },

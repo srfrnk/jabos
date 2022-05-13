@@ -40,6 +40,7 @@ export default function (options: {
     buildNumber: settings.buildNumber(),
     serviceAccountName: `builder-${options.object.spec.gitRepository}`,
     type: options.type,
+    commitLabel: "deployedCommit",
     metricName: options.metricName,
     metricLabels: options.metricLabels,
     labels: { type: "manifest-builder", "manifest-builder-type": options.type },

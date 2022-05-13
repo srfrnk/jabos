@@ -16,7 +16,8 @@ export default function (options: {
   volumes?: Volume[],
   metricName: string,
   metricLabels: { [key: string]: string; },
-  labels: { [key: string]: string; }
+  labels: { [key: string]: string; },
+  commitLabel: string
 }): KubeJobProps {
   const latestCommit = options.repo.status.latestCommit;
   const jobName = k8sName(`${options.jobNamePrefix}-${options.object.metadata.name}`, latestCommit);
@@ -203,6 +204,10 @@ export default function (options: {
                 {
                   name: "COMMIT",
                   value: latestCommit
+                },
+                {
+                  name: "COMMIT_LABEL",
+                  value: options.commitLabel
                 },
                 {
                   name: "METRIC_NAME",

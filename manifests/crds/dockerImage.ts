@@ -116,7 +116,7 @@ export default class DockerImage extends JabosCRD {
             properties: {
               builtCommit: {
                 type: 'string',
-                description: 'The latest `git` commit id build',
+                description: 'The latest `git` commit id built',
               },
             },
           },

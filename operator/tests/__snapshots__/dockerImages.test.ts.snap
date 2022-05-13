@@ -136,6 +136,10 @@ Array [
                       "value": "commit_value",
                     },
                     Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
+                    },
+                    Object {
                       "name": "METRIC_NAME",
                       "value": "dockerImageBuilder",
                     },
@@ -502,6 +506,10 @@ Array [
                       "value": "commit_value",
                     },
                     Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
+                    },
+                    Object {
                       "name": "METRIC_NAME",
                       "value": "dockerImageBuilder",
                     },
@@ -866,6 +874,10 @@ Array [
                     Object {
                       "name": "COMMIT",
                       "value": "commit_value",
+                    },
+                    Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
                     },
                     Object {
                       "name": "METRIC_NAME",
@@ -1263,6 +1275,10 @@ Array [
                       "value": "commit_value",
                     },
                     Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
+                    },
+                    Object {
                       "name": "METRIC_NAME",
                       "value": "dockerImageBuilder",
                     },
@@ -1631,6 +1647,10 @@ Array [
                     Object {
                       "name": "COMMIT",
                       "value": "commit_value",
+                    },
+                    Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
                     },
                     Object {
                       "name": "METRIC_NAME",
@@ -2009,6 +2029,10 @@ Array [
                     Object {
                       "name": "COMMIT",
                       "value": "commit_value",
+                    },
+                    Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
                     },
                     Object {
                       "name": "METRIC_NAME",
@@ -2416,6 +2440,10 @@ Array [
                     Object {
                       "name": "COMMIT",
                       "value": "commit_value",
+                    },
+                    Object {
+                      "name": "COMMIT_LABEL",
+                      "value": "builtCommit",
                     },
                     Object {
                       "name": "METRIC_NAME",

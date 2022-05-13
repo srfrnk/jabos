@@ -75,10 +75,15 @@ These can be viewed as with any K8s resource. i.e. `kubectl describe git-reposit
 If it becomes `False` an `Event` will describe the error.
 They also have a `Latest Commit`(`latestCommit`) status containing the latest `git` commit id found.
 
-`DockerImage` and `***Manifest` resources have a `Synced` condition in the status.
+`DockerImage` resources have a `Synced` condition in the status.
 If it becomes `False` an `Event` will describe the error.
 They also have a `Latest Commit`(`latestCommit`) status containing the latest `git` commit id found
 and a `Built Commit`(`builtCommit`) status containing the `git` commit id last built.
+
+`***Manifest` resources have a `Synced` condition in the status.
+If it becomes `False` an `Event` will describe the error.
+They also have a `Latest Commit`(`latestCommit`) status containing the latest `git` commit id found
+and a `Deployed Commit`(`deployedCommit`) status containing the `git` commit id last deployed.
 
 ### Image Reuse
 
@@ -165,7 +170,7 @@ function(latestCommitId) {
 1. Create secret with these credentials. (i.e. `kubectl create secret generic -n example-env aws --from-file=aws_access_key_id=./build/aws_access_key_id --from-file=aws_secret_access_key=./build/aws_secret_access_key`)
 1. Add a `aws` property to any applicable `DockerImage` object to point to the secret.
 
-**Note**:  You can use instance roles instead when pushing to ECR from a EC2 instance or from EKS, by [configuring the instance role permissions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html).
+**Note**: You can use instance roles instead when pushing to ECR from a EC2 instance or from EKS, by [configuring the instance role permissions](https://docs.aws.amazon.com/AmazonECR/latest/userguide/ECR_on_EKS.html).
 
 #### Metrics
 
@@ -254,7 +259,7 @@ Please add a `security` label for quicker response.
 1. `NodeJS` installed (To install NodeJS see <a href="https://nodejs.org" target="_blank">this</a>)
 1. `Typescript` development tools installed `npm install -g ts-node typescript '@types/node'`
 1. `GNU Parallel` installed for <a href="https://www.gnu.org/software/parallel/" target="_blank">your OS</a>. For Debian based you can use `sudo apt-get install parallel`.
-1. `K9s` installed (To install see <a href="https://k9scli.io/topics/install/" target="_blank">here</a>). For automated port forwarding set  [K9s configuration](~/.config/k9s/config.yml) with `scanForAutoPf: true`. Make sure K9s version supports the feature (https://github.com/derailed/k9s/pull/1498).
+1. `K9s` installed (To install see <a href="https://k9scli.io/topics/install/" target="_blank">here</a>). For automated port forwarding set [K9s configuration](~/.config/k9s/config.yml) with `scanForAutoPf: true`. Make sure K9s version supports the feature (https://github.com/derailed/k9s/pull/1498).
 
 ### Environment Setup
 

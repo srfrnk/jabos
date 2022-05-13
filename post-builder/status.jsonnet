@@ -1,7 +1,7 @@
-function(builtCommit) (
+function(label, commit) (
   {
     status: {
-      builtCommit: builtCommit,
+      [label]: commit,
       conditions: [
         {
           type: 'Synced',
